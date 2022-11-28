@@ -1,0 +1,142 @@
+service:
+  - key: user_list
+    module: sql
+    http: true
+    log: true
+    params:
+      nick:
+        default: ""
+      id:
+        template: "{{uuid}}"
+      status:
+        template: "1"
+        type: int
+      page:
+        type: int
+        default: 1
+      size:
+        default: 20
+        type: int
+      start:
+        template: " ({{.page}}-1) * {{.size}}"
+        exec: true
+        type: int
+      pagination:
+        default: true
+    data_file: user_list.sql
+    count_file: user_list_count.sql
+    pagination: pagination
+#
+#  - key: user_list_test
+#    module: sql
+#    http: true
+#    log: false
+#    params:
+#      username:
+#        template: "{{uuid}}"
+#        check:
+#          template: "{{must .username}}"
+#          err_msg: "{{uuid}}用户名不能为空"
+#        default: "test"
+#      status:
+#        default: "0"
+#        type: int
+#      user_list:
+#        default: [{"nick":"张治"}]
+#      excel_path:
+#        template: "xx"
+#        default: "./template/jiraImportTemplate.xls"
+#    handler_params:
+#      - key: check_array
+#        name: 检查issue 列表
+#        enable: "{{eq .status 0}}"
+#        foreach: issue_list
+#        item: item
+#        fields:
+#          - template: "{{uuid}}"
+#            err_msg: "issue 列表，第【{{uuid}}】 行数据，issue_key 不能为空"
+#      - key: service2field
+#        enable: "{{eq .status 0}}"
+#        append_param: true
+#        service:
+#          service: hrm.test
+#          username: username
+#          to_obj: true
+#        save_field: userInfo
+#        template: "{{must .userInfo}}"
+#        err_msg: "用户信息不存在"
+#      - key: update_array_from_array
+#        name: 根据数组更新数据
+#        foreach: local_user_list
+#        item: item
+#        fields:
+#          - field: tel
+#            template: "second_item.mobile"
+#          - field: wechat_userid
+#            template: "second_item.userid"
+#        from_list: remote_user_list
+#        from_item: second_item
+#        if_template: "{{ item.nick == second_item.name or item.username+'@' in second_item.biz_mail }}"
+#      - key: update_array
+#        name: 简单更新数组
+#        foreach: user_list
+#        item: item
+#        fields:
+#          - field: userid
+#            template: "{{uuid}}"
+#      - key: update_field
+#        name: 更新字段
+#        fields:
+#          - field: statu
+#            template: statu
+#          - field: sex
+#            template: "男"
+#          - field: age
+#            template: 19
+#      - key: prop_arr
+#        foreach: user_list
+#        value: userid
+#        save_field: user_id_list
+#      - key: excel2data
+#        file: file
+#        data_json:  "./excel2data_config.json"
+#    data_file: user_list.sql
+#    count_file: user_list_count.sql
+#    result_handler:
+#      - key: service2field
+#        name: 结果中支持调用其他请求，保存到请求参数中。现在变成运行结果前，handler_param 运行结果后，也是handler_param
+#        enable: "{{eq .statu 0}}"
+#        append_param: false
+#        service:
+#          service: hrm.test
+#          username: username
+#          to_obj: true
+#        save_field: userInfo
+#        template: "{{must .userInfo}}"
+#        err_msg: "用户信息不存在"
+#      - key: prop_arr
+#        name: "handler_params 和result_handler的处理函数统一,之前搞2套，一套专门处理参数，一套专门处理结果，实际函数一部分可以重用"
+#        result_name: result_user_list
+#        foreach: result_user_list
+#        value: userid
+#        save_field: user_id_list
+#      - key: add_param
+#        name: 结果中添加参数
+#        fields:
+#          - from: user_id_list
+#            to: user_id_list
+#      - key: param2result
+#        result_name: result_user_list
+#        from: result_user_list
+#      - key: data2excel
+#        data_json: "./data2excel_config.json"
+#        path: excel_path
+#      - key: file_response
+#        path: excel_path
+#        filename: "jiraImportTemplate.xls"
+#
+#  # - key: install_agent
+#  #   module: service_flow
+#  #   http: true
+#  #   data_json: install_agent.json
+#

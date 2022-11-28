@@ -1,0 +1,4 @@
+# 项目点路由
+service:
+  - name: "用户管理"
+    path: "user/index.yml"

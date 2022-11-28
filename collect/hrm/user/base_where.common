@@ -1,0 +1,9 @@
+{{  if  .nick }}
+and nick = {{.nick}}
+{{ end }}
+{{ if .status }}
+and statu ={{.status}}
+{{ end }}
+{{ if  .pagination  }}
+limit {{.start}} , {{.size}}
+{{ end }}

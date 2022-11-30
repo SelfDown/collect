@@ -63,7 +63,10 @@ func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, e
 	return gocast.ToString(r)
 
 }
-
+func RenderTplBool(Tpl *text_template.Template, params map[string]interface{}) bool {
+	value := RenderTpl(Tpl, params)
+	return gocast.ToBool(value)
+}
 func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) string {
 	var buf bytes.Buffer
 

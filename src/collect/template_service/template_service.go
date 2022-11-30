@@ -33,11 +33,11 @@ func IsPluginEnable(Tpl *text_template.Template, plugin config.Plugin) bool {
 	return gocast.ToBool(buf.String())
 
 }
-func (t *TemplateService) before(params map[string]interface{}, is_http bool) (bool, *config.Template, string) {
+func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*config.Template, *common.Result) {
 	serviceName := config.GetServiceName(params)
 	if utils.IsValueEmpty(serviceName) {
 		err_msg := "请求参数【service】不存在，请检查传入参数"
-		return false, nil, err_msg
+		return nil, common.NotOk(err_msg)
 	}
 
 	// 根据service 名称获取配置
@@ -64,10 +64,11 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (b
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		config.CallPluginFunc(&loader, plugin, temp)
+		pluginResult := config.CallPluginFunc(&loader, plugin, temp)
+		return nil, pluginResult
 	}
 
-	return true, &temp, ""
+	return &temp, common.Ok(&temp, "成功")
 }
 
 func (t *TemplateService) execute(temp *config.Template) *common.Result {
@@ -86,12 +87,12 @@ func (t *TemplateService) execute(temp *config.Template) *common.Result {
 func (t *TemplateService) after() *common.Result {
 	return nil
 }
-func (t *TemplateService) Result(params map[string]interface{}, is_http bool) *common.Result {
+func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *common.Result {
 
 	// 执行处理前
-	success, temp, errMsg := t.before(params, is_http)
-	if !success {
-		return common.NotOk(errMsg)
+	temp, beforeResult := t.before(params, isHttp)
+	if !beforeResult.Success {
+		return beforeResult
 	}
 	//// 调用模块结果
 	//result := t.getModuleResultObj(temp.Module)

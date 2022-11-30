@@ -32,10 +32,7 @@ func main() {
 	//params["page"] = 1
 	params["service"] = "hrm.user_list"
 	r := ts.Result(params, true)
-	fmt.Printf("%#v", r.GetData())
-	fmt.Println(r.GetCount())
-	fmt.Println(r.GetMsg())
-	fmt.Println(r.GetSuccess())
+	fmt.Printf("%#v", r)
 	// params = make(map[string]interface{})
 	// params["nick"] = "兰雄"
 	// params["status"] = 1

@@ -108,7 +108,7 @@ func (t *baseTplHandler) _handler_second_field(data reflect.Value) {
 	// 新生成三级字段
 	thirdNew := reflect.New(third.Type()).Elem()
 	utils.CopyRecursive(third, thirdNew)
-	for _, f := range t.thirdArrayFields {
+	for _, f := range t.thirdFields {
 		fromContent := thirdNew.FieldByName(f.From).String()
 		if utils.IsValueEmpty(fromContent) {
 			continue
@@ -120,13 +120,13 @@ func (t *baseTplHandler) _handler_second_field(data reflect.Value) {
 }
 
 func (t *baseTplHandler) _handler_config_field(data reflect.Value) {
-	//简单处理一级字段
+	//简单处理一级字段,data_file
 	t._handle_simple_field(data)
 	// 循环处理一级字段，数组类型
 	t._handler_array_field(data)
-	// 处理二级字段
+	// 处理二级字段.check.template、check.err_msg
 	t._handler_second_field(data)
-	// 处理二级数组列表
+	// 处理二级数组列表,处理handler_params
 	t._handler_second_array_field(data)
 
 }
@@ -389,8 +389,7 @@ func IsEmpty(value interface{}) bool {
 	return utils.IsValueEmpty(value)
 }
 func Must(value interface{}) bool {
-
-	return true
+	return !utils.IsValueEmpty(value)
 }
 
 /*

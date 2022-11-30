@@ -1,6 +1,7 @@
 package collect
 
 import (
+	common "collect.mod/src/collect/common"
 	"reflect"
 )
 
@@ -12,8 +13,9 @@ func LoadTemplatePlugins(pluginLoader interface{}, plugins []Plugin, t Template,
 		_callPluginFunc(pluginLoader, plugin, t, routerAll)
 	}
 }
-func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ...interface{}) {
-	_callPluginFunc(pluginLoader, plugin, t, t.RouterAllConfig)
+func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ...interface{}) *common.Result {
+	result := _callPluginFunc(pluginLoader, plugin, t, t.RouterAllConfig)
+	return result
 }
 
 /**
@@ -24,7 +26,7 @@ func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ..
 * @routerAll    总路由
  */
 
-func _callPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, routerAll *RouterAll, args ...interface{}) {
+func _callPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, routerAll *RouterAll, args ...interface{}) *common.Result {
 
 	rf := reflect.ValueOf(pluginLoader)
 	rft := rf.Type()
@@ -38,9 +40,16 @@ func _callPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, router
 	}
 	_, success := rft.MethodByName(fname)
 	if !success {
-		t.LogErr("【" + fname + "】方法不存在！！！")
-		return
+		msg := "【" + fname + "】方法不存在！！！"
+		t.LogErr(msg)
+		return common.NotOk(msg)
 	}
-	rf.MethodByName(fname).Call(parameter)
+	result := rf.MethodByName(fname).Call(parameter)
+	if result == nil {
+		return common.Ok(nil, "成功")
+	}
+	v := result[0]
+	d := v.Interface().(*common.Result)
+	return d
 
 }

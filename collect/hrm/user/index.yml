@@ -6,6 +6,10 @@ service:
     params:
       nick:
         default: ""
+      name:
+        check:
+          template: "{{must .name}}"
+          err_msg: 名称不能为空
       id:
         template: "{{uuid}}"
       status:

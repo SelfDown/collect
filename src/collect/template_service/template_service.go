@@ -65,7 +65,10 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 			continue
 		}
 		pluginResult := config.CallPluginFunc(&loader, plugin, temp)
-		return nil, pluginResult
+		if !pluginResult.Success {
+			return nil, pluginResult
+		}
+
 	}
 
 	return &temp, common.Ok(&temp, "成功")

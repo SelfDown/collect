@@ -29,6 +29,7 @@ func main() {
 	ts := template_service.TemplateService{OpUser: "zhangzhi"}
 	params := make(map[string]interface{})
 	params["nick"] = "张治"
+	params["name"] = "张治"
 	//params["page"] = 1
 	params["service"] = "hrm.user_list"
 	r := ts.Result(params, true)

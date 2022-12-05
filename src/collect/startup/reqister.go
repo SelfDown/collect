@@ -2,7 +2,8 @@ package collect
 
 import (
 	config "collect.mod/src/collect/config"
-	sql "collect.mod/src/collect/service_imp/sql"
+	handler_params "collect.mod/src/collect/service_imp/handler_params"
+	sql "collect.mod/src/collect/service_imp/module/sql"
 )
 
 /**
@@ -11,5 +12,6 @@ import (
 func GetRegisterList() []config.ModuleResult {
 	l := make([]config.ModuleResult, 0)
 	l = append(l, &sql.SqlService{})
+	l = append(l, &handler_params.UpdateField{})
 	return l
 }

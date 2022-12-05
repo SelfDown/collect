@@ -1,9 +1,9 @@
-package collect
+package template_service
 
 import (
 	"bytes"
 	common "collect.mod/src/collect/common"
-	config "collect.mod/src/collect/config"
+	"collect.mod/src/collect/config"
 	utils "collect.mod/src/collect/utils"
 	"fmt"
 	"github.com/demdxx/gocast"
@@ -16,13 +16,13 @@ type TemplateService struct {
 	Request interface{}
 }
 
-func (t *TemplateService) getModuleResultObj(moduleName string) config.ModuleResult {
+func (t *TemplateService) getModuleResultObj(moduleName string) collect.ModuleResult {
 	// 根据模块名称获取，模块对象
-	module := config.GetModuleRegister(moduleName)
+	module := collect.GetModuleRegister(moduleName)
 	return module
 
 }
-func IsPluginEnable(Tpl *text_template.Template, plugin config.Plugin) bool {
+func IsPluginEnable(Tpl *text_template.Template, plugin collect.Plugin) bool {
 	var buf bytes.Buffer
 
 	err := Tpl.Execute(&buf, plugin)
@@ -33,21 +33,21 @@ func IsPluginEnable(Tpl *text_template.Template, plugin config.Plugin) bool {
 	return gocast.ToBool(buf.String())
 
 }
-func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*config.Template, *common.Result) {
-	serviceName := config.GetServiceName(params)
+func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*collect.Template, *common.Result) {
+	serviceName := collect.GetServiceName(params)
 	if utils.IsValueEmpty(serviceName) {
 		err_msg := "请求参数【service】不存在，请检查传入参数"
 		return nil, common.NotOk(err_msg)
 	}
 
 	// 根据service 名称获取配置
-	cfg := config.NewTemplateService(params)
+	cfg := collect.NewTemplateService(params)
 	// 生成模板
-	temp := config.Template{}
+	temp := collect.Template{}
 	// 设置服务配置
-	temp.ServiceConfig = cfg.GetData().(config.ServiceConfig)
+	temp.ServiceConfig = cfg.GetData().(collect.ServiceConfig)
 	// 设置全局路由配置
-	temp.RouterAllConfig = config.GetLocalRouter()
+	temp.RouterAllConfig = collect.GetLocalRouter()
 	// 设置参数
 	temp.SetParams(params)
 	// todo: 这里只示例了一个用户ID
@@ -58,13 +58,13 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 		msg := "【" + temp.OpUser + "】访问:" + serviceName
 		temp.LogData(msg)
 	}
-	var loader config.BeforeLoader
+	var loader collect.BeforeLoader
 	for _, plugin := range temp.GetBeforePlugins() {
 		//插件是否启用
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		pluginResult := config.CallPluginFunc(&loader, plugin, temp)
+		pluginResult := collect.CallPluginFunc(&loader, plugin, temp)
 		if !pluginResult.Success {
 			return nil, pluginResult
 		}
@@ -74,21 +74,35 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 	return &temp, common.Ok(&temp, "成功")
 }
 
-func (t *TemplateService) execute(temp *config.Template) *common.Result {
+func (t *TemplateService) execute(temp *collect.Template) *common.Result {
 	// 调用模块结果
 	result := t.getModuleResultObj(temp.Module)
 	params := temp.GetParams()
 	if result == nil {
-		err_msg := "module【" + temp.Module + "】模块不存在，请检查配置"
-		temp.LogErr(err_msg)
+		errMsg := "module【" + temp.Module + "】模块不存在，请检查配置"
+		temp.LogErr(errMsg)
 		temp.LogErr(params)
-		return common.NotOk(err_msg)
+		return common.NotOk(errMsg)
 	}
-	data, _ := result.Result(temp)
+	data := result.Result(temp)
 	return data
 }
-func (t *TemplateService) after() *common.Result {
-	return nil
+func (t *TemplateService) after(temp *collect.Template) *common.Result {
+
+	var loader collect.AfterLoader
+	for _, plugin := range temp.GetAfterPlugins() {
+		//插件是否启用
+		if !IsPluginEnable(plugin.EnableTpl, plugin) {
+			continue
+		}
+		pluginResult := collect.CallPluginFunc(&loader, plugin, *temp)
+		if !pluginResult.Success {
+			return pluginResult
+		}
+
+	}
+
+	return common.Ok(&temp, "成功")
 }
 func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *common.Result {
 
@@ -97,18 +111,15 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	if !beforeResult.Success {
 		return beforeResult
 	}
-	//// 调用模块结果
-	//result := t.getModuleResultObj(temp.Module)
-	//if result == nil {
-	//	err_msg := "module【" + temp.Module + "】模块不存在，请检查配置"
-	//	temp.LogErr(err_msg)
-	//	temp.LogErr(params)
-	//	return common.NotOk(err_msg)
-	//}
-	//// 运行结果
-	//data, _ := result.Result(temp)
-	//return data
+	// 处理中
 	data := t.execute(temp)
+	if !data.Success {
+		return data
+	}
+	afterResult := t.after(temp)
+	if !afterResult.Success {
+		return afterResult
+	}
 	return data
 }
 

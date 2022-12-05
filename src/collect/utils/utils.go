@@ -67,9 +67,37 @@ func RenderTplBool(Tpl *text_template.Template, params map[string]interface{}) b
 	value := RenderTpl(Tpl, params)
 	return gocast.ToBool(value)
 }
+
+//根据模板渲染数据，优选取参数里面的字段
+func RenderTplData(Tpl *text_template.Template, params map[string]interface{}) interface{} {
+
+	name := Tpl.Name()
+	// 取一级变量
+	if v, ok := params[name]; ok {
+		return v
+	}
+	// todo 先取一级，后算再考虑取二级
+	//if strings.Contains(name, ".") {
+	//	fields := strings.Split(name, ".")
+	//	first := ""
+	//	second := ""
+	//	if len(fields) >= 2 {
+	//		first = fields[0]
+	//		second = fields[1]
+	//	}
+	//	if v, ok := params[first]; ok {
+	//		if v, ok := params[first] {
+	//
+	//		}
+	//	}
+	//}
+	//模板渲染
+	return RenderTpl(Tpl, params)
+}
+
+// 根据模板渲染数据
 func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) string {
 	var buf bytes.Buffer
-
 	err := Tpl.Execute(&buf, params)
 	if err != nil {
 		fmt.Println(err)

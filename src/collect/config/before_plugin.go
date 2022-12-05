@@ -6,6 +6,10 @@ import (
 	"github.com/demdxx/gocast"
 )
 
+/**
+* 请求前处理参数
+
+ */
 type BeforeLoader struct {
 }
 
@@ -103,6 +107,10 @@ func (t *BeforeLoader) HandlerReqParam(config Plugin, template Template, routerA
 	if !checkResult.Success {
 		return checkResult
 	}
-	return common.Ok(nil, "检查完毕")
+	return common.Ok(nil, "参数检查完毕")
 
+}
+
+func (t *BeforeLoader) HandlerParams(config Plugin, template Template, routerAll *RouterAll) *common.Result {
+	return handlerParams(template, template.HandlerParams)
 }

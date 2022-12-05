@@ -28,7 +28,9 @@ type RouterAll struct {
 	LoadStartupPlugin  []Plugin                             `yaml:"load_startup_plugin"` // 加载启动插件
 	FileContentPlugin  []Plugin                             `yaml:"file_content_plugin"` // 文件内容处理插件
 	ModuleHandler      []Plugin                             `yaml:"module_handler"`      // 文件内容处理插件
+	DataHandler        []Plugin                             `yaml:"data_handler"`        // 文件内容处理插件
 	BeforePlugin       []Plugin                             `yaml:"before_plugin"`       // 文件内容处理插件
+	AfterPlugin        []Plugin                             `yaml:"after_plugin"`        // 文件内容处理插件
 	moduleDict         map[string]Plugin                    //服务注册对象字典
 }
 
@@ -36,6 +38,9 @@ func (t *RouterAll) SetRegisterList(registerList []ModuleResult) {
 	// 设置转换字典
 	moduleDict := make(map[string]Plugin)
 	for _, module := range t.ModuleHandler {
+		moduleDict[module.Path] = module
+	}
+	for _, module := range t.DataHandler {
 		moduleDict[module.Path] = module
 	}
 	t.moduleDict = moduleDict

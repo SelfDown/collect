@@ -1,12 +1,12 @@
 package main
 
 import (
+	"collect.mod/src/collect/template_service"
 	"fmt"
 
 	config "collect.mod/src/collect/config"
 	startup "collect.mod/src/collect/startup"
 
-	template_service "collect.mod/src/collect/template_service"
 	// "plugin"
 
 	utils "collect.mod/src/collect/utils"

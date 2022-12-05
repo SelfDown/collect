@@ -46,8 +46,8 @@ func newResult(success bool, code string, msg string, data any, count int) *Resu
 	}
 	return &r
 }
-func (r *Result) OkWithCount(data any, msg *string, count int) *Result {
-	result := newResult(true, SuccessValue, *msg, data, count)
+func (r *Result) OkWithCount(data any, msg string, count int) *Result {
+	result := newResult(true, SuccessValue, msg, data, count)
 	return result
 }
 func Ok(data any, msg string) *Result {

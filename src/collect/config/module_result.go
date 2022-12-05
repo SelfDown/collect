@@ -6,5 +6,8 @@ import (
 )
 
 type ModuleResult interface {
-	Result(template *Template) (*common.Result, error)
+	//执行结果
+	Result(template *Template) *common.Result
+	// 处理数据
+	HandlerData(template *Template, handlerParam *HandlerParam) *common.Result
 }

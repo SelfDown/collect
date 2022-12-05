@@ -19,8 +19,14 @@ type Template struct {
 	RouterAllConfig *RouterAll // 总服务路由
 }
 
+// GetBeforePlugins 处理执行前参数
 func (t *Template) GetBeforePlugins() []Plugin {
 	return t.RouterAllConfig.BeforePlugin
+}
+
+// GetAfterPlugins 处理执行后参数
+func (t *Template) GetAfterPlugins() []Plugin {
+	return t.RouterAllConfig.AfterPlugin
 }
 
 /**
@@ -202,6 +208,9 @@ func (t *Template) SetFileData(fileData string) Template {
 // 获取文件内容
 func (t *Template) GetFileData() string {
 	return t.FileData
+}
+func (t *Template) AddParam(name string, data interface{}) {
+	t.param_pool[name] = data
 }
 
 //获取参数

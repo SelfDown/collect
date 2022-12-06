@@ -232,6 +232,7 @@ type SubField struct {
 	To          string                  // 目标
 	Name        string                  // 名称
 	Template    string                  // 渲染模板
+	Type        string                  //类型
 	TemplateTpl *text_template.Template // 检查内容模板
 	ErrMsg      string                  `yaml:"err_msg"` // 错误提示
 	ErrMsgTpl   *text_template.Template // 错误提示模板

@@ -158,13 +158,14 @@ func convertMaps(rows *sql.Rows) []map[string]interface{} {
 
 }
 func convertRowByCol(colType string, value any) any {
-	switch colType {
-	case "BIGINT":
-		fallthrough
-	case "INT":
-		return gocast.ToInt(value)
-	default:
-		return gocast.ToString(value)
-	}
+	return utils.CastValue(value, colType)
+	//switch colType {
+	//case "BIGINT":
+	//	fallthrough
+	//case "INT":
+	//	return gocast.ToInt(value)
+	//default:
+	//	return gocast.ToString(value)
+	//}
 
 }

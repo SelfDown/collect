@@ -5,8 +5,8 @@ import (
 	"reflect"
 	text_template "text/template"
 
+	filters "collect.mod/src/collect/filters"
 	utils "collect.mod/src/collect/utils"
-	uuid "github.com/satori/go.uuid"
 )
 
 /*
@@ -380,23 +380,24 @@ func (t *PluginLoader) LoadDataFileTpl(config Plugin, template Template, routerA
 
 }
 
-func Uuid() string {
-	u4 := uuid.NewV4()
-	return u4.String()
-	// return ""
-}
-func IsEmpty(value interface{}) bool {
-	return utils.IsValueEmpty(value)
-}
-func Must(value interface{}) bool {
-	return !utils.IsValueEmpty(value)
-}
+//func Uuid() string {
+//	u4 := uuid.NewV4()
+//	return u4.String()
+//	// return ""
+//}
+//func IsEmpty(value interface{}) bool {
+//	return utils.IsValueEmpty(value)
+//}
+//func Must(value interface{}) bool {
+//	return !utils.IsValueEmpty(value)
+//}
 
 /*
 * 文件内容转成模板
  */
 func _load_template(fileData string) (*text_template.Template, error) {
-	collectTemplate := text_template.New(fileData).Funcs(text_template.FuncMap{"uuid": Uuid, "must": Must, "is_empty": IsEmpty})
+	filters := filters.GetFilters()
+	collectTemplate := text_template.New(fileData).Funcs(filters)
 	tpl, error_info := collectTemplate.Parse(fileData)
 	if error_info != nil {
 		fmt.Println(error_info)

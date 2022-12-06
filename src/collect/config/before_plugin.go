@@ -3,7 +3,6 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	utils "collect.mod/src/collect/utils"
-	"github.com/demdxx/gocast"
 )
 
 /**
@@ -24,17 +23,18 @@ func handlerValueType(template Template) {
 		if utils.IsValueEmpty(value) {
 			continue
 		}
-		switch config.Type {
-		case "int":
-			value = gocast.ToInt(value)
-			break
-		case "bool":
-			value = gocast.ToBool(value)
-			break
-		case "float":
-			value = gocast.ToFloat(value)
-			break
-		}
+		value = utils.CastValue(value, config.Type)
+		//switch config.Type {
+		//case "int":
+		//	value = gocast.ToInt(value)
+		//	break
+		//case "bool":
+		//	value = gocast.ToBool(value)
+		//	break
+		//case "float":
+		//	value = gocast.ToFloat(value)
+		//	break
+		//}
 		// 重新设置值
 		template.param_pool[name] = value
 	}

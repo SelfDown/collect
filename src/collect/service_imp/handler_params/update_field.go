@@ -15,7 +15,8 @@ func (uf *UpdateField) HandlerData(template *config.Template, handlerParam *conf
 
 	params := template.GetParams()
 	for _, field := range handlerParam.Fields {
-		value := utils.RenderTplData(field.TemplateTpl, params)
+
+		value := utils.RenderTplDataWithType(field.TemplateTpl, params, field.Type)
 		template.AddParam(field.Field, value)
 	}
 	r := common.Ok(nil, "处理参数成功")

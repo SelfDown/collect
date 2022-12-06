@@ -50,6 +50,13 @@ type Interface interface {
 	DeepCopy() interface{}
 }
 
+func CurrentDateTime() string {
+	timeStamp := time.Now().Unix()
+	timeLayout := "2006-01-02 15:04:05"
+	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
+	return timeStr
+}
+
 func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, exec bool) string {
 	s := RenderTpl(Tpl, params)
 	if !exec {
@@ -67,8 +74,44 @@ func RenderTplBool(Tpl *text_template.Template, params map[string]interface{}) b
 	value := RenderTpl(Tpl, params)
 	return gocast.ToBool(value)
 }
+func CastValue(value interface{}, dataType string) interface{} {
+	if IsValueEmpty(dataType) {
+		return value
+	}
+	dataType = strings.ToLower(dataType)
+	switch dataType {
+	case "bigint":
+		fallthrough
+	case "int":
+		value = gocast.ToInt(value)
+		break
+	case "bool":
+		value = gocast.ToBool(value)
+		break
+	case "float":
+		value = gocast.ToFloat(value)
+		break
+	default:
+		value = gocast.ToString(value)
 
-//根据模板渲染数据，优选取参数里面的字段
+	}
+	return value
+}
+
+// RenderTplDataWithType 执行结果转类型
+func RenderTplDataWithType(Tpl *text_template.Template, params map[string]interface{}, dataType string) interface{} {
+
+	value := RenderTplData(Tpl, params)
+	t := reflect.TypeOf(value)
+	//如果是非字符串类型，直接返回
+	if t.Kind().String() != "string" {
+		return value
+	}
+	return CastValue(value, dataType)
+
+}
+
+// RenderTplData 根据模板渲染数据，优选取参数里面的字段
 func RenderTplData(Tpl *text_template.Template, params map[string]interface{}) interface{} {
 
 	name := Tpl.Name()

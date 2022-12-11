@@ -1,4 +1,28 @@
 service:
+  - key: create_user
+    module: model_save
+    http: true
+    log: true
+    params:
+      userid:
+        template: "{{uuid}}"
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能为空
+      statu:
+        default: 1
+#        type: int32
+      role_id:
+        default: "xxxx"
+      create_time:
+        template: "{{current_date_time}}"
+        type: time
+      modify_time:
+        template: "{{current_date_time}}"
+    table: "user_account"
+#    update_fields:
+#      - role_id
   - key: user_list
     module: sql
     http: true
@@ -6,12 +30,6 @@ service:
     params:
       nick:
         default: ""
-      name:
-        check:
-          template: "{{must .name}}"
-          err_msg: 名称不能为空
-      id:
-        template: "{{uuid}}"
       status:
         template: "1"
         type: int
@@ -36,20 +54,11 @@ service:
           - field: sex
             template: "男"
           - field: age
+            type: int
             template: 19
     data_file: user_list.sql
     count_file: user_list_count.sql
     pagination: pagination
-    result_handler:
-      - key: update_field
-        name: 更新字段
-        fields:
-          - field: status
-            template: status
-          - field: sex
-            template: "男1"
-          - field: age
-            template: 19
 #
 #  - key: user_list_test
 #    module: sql

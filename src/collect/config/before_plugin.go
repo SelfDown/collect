@@ -24,20 +24,10 @@ func handlerValueType(template Template) {
 			continue
 		}
 		value = utils.CastValue(value, config.Type)
-		//switch config.Type {
-		//case "int":
-		//	value = gocast.ToInt(value)
-		//	break
-		//case "bool":
-		//	value = gocast.ToBool(value)
-		//	break
-		//case "float":
-		//	value = gocast.ToFloat(value)
-		//	break
-		//}
 		// 重新设置值
 		template.param_pool[name] = value
 	}
+
 }
 func handlerValueTemplate(template Template) {
 	paramConfig := template.Params
@@ -69,6 +59,8 @@ func handlerDefaultValue(template Template) {
 		// 根据名称设置默认值
 		template.param_pool[name] = config.Default
 	}
+	//设置当前session用户
+	template.param_pool["session_user_id"] = template.OpUser
 }
 func handlerCheckValue(template Template) *common.Result {
 	paramConfig := template.Params

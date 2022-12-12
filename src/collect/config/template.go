@@ -105,6 +105,8 @@ func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 
 /*
 * 转换yaml 文件
+* todo 这里需要将int 转int32，比如statu=1，类型是int，但是数据库生成是int32，保存失败
+
  */
 func (t *Template) ParseYaml(filePath string, out interface{}) (interface{}, bool) {
 	data, success := t.ReadFileBytes(filePath)

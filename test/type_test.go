@@ -6,10 +6,9 @@ import (
 	"testing"
 )
 
-func test() interface{} {
-	var t int32
-	t = 12
-	return t
+func test() int {
+
+	return 1
 }
 func TestT(t *testing.T) {
 	i := test()

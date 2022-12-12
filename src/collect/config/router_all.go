@@ -1,12 +1,9 @@
 package collect
 
 import (
-	"bytes"
-	"fmt"
 	"log"
 	"reflect"
 	"strings"
-
 	text_template "text/template"
 
 	utils "collect.mod/src/collect/utils"
@@ -108,18 +105,6 @@ func (t *RouterAll) AddProjectService(project string, service *ServiceConfig) {
 	t.serviceDict[project][service.Key] = service
 }
 
-/**
-* 根据服务名获取，服务的配置
- */
-
-func tt(tpl2 *text_template.Template) {
-	params := make(map[string]interface{})
-	params["nick"] = "张治"
-	params["a"] = "张治"
-	var buf bytes.Buffer
-	tpl2.Execute(&buf, params)
-	fmt.Println(buf.String())
-}
 func (t *RouterAll) GetProjectService(service string) (ServiceConfig, bool, string) {
 	arr := strings.Split(service, ".")
 	data := ServiceConfig{}
@@ -204,6 +189,7 @@ type ServiceConfig struct {
 	Service          string                  // 服务全称
 	Params           map[string]ParamConfig  // 参数配置定义
 	Module           string                  // 模块
+	Table            string                  // 表名
 	Http             bool                    //  是否支持http 访问
 	DataFile         string                  `yaml:"data_file"` // 文件路径
 	FileData         string                  // 文件内容
@@ -214,6 +200,8 @@ type ServiceConfig struct {
 	CountFileDataTpl *text_template.Template // count文件内容模板
 	CurrentDir       string                  // 当前路径目录
 	Path             string                  // 当前路径
+	IgnoreFields     []string                `yaml:"ignore_fields"` //忽略字段
+	UpdateFields     []string                `yaml:"update_fields"` // 更新路径
 	Log              bool                    // 是否写日志
 	HandlerParams    []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
 	ResultHandler    []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数

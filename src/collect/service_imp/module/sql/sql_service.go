@@ -1,17 +1,14 @@
 package collect
 
 import (
+	common "collect.mod/src/collect/common"
+	service_imp "collect.mod/src/collect/service_imp"
 	handler_template "collect.mod/src/collect/service_imp/module/sql/handler_template"
+	utils "collect.mod/src/collect/utils"
 	"database/sql"
 	"fmt"
-	"log"
-
-	common "collect.mod/src/collect/common"
-	utils "collect.mod/src/collect/utils"
 	"github.com/demdxx/gocast"
-	_ "github.com/go-sql-driver/mysql"
-
-	service_imp "collect.mod/src/collect/service_imp"
+	"log"
 	text_template "text/template"
 
 	config "collect.mod/src/collect/config"
@@ -23,27 +20,10 @@ type SqlService struct {
 
 var db0 *sql.DB
 
-func get_datasource() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "dev_user:!QAZ2wsx#EDC4rfv2022@{xx[,*.]}.com2022@.com@tcp(172.26.0.13:3306)/devops?charset=utf8")
-	if err != nil {
-		log.Fatal("数据库打开出现了问题：", err)
-		return nil, err
-	}
-	db.Ping()
-	if err != nil {
-		log.Fatal("数据库连接出现了问题：", err)
-		return nil, err
-	}
-	return db, err
-
-}
-
-//var SqlServerPlugin SqlService
-
 func (s *SqlService) Result(template *config.Template) *common.Result {
 	r := common.Result{}
 	var err error
-	db0, err = get_datasource()
+	db0, err = s.GetDatasource()
 	if err != nil {
 		msg := err.Error()
 		return r.NotOk(msg)
@@ -159,13 +139,5 @@ func convertMaps(rows *sql.Rows) []map[string]interface{} {
 }
 func convertRowByCol(colType string, value any) any {
 	return utils.CastValue(value, colType)
-	//switch colType {
-	//case "BIGINT":
-	//	fallthrough
-	//case "INT":
-	//	return gocast.ToInt(value)
-	//default:
-	//	return gocast.ToString(value)
-	//}
 
 }

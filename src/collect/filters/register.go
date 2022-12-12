@@ -7,6 +7,7 @@ func GetFilters() map[string]any {
 		"is_empty":          IsEmpty,
 		"must":              Must,
 		"current_date_time": CurrentDateTime,
+		"md5":               Md5,
 	}
 
 }

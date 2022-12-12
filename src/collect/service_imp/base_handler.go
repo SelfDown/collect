@@ -3,9 +3,58 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
+	utils "collect.mod/src/collect/utils"
+	"database/sql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
+	"log"
 )
 
+var db0 *sql.DB
+var gormDb *gorm.DB
+
 type BaseHandler struct {
+}
+
+func (s *BaseHandler) GetGormDb() *gorm.DB {
+	//如果连接过则直接，返回对象
+	if gormDb != nil {
+		return gormDb
+	}
+	db, _ := s.GetDatasource()
+	gormDB, _ := gorm.Open(mysql.New(mysql.Config{
+		Conn: db,
+	}), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, // 使用单数表名
+		},
+	})
+	return gormDB
+}
+
+// GetDatasource 获取数据库连接
+func (s *BaseHandler) GetDatasource() (*sql.DB, error) {
+	if db0 != nil {
+		return db0, nil
+	}
+	// 获取连接信息
+	dataSourceName := utils.GetAppKey("dataSourceName")
+	// 获取驱动
+	driverName := utils.GetAppKey("driverName")
+
+	db, err := sql.Open(driverName, dataSourceName)
+	if err != nil {
+		log.Fatal("数据库打开出现了问题：", err)
+		return nil, err
+	}
+	db.Ping()
+	if err != nil {
+		log.Fatal("数据库连接出现了问题：", err)
+		return nil, err
+	}
+	db0 = db
+	return db, err
 }
 
 func (s *BaseHandler) Result(template *config.Template) *common.Result {

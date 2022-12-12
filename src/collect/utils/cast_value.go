@@ -11,70 +11,70 @@ func CastValue(value interface{}, dataType string) interface{} {
 		return value
 	}
 	dataType = strings.ToLower(dataType)
+	isPtr := false
 	if strings.HasPrefix(dataType, "*") { //处理指针类型
-		switch dataType {
-		// 处理指针
-		case "*string":
-			ptr := gocast.ToString(value)
-			return &ptr
-		// 处理指针
-		case "*int32":
-			ptr := gocast.ToInt32(value)
-			return &ptr
-		case "*int64":
-			ptr := gocast.ToInt64(value)
-			return &ptr
-		case "*bigint":
-			fallthrough
-		case "*int":
-			ptr := gocast.ToInt(value)
-			return &ptr
-		case "*bool":
-			ptr := gocast.ToBool(value)
-			return &ptr
-		case "*float":
-			ptr := gocast.ToFloat(value)
-			return &ptr
-		case "*time.time":
-			fallthrough
-		case "*time":
-			ptr := ToTime(value)
-			return &ptr
-		case "*sql.nulltime":
-			ptr := ToSqlNullTime(value)
-			return &ptr
-		default:
-			value = gocast.ToString(value)
-		}
+		dataType = dataType[1:]
+		isPtr = true
 	}
 	switch dataType {
+	case "string":
+		valueNew := gocast.ToString(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "int32":
-		value = gocast.ToInt32(value)
-		break
+		valueNew := gocast.ToInt32(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "int64":
-		value = gocast.ToInt64(value)
-		break
+		valueNew := gocast.ToInt64(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "bigint":
 		fallthrough
 	case "int":
-		value = gocast.ToInt(value)
-		break
+		valueNew := gocast.ToInt(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "bool":
-		value = gocast.ToBool(value)
-		break
+		valueNew := gocast.ToBool(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "float":
-		value = gocast.ToFloat(value)
-		break
+		valueNew := gocast.ToFloat(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "time.time":
 		fallthrough
 	case "time":
-		value = ToTime(value)
-		break
+		valueNew := ToTime(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "sql.nulltime":
-		value = ToSqlNullTime(value)
-		break
+		valueNew := ToSqlNullTime(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	default:
-		value = gocast.ToString(value)
+		valueNew := gocast.ToString(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	}
-	return value
+	//return value
 }

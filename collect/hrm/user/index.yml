@@ -4,6 +4,8 @@ service:
     http: true
     log: true
     params:
+      userpwd:
+        template: "{{ if .userpwd }}{{md5 .userpwd}}{{ end }}"
       userid:
         template: "{{uuid}}"
       username:
@@ -12,15 +14,19 @@ service:
           err_msg: 用户名不能为空
       statu:
         default: 1
-#        type: int32
+        type: int32
       role_id:
         default: "xxxx"
+      avatar:
+        template: session_user_id
       create_time:
         template: "{{current_date_time}}"
         type: time
       modify_time:
         template: "{{current_date_time}}"
     table: "user_account"
+    ignore_fields:
+      - avatar
 #    update_fields:
 #      - role_id
   - key: user_list

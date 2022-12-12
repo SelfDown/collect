@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"github.com/demdxx/gocast"
 	engine "github.com/dengsgo/math-engine/engine"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"log"
 	"os"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	text_template "text/template"
@@ -57,12 +60,20 @@ func CurrentDateTime() string {
 	return timeStr
 }
 
-func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, exec bool) string {
-	s := RenderTpl(Tpl, params)
+/*
+* @param exec 是计算，是否执行运算结果
+* 比如计算分页
+      start:
+        template: " ({{.page}}-1) * {{.size}}"
+        exec: true
+        type: int
+*/
+func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, exec bool) interface{} {
+	s := RenderTplData(Tpl, params)
 	if !exec {
 		return s
 	}
-	r, err := engine.ParseAndExec(s)
+	r, err := engine.ParseAndExec(Strval(s))
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()
@@ -73,29 +84,6 @@ func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, e
 func RenderTplBool(Tpl *text_template.Template, params map[string]interface{}) bool {
 	value := RenderTpl(Tpl, params)
 	return gocast.ToBool(value)
-}
-func CastValue(value interface{}, dataType string) interface{} {
-	if IsValueEmpty(dataType) {
-		return value
-	}
-	dataType = strings.ToLower(dataType)
-	switch dataType {
-	case "bigint":
-		fallthrough
-	case "int":
-		value = gocast.ToInt(value)
-		break
-	case "bool":
-		value = gocast.ToBool(value)
-		break
-	case "float":
-		value = gocast.ToFloat(value)
-		break
-	default:
-		value = gocast.ToString(value)
-
-	}
-	return value
 }
 
 // RenderTplDataWithType 执行结果转类型
@@ -311,6 +299,74 @@ func GetDataValueMapIter(name string, data interface{}) *reflect.MapIter {
 	return value
 }
 
+func toCamelCase(input string) string {
+	//titleSpace := strings.Title(strings.Replace(input, "_", " ", -1))
+	//camel := strings.Replace(titleSpace, " ", "", -1)
+	c := cases.Title(language.Und, cases.NoLower)
+	titleSpace := c.String(strings.ReplaceAll(input, "_", " "))
+	camel := strings.ReplaceAll(titleSpace, " ", "")
+	return camel
+}
+func StringArrayContain(list []string, value string) bool {
+	for _, item := range list {
+		if item == value {
+			return true
+		}
+	}
+	return false
+}
+
+// 处理id 转大写，将gen源码直接拷贝过来
+var commonInitialisms = []string{"API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"}
+
+func toSchemaName(name string) string {
+	result := strings.ReplaceAll(strings.Title(strings.ReplaceAll(name, "_", " ")), " ", "")
+	for _, initialism := range commonInitialisms {
+		result = regexp.MustCompile(strings.Title(strings.ToLower(initialism))+"([A-Z]|$|_)").ReplaceAllString(result, initialism+"$1")
+	}
+	return result
+}
+
+func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) interface{} {
+	dv := reflect.ValueOf(data)
+	if dv.Kind() != reflect.Ptr { // 如果不是指针，则取地址
+		dv = reflect.ValueOf(&data)
+	}
+	elem := dv.Elem()
+	// 先只实现指针对象
+	if dv.Type().String() == "*interface {}" { // 如果外面还包了一层interface ,还原类型，否则结构体不能设置值
+		tmp := reflect.New(elem.Elem().Type()).Elem()
+		tmp.Set(elem.Elem())
+		for name, value := range params {
+			fieldName := toSchemaName(name)
+			field := tmp.FieldByName(fieldName)
+			if !field.IsValid() {
+				continue
+			}
+			//如果在ignoreFields 则跳过，如果ignoreFields不为空
+			if ignoreFields != nil && StringArrayContain(ignoreFields, name) {
+				continue
+			}
+			//如果不在updateFields 则跳过，如果updateFields不为空
+			if updateFields != nil && !StringArrayContain(updateFields, name) {
+				continue
+			}
+			value = ParseValueByField(field, value)
+			field.Set(reflect.ValueOf(value))
+		}
+
+		elem.Set(tmp)
+	} else {
+		//field := elem.FieldByName(name)
+		//if !field.IsValid() {
+		//	log.Println("name：" + name + "字段不存在")
+		//	log.Println(data)
+		//}
+		//field.Set(reflect.ValueOf(value))
+	}
+	return data
+}
+
 /*
 * @name 字段名称
 * @value 值
@@ -323,26 +379,17 @@ func SetDataValue(name string, value interface{}, data interface{}) interface{} 
 	}
 	elem := dv.Elem()
 	if dv.Type().String() == "*interface {}" { // 如果外面还包了一层interface ,还原类型，否则结构体不能设置值
-		// v := reflect.ValueOf(data).Elem()
-
-		// Allocate a temporary variable with type of the struct.
-		//    v.Elem() is the vale contained in the interface.
 		tmp := reflect.New(elem.Elem().Type()).Elem()
-		// Copy the struct value contained in interface to
-		// the temporary variable.
 		tmp.Set(elem.Elem())
-		// Set the field.
 		field := tmp.FieldByName(name)
 		if !field.IsValid() {
 			log.Println("name：【" + name + "】字段不存在，请检查配置")
 			log.Println(data)
 		}
 		field.Set(reflect.ValueOf(value))
-		// Set the interface to the modified struct value.
 		elem.Set(tmp)
 	} else {
 		field := elem.FieldByName(name)
-
 		if !field.IsValid() {
 			log.Println("name：" + name + "字段不存在")
 			log.Println(data)

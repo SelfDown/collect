@@ -4,6 +4,9 @@ import (
 	"bytes"
 	common "collect.mod/src/collect/common"
 	"collect.mod/src/collect/config"
+	config "collect.mod/src/collect/config"
+	startup "collect.mod/src/collect/startup"
+
 	utils "collect.mod/src/collect/utils"
 	"fmt"
 	"github.com/demdxx/gocast"
@@ -14,6 +17,19 @@ type TemplateService struct {
 	OpUser  string
 	Session interface{}
 	Request interface{}
+}
+
+func init() {
+	// 加载配置
+	utils.LoadAppProperties("./conf/application.properties")
+	t := config.Template{}
+	// 加载系统插件，主要加载count、file_data,
+	routerAll := startup.LoadSystemServices(&t)
+	//获取启动注册的服务列表，然后路由设置注册服务
+	routerAll.SetRegisterList(startup.GetRegisterList())
+	//设置服务
+	config.SetLocalRouter(routerAll)
+
 }
 
 func (t *TemplateService) getModuleResultObj(moduleName string) collect.ModuleResult {

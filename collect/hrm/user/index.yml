@@ -1,4 +1,64 @@
 service:
+  - key: update_user_all
+    module: model_update
+    http: true
+    log: true
+    table: "user_account"
+    filter:
+      userid__isnull: false
+    update_fields:
+      - address
+  - key: update_user_by_userid_list
+    module: model_update
+    http: true
+    log: true
+    params:
+      userid_list:
+        check:
+          template: "{{must .userid_list}}"
+          err_msg: 用户名不能空
+    table: "user_account"
+    filter:
+      userid__in: userid_list
+    ignore_fields:
+      - userpwd
+  - key: update_user_by_username_nick
+    module: model_update
+    http: true
+    log: true
+    params:
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能空
+      nick:
+        check:
+          template: "{{must .nick}}"
+          err_msg: 昵称不能空
+    table: "user_account"
+    filter:
+      username: username
+      nick: nick
+    update_fields:
+      - address
+
+
+  - key: update_user_by_username
+    module: model_update
+    http: true
+    log: true
+    params:
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能空
+      userpwd:
+        template: "{{ if .userpwd }}{{md5 .userpwd}}{{ end }}"
+    table: "user_account"
+    filter:
+      username: username
+#    update_fields:
+#      - address
   - key: create_user
     module: model_save
     http: true

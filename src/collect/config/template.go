@@ -165,7 +165,14 @@ func (t *Template) getLogData(data interface{}) string {
 
 //获取服务名称
 func (t *Template) GetService() string {
-	return t.Service
+
+	name := t.Service
+	if !utils.IsValueEmpty(name) {
+		return name
+	}
+	n := t.param_pool[SERVICE_NAME]
+	return utils.Strval(n)
+
 }
 
 func (t *Template) SetService(serviceName string) Template {
@@ -213,6 +220,17 @@ func (t *Template) GetFileData() string {
 }
 func (t *Template) AddParam(name string, data interface{}) {
 	t.param_pool[name] = data
+}
+func (t *Template) HasParam(key string) bool {
+	params := t.GetParams()
+	_, ok := params[key]
+	return ok
+}
+
+func (t *Template) GetParam(key string) interface{} {
+	params := t.GetParams()
+	param, _ := params[key]
+	return param
 }
 
 //获取参数

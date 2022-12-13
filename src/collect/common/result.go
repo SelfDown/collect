@@ -12,7 +12,7 @@ type Result struct {
 	Code    string `json:"code"`    //编码
 	Msg     string `json:"msg"`     // 消息
 	Data    any    `json:"data"`    //请求参数
-	Count   int    `json:"count"`   // 总数
+	Count   int64  `json:"count"`   // 总数
 }
 
 func (r *Result) GetSuccess() bool {
@@ -32,11 +32,11 @@ func (r *Result) GetMsg() string {
 	return r.Msg
 }
 
-func (r *Result) GetCount() int {
+func (r *Result) GetCount() int64 {
 	return r.Count
 }
 
-func newResult(success bool, code string, msg string, data any, count int) *Result {
+func newResult(success bool, code string, msg string, data any, count int64) *Result {
 	r := Result{
 		Success: success,
 		Code:    code,
@@ -46,7 +46,11 @@ func newResult(success bool, code string, msg string, data any, count int) *Resu
 	}
 	return &r
 }
-func (r *Result) OkWithCount(data any, msg string, count int) *Result {
+func OkWithCount(data any, msg string, count int64) *Result {
+	r := Result{}
+	return r.OkWithCount(data, msg, count)
+}
+func (r *Result) OkWithCount(data any, msg string, count int64) *Result {
 	result := newResult(true, SuccessValue, msg, data, count)
 	return result
 }

@@ -46,7 +46,7 @@ func (s *SqlService) Result(template *config.Template) *common.Result {
 	}
 	// 执行结果
 	maps, _ := sqlToData(sql, realValues...)
-	count := 0
+	var count int64
 	if template.CountFileDataTpl != nil {
 		// count 设置不分页
 		params[template.Pagination] = false
@@ -73,7 +73,7 @@ func (s *SqlService) Result(template *config.Template) *common.Result {
 				countValue = utils.GetMapValues(countData)[0]
 
 			}
-			count = gocast.ToInt(countValue)
+			count = gocast.ToInt64(countValue)
 
 		}
 

@@ -11,11 +11,16 @@ module_handler:
     name: 执行sql 查询
     type: inner
     path: SqlService
-  # 模型修改
+  # 模型保存
   - key: model_save
     name: 模型保存
     type: inner
     path: ModelSaveService
+  # 模型修改
+  - key: model_update
+    name: 模型修改
+    type: inner
+    path: ModelUpdateService
 # 数据处理
 data_handler:
   - key: update_field

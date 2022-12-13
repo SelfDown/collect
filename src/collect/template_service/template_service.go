@@ -6,6 +6,7 @@ import (
 	"collect.mod/src/collect/config"
 	config "collect.mod/src/collect/config"
 	startup "collect.mod/src/collect/startup"
+	"time"
 
 	utils "collect.mod/src/collect/utils"
 	"fmt"
@@ -73,6 +74,7 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 	if temp.Log {
 		msg := "【" + temp.OpUser + "】访问:" + serviceName
 		temp.LogData(msg)
+		temp.LogData(params)
 	}
 	var loader collect.BeforeLoader
 	for _, plugin := range temp.GetBeforePlugins() {
@@ -89,8 +91,15 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 
 	return &temp, common.Ok(&temp, "成功")
 }
+func ExecTime(template *config.Template, start time.Time, method string) {
+	dis := time.Now().Sub(start).Seconds()
+	template.LogData("服务：" + template.GetService() + " [" + method + "]耗时：" + utils.Strval(dis) + "s")
+}
 
 func (t *TemplateService) execute(temp *collect.Template) *common.Result {
+	if temp.Log {
+		defer ExecTime(temp, time.Now(), temp.Module)
+	}
 	// 调用模块结果
 	result := t.getModuleResultObj(temp.Module)
 	params := temp.GetParams()

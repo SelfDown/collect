@@ -29,14 +29,15 @@ func CastValue(value interface{}, dataType string) interface{} {
 			return &valueNew
 		}
 		return valueNew
+	case "bigint":
+		fallthrough
 	case "int64":
 		valueNew := gocast.ToInt64(value)
 		if isPtr {
 			return &valueNew
 		}
 		return valueNew
-	case "bigint":
-		fallthrough
+
 	case "int":
 		valueNew := gocast.ToInt(value)
 		if isPtr {

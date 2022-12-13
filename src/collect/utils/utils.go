@@ -319,7 +319,7 @@ func StringArrayContain(list []string, value string) bool {
 // 处理id 转大写，将gen源码直接拷贝过来
 var commonInitialisms = []string{"API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"}
 
-func toSchemaName(name string) string {
+func ToSchemaName(name string) string {
 	result := strings.ReplaceAll(strings.Title(strings.ReplaceAll(name, "_", " ")), " ", "")
 	for _, initialism := range commonInitialisms {
 		result = regexp.MustCompile(strings.Title(strings.ToLower(initialism))+"([A-Z]|$|_)").ReplaceAllString(result, initialism+"$1")
@@ -338,7 +338,7 @@ func SetDataValueByParams(params map[string]interface{}, data interface{}, ignor
 		tmp := reflect.New(elem.Elem().Type()).Elem()
 		tmp.Set(elem.Elem())
 		for name, value := range params {
-			fieldName := toSchemaName(name)
+			fieldName := ToSchemaName(name)
 			field := tmp.FieldByName(fieldName)
 			if !field.IsValid() {
 				continue

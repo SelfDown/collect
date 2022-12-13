@@ -9,12 +9,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"log"
+	"runtime"
 )
 
 var db0 *sql.DB
 var gormDb *gorm.DB
 
 type BaseHandler struct {
+}
+
+func (s *BaseHandler) RunFuncName() string {
+	pc := make([]uintptr, 1)
+	runtime.Callers(3, pc)
+	f := runtime.FuncForPC(pc[0])
+	return f.Name()
 }
 
 func (s *BaseHandler) GetGormDb() *gorm.DB {
@@ -63,4 +71,8 @@ func (s *BaseHandler) Result(template *config.Template) *common.Result {
 
 func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *config.HandlerParam) *common.Result {
 	return common.Ok(nil, "")
+}
+func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) interface{} {
+	utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
+	return modelData
 }

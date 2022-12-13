@@ -327,13 +327,14 @@ func ToSchemaName(name string) string {
 	return result
 }
 
-func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) interface{} {
+func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {
 	dv := reflect.ValueOf(data)
 	if dv.Kind() != reflect.Ptr { // 如果不是指针，则取地址
 		dv = reflect.ValueOf(&data)
 	}
 	elem := dv.Elem()
 	// 先只实现指针对象
+	fieldNames := make([]string, 0)
 	if dv.Type().String() == "*interface {}" { // 如果外面还包了一层interface ,还原类型，否则结构体不能设置值
 		tmp := reflect.New(elem.Elem().Type()).Elem()
 		tmp.Set(elem.Elem())
@@ -351,6 +352,7 @@ func SetDataValueByParams(params map[string]interface{}, data interface{}, ignor
 			if updateFields != nil && !StringArrayContain(updateFields, name) {
 				continue
 			}
+			fieldNames = append(fieldNames, name)
 			value = ParseValueByField(field, value)
 			field.Set(reflect.ValueOf(value))
 		}
@@ -364,7 +366,7 @@ func SetDataValueByParams(params map[string]interface{}, data interface{}, ignor
 		//}
 		//field.Set(reflect.ValueOf(value))
 	}
-	return data
+	return data, fieldNames
 }
 
 /*

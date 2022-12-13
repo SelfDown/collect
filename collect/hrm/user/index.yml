@@ -8,6 +8,8 @@ service:
       userid__isnull: false
     update_fields:
       - address
+      - comments
+      - wechat_userid
   - key: update_user_by_userid_list
     module: model_update
     http: true
@@ -41,6 +43,7 @@ service:
       nick: nick
     update_fields:
       - address
+
 
 
   - key: update_user_by_username

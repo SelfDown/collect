@@ -94,10 +94,6 @@ func CheckFilter(template *config.Template, model interface{}) *common.Result {
 		if strings.Contains(key, ";") {
 			return common.NotOk("存在过滤[" + key + "]包含[;]")
 		}
-		////检查参数是否存在
-		//if !template.HasParam(paramKey) {
-		//	return common.NotOk("存在过滤[" + key + "]中参数[" + paramKey + "]不存在")
-		//}
 		fieldOrgName := GetFieldName(key)
 		fieldName := utils.ToSchemaName(fieldOrgName)
 		field := modelValue.FieldByName(fieldName)
@@ -131,7 +127,7 @@ func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
 			template.IgnoreFields = append(template.IgnoreFields, k)
 		}
 	}
-	s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
+	_, fieldNames := s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
 	gormDB := s.GetGormDb()
 	//生成where 条件+参数
 	query, args := HandlerFilter(template)
@@ -141,10 +137,12 @@ func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
 		template.LogData("过滤条件[" + utils.Strval(query) + "]")
 		template.LogData("过滤参数:")
 		template.LogData(args)
-		template.LogData("修改数据:")
+		template.LogData("传入数据:")
 		template.LogData(modelData)
+		template.LogData("更新字段:")
+		template.LogData(fieldNames)
 	}
-	dbx := gormDB.Where(query, args...).Updates(modelData)
+	dbx := gormDB.Where(query, args...).Select(fieldNames).Updates(modelData)
 	affected := dbx.RowsAffected
 	err := dbx.Error
 	if err != nil {
@@ -152,5 +150,8 @@ func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
 	}
 	r := make(map[string]interface{})
 	r["affected"] = affected
+	if template.Log {
+		template.LogData("影响行数:" + utils.Strval(affected))
+	}
 	return common.OkWithCount(r, "修改成功", affected)
 }

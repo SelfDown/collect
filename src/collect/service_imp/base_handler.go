@@ -72,7 +72,7 @@ func (s *BaseHandler) Result(template *config.Template) *common.Result {
 func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *config.HandlerParam) *common.Result {
 	return common.Ok(nil, "")
 }
-func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) interface{} {
-	utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
-	return modelData
+func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {
+	_, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
+	return modelData, names
 }

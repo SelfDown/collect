@@ -12,6 +12,7 @@ func main() {
 	// 根据用户ID更新
 	//simple.UserUpdateByUseridList()
 	// 更新所有数据
-	simple.UserUpdateAll()
-
+	//simple.UserUpdateAll()
+	// 删除用户
+	simple.UserDeleteByUseridList()
 }

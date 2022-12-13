@@ -8,13 +8,13 @@ import (
 	utils "collect.mod/src/collect/utils"
 )
 
-type ModelUpdateService struct {
+type ModelDeleteService struct {
 	serviceImp.BaseHandler
 }
 
-func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
+func (s *ModelDeleteService) Result(template *config.Template) *common.Result {
 
-	params := template.GetParams()
+	//params := template.GetParams()
 	tableName := template.Table
 	modelData := model.GetModel(tableName)
 	checkResult := s.CheckFilter(template, modelData)
@@ -24,33 +24,18 @@ func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
 	if modelData == nil {
 		return common.NotOk(tableName + "没有找到，请检查模型数据")
 	}
-	// 修改数据
-	if template.IgnoreFields == nil {
-		template.IgnoreFields = make([]string, 0)
-	}
-	pk := model.GetPrimaryKey(tableName)
-	//不允许更新主键
-	for _, k := range pk {
-		if !utils.StringArrayContain(template.IgnoreFields, k) {
-			template.IgnoreFields = append(template.IgnoreFields, k)
-		}
-	}
-	_, fieldNames := s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
+
 	gormDB := s.GetGormDb()
 	//生成where 条件+参数
 	query, args := s.HandlerFilter(template)
 	//执行
 	if template.Log {
-		template.LogData("更新表[" + tableName + "]")
+		template.LogData("删除表[" + tableName + "]")
 		template.LogData("过滤条件[" + utils.Strval(query) + "]")
 		template.LogData("过滤参数:")
 		template.LogData(args)
-		template.LogData("传入数据:")
-		template.LogData(modelData)
-		template.LogData("更新字段:")
-		template.LogData(fieldNames)
 	}
-	dbx := gormDB.Where(query, args...).Select(fieldNames).Updates(modelData)
+	dbx := gormDB.Where(query, args...).Delete(modelData)
 	affected := dbx.RowsAffected
 	err := dbx.Error
 	if err != nil {
@@ -61,5 +46,5 @@ func (s *ModelUpdateService) Result(template *config.Template) *common.Result {
 	if template.Log {
 		template.LogData("影响行数:" + utils.Strval(affected))
 	}
-	return common.OkWithCount(r, "修改成功", affected)
+	return common.OkWithCount(r, "删除成功", affected)
 }

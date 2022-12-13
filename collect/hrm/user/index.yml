@@ -1,4 +1,16 @@
 service:
+  - key: delete_user_by_userid_list
+    module: model_delete
+    http: true
+    log: true
+    params:
+      userid_list:
+        check:
+          template: "{{must .userid_list}}"
+          err_msg: 用户名不能空
+    table: "user_account"
+    filter:
+      userid__in: userid_list
   - key: update_user_all
     module: model_update
     http: true

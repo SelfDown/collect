@@ -21,6 +21,11 @@ module_handler:
     name: 模型修改
     type: inner
     path: ModelUpdateService
+  # 模型删除
+  - key: model_delete
+    name: 模型删除
+    type: inner
+    path: ModelDeleteService
 # 数据处理
 data_handler:
   - key: update_field

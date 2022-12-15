@@ -327,13 +327,14 @@ func ToSchemaName(name string) string {
 	return result
 }
 
-func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {
+func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) (map[string]interface{}, []string) {
 	dv := reflect.ValueOf(data)
 	if dv.Kind() != reflect.Ptr { // 如果不是指针，则取地址
 		dv = reflect.ValueOf(&data)
 	}
 	elem := dv.Elem()
 	// 先只实现指针对象
+	result := make(map[string]interface{})
 	fieldNames := make([]string, 0)
 	if dv.Type().String() == "*interface {}" { // 如果外面还包了一层interface ,还原类型，否则结构体不能设置值
 		tmp := reflect.New(elem.Elem().Type()).Elem()
@@ -355,18 +356,21 @@ func SetDataValueByParams(params map[string]interface{}, data interface{}, ignor
 			fieldNames = append(fieldNames, name)
 			value = ParseValueByField(field, value)
 			field.Set(reflect.ValueOf(value))
+			result[fieldName] = value
 		}
-
+		// 设置map的剩余字段
+		dt := reflect.TypeOf(tmp.Interface())
+		for i := 0; i < tmp.NumField(); i++ {
+			fieldName := dt.Field(i).Name
+			if _, ok := result[fieldName]; !ok { //将剩下的元素复制
+				result[fieldName] = tmp.Field(i).Interface()
+			}
+		}
 		elem.Set(tmp)
 	} else {
-		//field := elem.FieldByName(name)
-		//if !field.IsValid() {
-		//	log.Println("name：" + name + "字段不存在")
-		//	log.Println(data)
-		//}
-		//field.Set(reflect.ValueOf(value))
+
 	}
-	return data, fieldNames
+	return result, fieldNames
 }
 
 /*

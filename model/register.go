@@ -1,5 +1,9 @@
 package model
 
+import (
+	utils "collect.mod/src/collect/utils"
+)
+
 var modelMap map[string]interface{}
 var primaryKeyMap map[string][]string
 
@@ -12,11 +16,15 @@ func init() {
 	modelMap["user_account"] = UserAccount{}
 	primaryKey := make([]string, 0)
 	//配置主键
-	primaryKey = append(primaryKey, "user_id")
+	primaryKey = append(primaryKey, "userid")
 	primaryKeyMap["user_account"] = primaryKey
 }
 func GetModel(tableName string) interface{} {
 	return modelMap[tableName]
+}
+func CloneModel(tableName string) interface{} {
+	data := modelMap[tableName]
+	return utils.Copy(data)
 }
 func GetPrimaryKey(tableName string) []string {
 	return primaryKeyMap[tableName]

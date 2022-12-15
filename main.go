@@ -14,5 +14,9 @@ func main() {
 	// 更新所有数据
 	//simple.UserUpdateAll()
 	// 删除用户
-	simple.UserDeleteByUseridList()
+	//simple.UserDeleteByUseridList()
+	// 批量创建用户
+	//simple.UserCreateBulk()
+	//
+	simple.UserUpdateBulk()
 }

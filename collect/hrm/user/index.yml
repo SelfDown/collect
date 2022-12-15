@@ -1,4 +1,30 @@
 service:
+  - key: bulk_update_user
+    module: bulk_upsert
+    log: true
+    http: true
+    params:
+      user_list:
+        check:
+          template: "{{must .user_list}}"
+          err_msg: 用户列表不能为空
+    table: "user_account"
+    model_field: user_list
+#    update_fields:
+#      - address
+    ignore_fields:
+      - username
+  - key: bulk_create_user
+    module: bulk_create
+    log: true
+    http: true
+    params:
+      user_list:
+        check:
+          template: "{{must .user_list}}"
+          err_msg: 用户列表不能为空
+    table: "user_account"
+    model_field: user_list
   - key: delete_user_by_userid_list
     module: model_delete
     http: true

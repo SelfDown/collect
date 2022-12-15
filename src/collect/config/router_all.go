@@ -206,6 +206,7 @@ type ServiceConfig struct {
 	HandlerParams    []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
 	ResultHandler    []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数
 	Filter           map[string]interface{}  //过滤条件
+	ModelField       string                  `yaml:"model_field"`
 }
 type ParamConfig struct {
 	Name        string                  // 名称

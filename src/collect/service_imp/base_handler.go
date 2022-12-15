@@ -1,6 +1,7 @@
 package collect
 
 import (
+	"collect.mod/model"
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
 	utils "collect.mod/src/collect/utils"
@@ -37,6 +38,7 @@ func (s *BaseHandler) GetGormDb() *gorm.DB {
 	gormDB, _ := gorm.Open(mysql.New(mysql.Config{
 		Conn: db,
 	}), &gorm.Config{
+		CreateBatchSize: 1000,
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 使用单数表名
 		},
@@ -78,6 +80,23 @@ func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *confi
 func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {
 	_, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
 	return modelData, names
+}
+func (s *BaseHandler) UpdateFieldsToMap(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (map[string]interface{}, []string) {
+	data, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
+	return data, names
+}
+func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, modelData interface{}, template *config.Template) ([]map[string]interface{}, []string) {
+	modelList := make([]map[string]interface{}, 0)
+	var fieldNames []string
+	for _, item := range models {
+		modelItem := model.CloneModel(template.Table)
+		dataItem, names := s.UpdateFieldsToMap(item, &modelItem, template.IgnoreFields, template.UpdateFields)
+		modelList = append(modelList, dataItem)
+		if fieldNames == nil {
+			fieldNames = names
+		}
+	}
+	return modelList, fieldNames
 }
 
 func getOp(op string, value interface{}) (string, interface{}) {

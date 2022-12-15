@@ -26,6 +26,16 @@ module_handler:
     name: 模型删除
     type: inner
     path: ModelDeleteService
+  # 批量新增
+  - key: bulk_create
+    name: 批量新增
+    type: inner
+    path: BulkCreateService
+  # 批量新增或更新
+  - key: bulk_upsert
+    name: 批量新增
+    type: inner
+    path: BulkUpsertService
 # 数据处理
 data_handler:
   - key: update_field

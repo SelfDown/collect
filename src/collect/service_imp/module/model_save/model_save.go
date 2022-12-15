@@ -21,6 +21,13 @@ func (s *ModelSaveService) Result(template *config.Template) *common.Result {
 	}
 	s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
 	gormDB := s.GetGormDb()
-	gormDB.Create(modelData)
-	return common.Ok(params, "保存成功")
+	dbx := gormDB.Create(modelData)
+	affected := dbx.RowsAffected
+	err := dbx.Error
+	if err != nil {
+		msg := err.Error()
+		template.LogData(msg)
+		return common.NotOk(msg)
+	}
+	return common.OkWithCount(params, "保存成功", affected)
 }

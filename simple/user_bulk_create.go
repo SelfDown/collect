@@ -12,7 +12,7 @@ func UserCreateBulk() {
 
 	user["username"] = "zhangsan"
 	user["nick"] = "张治"
-	user["userid"] = "z1"
+	//user["userid"] = "z1"
 	user["email"] = "1@163.com"
 	user["statu"] = 1
 	user["userpwd"] = "123456"
@@ -20,7 +20,7 @@ func UserCreateBulk() {
 	user["tel"] = "18874948657"
 
 	user2 := make(map[string]interface{})
-	user2["userid"] = "a1"
+	//user2["userid"] = "a1"
 	user2["username"] = "zhangsan"
 	user2["nick"] = "张治1"
 	user2["email"] = "1@163.com"

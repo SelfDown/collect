@@ -23,6 +23,15 @@ service:
         check:
           template: "{{must .user_list}}"
           err_msg: 用户列表不能为空
+    handler_params:
+      - key: update_array
+        foreach: "[user_list]"
+        item: item
+        fields:
+          - field: userid
+            template: "{{uuid}}"
+          - field: userpwd
+            template: "{{ if .item.userpwd }}{{md5 .item.userpwd}}{{ end }}"
     table: "user_account"
     model_field: user_list
   - key: delete_user_by_userid_list
@@ -59,7 +68,7 @@ service:
           err_msg: 用户名不能空
     table: "user_account"
     filter:
-      userid__in: userid_list
+      userid__in: "[userid_list]"
     ignore_fields:
       - userpwd
   - key: update_user_by_username_nick
@@ -77,8 +86,8 @@ service:
           err_msg: 昵称不能空
     table: "user_account"
     filter:
-      username: username
-      nick: nick
+      username: "[username]"
+      nick: "[username]"
     update_fields:
       - address
 
@@ -97,7 +106,7 @@ service:
         template: "{{ if .userpwd }}{{md5 .userpwd}}{{ end }}"
     table: "user_account"
     filter:
-      username: username
+      username: "[username]"
 #    update_fields:
 #      - address
   - key: create_user
@@ -157,7 +166,7 @@ service:
         name: 更新字段
         fields:
           - field: status
-            template: status
+            template: "[status]"
           - field: sex
             template: "男"
           - field: age

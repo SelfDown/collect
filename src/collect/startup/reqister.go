@@ -18,6 +18,7 @@ func GetRegisterList() []config.ModuleResult {
 	l := make([]config.ModuleResult, 0)
 	l = append(l, &sql.SqlService{})
 	l = append(l, &handlerParams.UpdateField{})
+	l = append(l, &handlerParams.UpdateArray{})
 	l = append(l, &modelSave.ModelSaveService{})
 	l = append(l, &modelUpdate.ModelUpdateService{})
 	l = append(l, &modelDelete.ModelDeleteService{})

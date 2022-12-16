@@ -98,15 +98,30 @@ func RenderTplDataWithType(Tpl *text_template.Template, params map[string]interf
 	return CastValue(value, dataType)
 
 }
+func IsRenderVar(name string) bool {
+	if strings.HasPrefix(name, "[") && strings.HasSuffix(name, "]") {
+		return true
+	}
+	return false
+}
+func RenderVar(name string, params map[string]interface{}) interface{} {
+	varName := strings.Replace(name, "[", "", -1)
+	// 替换右边括号
+	varName = strings.Replace(varName, "]", "", -1)
+	// 取一级变量
+	v, _ := params[varName]
+	return v
+}
 
 // RenderTplData 根据模板渲染数据，优选取参数里面的字段
 func RenderTplData(Tpl *text_template.Template, params map[string]interface{}) interface{} {
 
 	name := Tpl.Name()
-	// 取一级变量
-	if v, ok := params[name]; ok {
-		return v
+	// 如果匹配占位变量
+	if IsRenderVar(name) {
+		return RenderVar(name, params)
 	}
+
 	// todo 先取一级，后算再考虑取二级
 	//if strings.Contains(name, ".") {
 	//	fields := strings.Split(name, ".")

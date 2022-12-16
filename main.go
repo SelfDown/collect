@@ -3,7 +3,9 @@ package main
 import "collect.mod/simple"
 
 func main() {
+	// 查询用户
 	//simple.QueryUserList()
+	// 创建用户
 	//simple.UserCreate()
 	//根据用户名更新 1个条件的
 	//simple.UserUpdate()
@@ -16,7 +18,7 @@ func main() {
 	// 删除用户
 	//simple.UserDeleteByUseridList()
 	// 批量创建用户
-	//simple.UserCreateBulk()
-	//
-	simple.UserUpdateBulk()
+	simple.UserCreateBulk()
+	//批量更新用户
+	//simple.UserUpdateBulk()
 }

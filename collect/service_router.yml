@@ -42,6 +42,10 @@ data_handler:
     name: 添加参数
     type: inner
     path: UpdateField
+  - key: update_array
+    name: 添加参数
+    type: inner
+    path: UpdateArray
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:

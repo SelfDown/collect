@@ -11,12 +11,13 @@ import (
 )
 
 type Template struct {
-	Service    string                 // 服务名称
-	OpUser     string                 // 操作用户
-	EventId    string                 // 事件ID
-	param_pool map[string]interface{} //请求参数池
+	Service   string                 // 服务名称
+	OpUser    string                 // 操作用户
+	EventId   string                 // 事件ID
+	paramPool map[string]interface{} //请求参数池
 	ServiceConfig
 	RouterAllConfig *RouterAll // 总服务路由
+	
 }
 
 // GetBeforePlugins 处理执行前参数
@@ -170,7 +171,7 @@ func (t *Template) GetService() string {
 	if !utils.IsValueEmpty(name) {
 		return name
 	}
-	n := t.param_pool[SERVICE_NAME]
+	n := t.paramPool[SERVICE_NAME]
 	return utils.Strval(n)
 
 }
@@ -219,7 +220,7 @@ func (t *Template) GetFileData() string {
 	return t.FileData
 }
 func (t *Template) AddParam(name string, data interface{}) {
-	t.param_pool[name] = data
+	t.paramPool[name] = data
 }
 func (t *Template) HasParam(key string) bool {
 	params := t.GetParams()
@@ -235,12 +236,12 @@ func (t *Template) GetParam(key string) interface{} {
 
 //获取参数
 func (t *Template) GetParams() map[string]interface{} {
-	return t.param_pool
+	return t.paramPool
 }
 
 // 设置参数
 func (t *Template) SetParams(params map[string]interface{}) Template {
-	t.param_pool = params
+	t.paramPool = params
 	return *t
 }
 

@@ -23,6 +23,7 @@ type BaseHandler struct {
 }
 
 func (s *BaseHandler) RunFuncName() string {
+
 	pc := make([]uintptr, 1)
 	runtime.Callers(3, pc)
 	f := runtime.FuncForPC(pc[0])

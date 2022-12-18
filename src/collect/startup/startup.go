@@ -10,8 +10,8 @@ import (
 func LoadSystemServices(t *config.Template) config.RouterAll {
 	// fmt.Print(sql.SqlService{})
 
-	collect_file_path := t.GetAppKey("collect_file_path")
-	routerALL, success := t.ParseRouterAll(collect_file_path)
+	collectFilePath := t.GetAppKey("collect_file_path")
+	routerALL, success := t.ParseRouterAll(collectFilePath)
 	if !success {
 		return config.RouterAll{}
 	}

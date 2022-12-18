@@ -4,7 +4,6 @@ import (
 	"bytes"
 	common "collect.mod/src/collect/common"
 	"collect.mod/src/collect/config"
-	config "collect.mod/src/collect/config"
 	startup "collect.mod/src/collect/startup"
 	"time"
 
@@ -23,13 +22,13 @@ type TemplateService struct {
 func init() {
 	// 加载配置
 	utils.LoadAppProperties("./conf/application.properties")
-	t := config.Template{}
+	t := collect.Template{}
 	// 加载系统插件，主要加载count、file_data,
 	routerAll := startup.LoadSystemServices(&t)
 	//获取启动注册的服务列表，然后路由设置注册服务
 	routerAll.SetRegisterList(startup.GetRegisterList())
 	//设置服务
-	config.SetLocalRouter(routerAll)
+	collect.SetLocalRouter(routerAll)
 
 }
 
@@ -65,6 +64,7 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 	temp.ServiceConfig = cfg.GetData().(collect.ServiceConfig)
 	// 设置全局路由配置
 	temp.RouterAllConfig = collect.GetLocalRouter()
+
 	// 设置参数
 	temp.SetParams(params)
 	// todo: 这里只示例了一个用户ID
@@ -91,7 +91,7 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 
 	return &temp, common.Ok(&temp, "成功")
 }
-func ExecTime(template *config.Template, start time.Time, method string) {
+func ExecTime(template *collect.Template, start time.Time, method string) {
 	dis := time.Now().Sub(start).Seconds()
 	template.LogData("服务：" + template.GetService() + " [" + method + "]耗时：" + utils.Strval(dis) + "s")
 }
@@ -132,6 +132,7 @@ func (t *TemplateService) after(temp *collect.Template) *common.Result {
 func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *common.Result {
 
 	// 执行处理前
+
 	temp, beforeResult := t.before(params, isHttp)
 	if !beforeResult.Success {
 		return beforeResult
@@ -147,23 +148,3 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	}
 	return data
 }
-
-/*
-插件是实现方式后续支持
-	m, err := plugin.Open("sql_service.so")
-	if err != nil {
-		return common.NotOk(err.Error())
-	}
-	r, err := m.Lookup("SqlServerPlugin")
-	if err != nil {
-		msg := err.Error()
-		return common.NotOk(msg)
-	}
-	result := r.(ModuleResult)
-	data, _ :=result.Result(&temp)
-
-	if result, ok := r.(ModuleResult); ok {
-		data, _ := result.Result(&temp)
-		return data
-	}
-*/

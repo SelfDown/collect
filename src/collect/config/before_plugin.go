@@ -19,13 +19,13 @@ func handlerValueType(template Template) {
 			continue
 		}
 		// 模板渲染值
-		value := template.param_pool[name]
+		value := template.paramPool[name]
 		if utils.IsValueEmpty(value) {
 			continue
 		}
 		value = utils.CastValue(value, config.Type)
 		// 重新设置值
-		template.param_pool[name] = value
+		template.paramPool[name] = value
 	}
 
 }
@@ -37,9 +37,9 @@ func handlerValueTemplate(template Template) {
 			continue
 		}
 		// 模板渲染值
-		value := utils.RenderTplExec(config.TemplateTpl, template.param_pool, config.Exec)
+		value := utils.RenderTplExec(config.TemplateTpl, template.paramPool, config.Exec)
 		// 模板变量赋值
-		template.param_pool[name] = value
+		template.paramPool[name] = value
 	}
 }
 
@@ -53,14 +53,14 @@ func handlerDefaultValue(template Template) {
 			continue
 		}
 		//如果有值则跳过
-		if !utils.IsEmpty(name, template.param_pool) {
+		if !utils.IsEmpty(name, template.paramPool) {
 			continue
 		}
 		// 根据名称设置默认值
-		template.param_pool[name] = config.Default
+		template.paramPool[name] = config.Default
 	}
 	//设置当前session用户
-	template.param_pool["session_user_id"] = template.OpUser
+	template.paramPool["session_user_id"] = template.OpUser
 }
 func handlerCheckValue(template Template) *common.Result {
 	paramConfig := template.Params
@@ -77,9 +77,9 @@ func handlerCheckValue(template Template) *common.Result {
 		if check.ErrMsgTpl == nil {
 			return common.NotOk(name + "check中【err_msg】模板不存在")
 		}
-		result := utils.RenderTplBool(check.TemplateTpl, template.param_pool)
+		result := utils.RenderTplBool(check.TemplateTpl, template.paramPool)
 		if !result {
-			msg := utils.RenderTpl(check.ErrMsgTpl, template.param_pool)
+			msg := utils.RenderTpl(check.ErrMsgTpl, template.paramPool)
 			return common.NotOk(msg)
 		}
 

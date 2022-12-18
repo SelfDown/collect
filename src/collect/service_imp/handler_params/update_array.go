@@ -19,15 +19,17 @@ func (uf *UpdateArray) HandlerData(template *config.Template, handlerParam *conf
 		return common.NotOk(handlerParam.Foreach + "不是对象数组")
 	}
 
+	var paramsCopy map[string]interface{}
+	if !utils.IsValueEmpty(handlerParam.Item) { // 如果没有配置item 则取本身
+		paramsCopy = utils.CopyMap(params)
+	}
 	for _, field := range handlerParam.Fields {
 
 		for _, item := range dataList {
-			var paramsCopy map[string]interface{}
-			if utils.IsValueEmpty(handlerParam.Item) { // 如果没有配置item 则取本身
-				paramsCopy = utils.CopyMap(item)
-			} else { // 如果配置了item，则从params取起
-				paramsCopy = utils.CopyMap(params)
+			if !utils.IsValueEmpty(handlerParam.Item) { // 如果配置了item，设置item
 				paramsCopy[utils.ItemName] = item
+			} else { // 没有配置item取整个item
+				paramsCopy = item
 			}
 			//渲染值
 			value := utils.RenderTplDataWithType(field.TemplateTpl, paramsCopy, field.Type)

@@ -17,7 +17,7 @@ type Template struct {
 	paramPool map[string]interface{} //请求参数池
 	ServiceConfig
 	RouterAllConfig *RouterAll // 总服务路由
-	
+
 }
 
 // GetBeforePlugins 处理执行前参数
@@ -232,6 +232,10 @@ func (t *Template) GetParam(key string) interface{} {
 	params := t.GetParams()
 	param, _ := params[key]
 	return param
+}
+func (t *Template) SetParam(key string, value interface{}) {
+	params := t.GetParams()
+	params[key] = value
 }
 
 //获取参数

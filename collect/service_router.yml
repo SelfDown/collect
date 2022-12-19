@@ -36,6 +36,10 @@ module_handler:
     name: 批量新增
     type: inner
     path: BulkUpsertService
+  - key: empty
+    name: 批量新增
+    type: inner
+    path: EmptyService
 # 数据处理
 data_handler:
   - key: update_field
@@ -46,6 +50,10 @@ data_handler:
     name: 添加参数
     type: inner
     path: UpdateArray
+  - key: service2field
+    name: 服务转字段
+    type: inner
+    path: Service2Field
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:

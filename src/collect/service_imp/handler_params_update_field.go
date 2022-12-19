@@ -3,16 +3,14 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
-	service_imp "collect.mod/src/collect/service_imp"
 	utils "collect.mod/src/collect/utils"
 )
 
 type UpdateField struct {
-	service_imp.BaseHandler
+	BaseHandler
 }
 
-func (uf *UpdateField) HandlerData(template *config.Template, handlerParam *config.HandlerParam) *common.Result {
-
+func (uf *UpdateField) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 	for _, field := range handlerParam.Fields {
 

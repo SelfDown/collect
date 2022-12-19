@@ -14,7 +14,7 @@ func LoadTemplatePlugins(pluginLoader interface{}, plugins []Plugin, t Template,
 	}
 }
 func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ...interface{}) *common.Result {
-	result := _callPluginFunc(pluginLoader, plugin, t, t.RouterAllConfig)
+	result := _callPluginFunc(pluginLoader, plugin, t, t.RouterAllConfig, args...)
 	return result
 }
 

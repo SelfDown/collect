@@ -1,8 +1,6 @@
 package collect
 
 import (
-	"log"
-	"reflect"
 	"strings"
 	text_template "text/template"
 
@@ -16,60 +14,61 @@ import (
 * 项目总路由
  */
 type RouterAll struct {
-	Services           []RouterProject                      // 项目路由
-	CurrentDir         string                               // 当前路径目录
-	Path               string                               // 当前路径
-	serviceDict        map[string]map[string]*ServiceConfig // 服务的二维字典
-	moduleRegisterDict map[string]ModuleResult              //服务注册对象
-	registerList       []ModuleResult                       // 设置注册列表
-	LoadStartupPlugin  []Plugin                             `yaml:"load_startup_plugin"` // 加载启动插件
-	FileContentPlugin  []Plugin                             `yaml:"file_content_plugin"` // 文件内容处理插件
-	ModuleHandler      []Plugin                             `yaml:"module_handler"`      // 文件内容处理插件
-	DataHandler        []Plugin                             `yaml:"data_handler"`        // 文件内容处理插件
-	BeforePlugin       []Plugin                             `yaml:"before_plugin"`       // 文件内容处理插件
-	AfterPlugin        []Plugin                             `yaml:"after_plugin"`        // 文件内容处理插件
-	moduleDict         map[string]Plugin                    //服务注册对象字典
+	Services    []RouterProject                      // 项目路由
+	CurrentDir  string                               // 当前路径目录
+	Path        string                               // 当前路径
+	serviceDict map[string]map[string]*ServiceConfig // 服务的二维字典
+	//moduleRegisterDict map[string]module_result.ModuleResult //服务注册对象
+	//registerList       []module_result.ModuleResult          // 设置注册列表
+	LoadStartupPlugin []Plugin          `yaml:"load_startup_plugin"` // 加载启动插件
+	FileContentPlugin []Plugin          `yaml:"file_content_plugin"` // 文件内容处理插件
+	ModuleHandler     []Plugin          `yaml:"module_handler"`      // 文件内容处理插件
+	DataHandler       []Plugin          `yaml:"data_handler"`        // 文件内容处理插件
+	BeforePlugin      []Plugin          `yaml:"before_plugin"`       // 文件内容处理插件
+	AfterPlugin       []Plugin          `yaml:"after_plugin"`        // 文件内容处理插件
+	moduleDict        map[string]Plugin //服务注册对象字典
 }
 
-func (t *RouterAll) SetRegisterList(registerList []ModuleResult) {
-	// 设置转换字典
-	moduleDict := make(map[string]Plugin)
-	for _, module := range t.ModuleHandler {
-		moduleDict[module.Path] = module
-	}
-	for _, module := range t.DataHandler {
-		moduleDict[module.Path] = module
-	}
-	t.moduleDict = moduleDict
-	// 清空字典
-	t.moduleRegisterDict = make(map[string]ModuleResult)
-	for _, reg := range registerList {
-		// 这里根据字符串，注册层服务
-		name := reflect.TypeOf(reg).Elem().Name()
-		//moduleRegisterDict 进行赋值
-		if module, ok := moduleDict[name]; ok {
-			t.moduleRegisterDict[module.Key] = reg
-		} else {
-			log.Println("模块【" + name + "】没有注册，请检查配置！！！")
-		}
-
-	}
-
-	t.registerList = registerList
-}
-func (t *RouterAll) GetRegisterList() []ModuleResult {
-	return t.registerList
-}
-
-func (t *RouterAll) GetModuleRegister(name string) ModuleResult {
-	return t.moduleRegisterDict[name]
-}
-func (t *RouterAll) SetModuleRegister(name string, module ModuleResult) {
-	if t.moduleRegisterDict == nil {
-		t.moduleRegisterDict = make(map[string]ModuleResult, 0)
-	}
-	t.moduleRegisterDict[name] = module
-}
+//
+//func (t *RouterAll) SetRegisterList(registerList []module_result.ModuleResult) {
+//	// 设置转换字典
+//	moduleDict := make(map[string]Plugin)
+//	for _, module := range t.ModuleHandler {
+//		moduleDict[module.Path] = module
+//	}
+//	for _, module := range t.DataHandler {
+//		moduleDict[module.Path] = module
+//	}
+//	t.moduleDict = moduleDict
+//	// 清空字典
+//	t.moduleRegisterDict = make(map[string]module_result.ModuleResult)
+//	for _, reg := range registerList {
+//		// 这里根据字符串，注册层服务
+//		name := reflect.TypeOf(reg).Elem().Name()
+//		//moduleRegisterDict 进行赋值
+//		if module, ok := moduleDict[name]; ok {
+//			t.moduleRegisterDict[module.Key] = reg
+//		} else {
+//			log.Println("模块【" + name + "】没有注册，请检查配置！！！")
+//		}
+//
+//	}
+//
+//	t.registerList = registerList
+//}
+//func (t *RouterAll) GetRegisterList() []module_result.ModuleResult {
+//	return t.registerList
+//}
+//
+//func (t *RouterAll) GetModuleRegister(name string) module_result.ModuleResult {
+//	return t.moduleRegisterDict[name]
+//}
+//func (t *RouterAll) SetModuleRegister(name string, module module_result.ModuleResult) {
+//	if t.moduleRegisterDict == nil {
+//		t.moduleRegisterDict = make(map[string]module_result.ModuleResult, 0)
+//	}
+//	t.moduleRegisterDict[name] = module
+//}
 
 /**
 * 获取已经注册的服务

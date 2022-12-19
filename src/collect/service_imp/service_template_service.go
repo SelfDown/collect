@@ -1,4 +1,4 @@
-package template_service
+package collect
 
 import (
 	"bytes"
@@ -26,15 +26,16 @@ func init() {
 	// 加载系统插件，主要加载count、file_data,
 	routerAll := startup.LoadSystemServices(&t)
 	//获取启动注册的服务列表，然后路由设置注册服务
-	routerAll.SetRegisterList(startup.GetRegisterList())
+	//routerAll.SetRegisterList(startup.GetRegisterList())
+	SetRegisterList(&routerAll, GetRegisterList())
 	//设置服务
 	collect.SetLocalRouter(routerAll)
 
 }
 
-func (t *TemplateService) getModuleResultObj(moduleName string) collect.ModuleResult {
+func (t *TemplateService) getModuleResultObj(moduleName string) ModuleResult {
 	// 根据模块名称获取，模块对象
-	module := collect.GetModuleRegister(moduleName)
+	module := GetModuleRegister(moduleName)
 	return module
 
 }
@@ -58,6 +59,9 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 
 	// 根据service 名称获取配置
 	cfg := collect.NewTemplateService(params)
+	if !cfg.Success {
+		return nil, cfg
+	}
 	// 生成模板
 	temp := collect.Template{}
 	// 设置服务配置
@@ -76,13 +80,13 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 		temp.LogData(msg)
 		temp.LogData(params)
 	}
-	var loader collect.BeforeLoader
+	var loader BeforeLoader
 	for _, plugin := range temp.GetBeforePlugins() {
 		//插件是否启用
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		pluginResult := collect.CallPluginFunc(&loader, plugin, temp)
+		pluginResult := collect.CallPluginFunc(&loader, plugin, temp, t)
 		if !pluginResult.Success {
 			return nil, pluginResult
 		}
@@ -109,18 +113,18 @@ func (t *TemplateService) execute(temp *collect.Template) *common.Result {
 		temp.LogErr(params)
 		return common.NotOk(errMsg)
 	}
-	data := result.Result(temp)
+	data := result.Result(temp, t)
 	return data
 }
 func (t *TemplateService) after(temp *collect.Template) *common.Result {
 
-	var loader collect.AfterLoader
+	var loader AfterLoader
 	for _, plugin := range temp.GetAfterPlugins() {
 		//插件是否启用
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		pluginResult := collect.CallPluginFunc(&loader, plugin, *temp)
+		pluginResult := collect.CallPluginFunc(&loader, plugin, *temp, t)
 		if !pluginResult.Success {
 			return pluginResult
 		}
@@ -128,6 +132,9 @@ func (t *TemplateService) after(temp *collect.Template) *common.Result {
 	}
 
 	return common.Ok(&temp, "成功")
+}
+func (t *TemplateService) ResultInner(params map[string]interface{}) *common.Result {
+	return t.Result(params, false)
 }
 func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *common.Result {
 

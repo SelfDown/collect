@@ -3,15 +3,14 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
-	service_imp "collect.mod/src/collect/service_imp"
 	utils "collect.mod/src/collect/utils"
 )
 
 type UpdateArray struct {
-	service_imp.BaseHandler
+	BaseHandler
 }
 
-func (uf *UpdateArray) HandlerData(template *config.Template, handlerParam *config.HandlerParam) *common.Result {
+func (uf *UpdateArray) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 	// 直接渲染变量
 	dataList, ok := utils.RenderVar(handlerParam.Foreach, params).([]map[string]interface{})

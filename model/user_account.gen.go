@@ -38,3 +38,7 @@ type UserAccount struct {
 func (*UserAccount) TableName() string {
 	return TableNameUserAccount
 }
+// PrimaryKey UserAccount's table name
+func (*UserAccount) PrimaryKey() []string {
+	return []string{"userid"}
+}

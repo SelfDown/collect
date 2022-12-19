@@ -71,11 +71,11 @@ func (s *BaseHandler) GetDatasource() (*sql.DB, error) {
 	return db, err
 }
 
-func (s *BaseHandler) Result(template *config.Template) *common.Result {
+func (s *BaseHandler) Result(template *config.Template, ts *TemplateService) *common.Result {
 	return common.Ok(nil, "")
 }
 
-func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *config.HandlerParam) *common.Result {
+func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	return common.Ok(nil, "")
 }
 func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {

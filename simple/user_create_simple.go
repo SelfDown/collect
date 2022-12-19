@@ -1,7 +1,7 @@
 package simple
 
 import (
-	"collect.mod/src/collect/template_service"
+	template_service "collect.mod/src/collect/service_imp"
 	"fmt"
 )
 

@@ -4,15 +4,14 @@ import (
 	"collect.mod/model"
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
-	serviceImp "collect.mod/src/collect/service_imp"
 	utils "collect.mod/src/collect/utils"
 )
 
 type BulkCreateService struct {
-	serviceImp.BaseHandler
+	BaseHandler
 }
 
-func (s *BulkCreateService) Result(template *config.Template) *common.Result {
+func (s *BulkCreateService) Result(template *config.Template, ts *TemplateService) *common.Result {
 
 	params := template.GetParams()
 	tableName := template.Table

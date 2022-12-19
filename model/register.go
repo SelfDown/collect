@@ -13,11 +13,9 @@ func init() {
 	modelMap = make(map[string]interface{})
 	primaryKeyMap = make(map[string][]string)
 	// 配置主表
-	modelMap["user_account"] = UserAccount{}
-	primaryKey := make([]string, 0)
-	//配置主键
-	primaryKey = append(primaryKey, "userid")
-	primaryKeyMap["user_account"] = primaryKey
+	userAccount := UserAccount{}
+	modelMap["user_account"] = userAccount
+	primaryKeyMap["user_account"] = userAccount.PrimaryKey()
 }
 func GetModel(tableName string) interface{} {
 	return modelMap[tableName]

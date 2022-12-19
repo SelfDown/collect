@@ -2,8 +2,7 @@ package collect
 
 import (
 	common "collect.mod/src/collect/common"
-	service_imp "collect.mod/src/collect/service_imp"
-	handler_template "collect.mod/src/collect/service_imp/module/sql/handler_template"
+	handler_template "collect.mod/src/collect/service_imp/handler_template"
 	utils "collect.mod/src/collect/utils"
 	"database/sql"
 	"fmt"
@@ -15,12 +14,12 @@ import (
 )
 
 type SqlService struct {
-	service_imp.BaseHandler
+	BaseHandler
 }
 
-var db0 *sql.DB
+//var db0 *sql.DB
 
-func (s *SqlService) Result(template *config.Template) *common.Result {
+func (s *SqlService) Result(template *config.Template, ts *TemplateService) *common.Result {
 	r := common.Result{}
 	var err error
 	db0, err = s.GetDatasource()

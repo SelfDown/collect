@@ -4,16 +4,15 @@ import (
 	"collect.mod/model"
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
-	serviceImp "collect.mod/src/collect/service_imp"
 	utils "collect.mod/src/collect/utils"
 	"gorm.io/gorm/clause"
 )
 
 type BulkUpsertService struct {
-	serviceImp.BaseHandler
+	BaseHandler
 }
 
-func (s *BulkUpsertService) Result(template *config.Template) *common.Result {
+func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateService) *common.Result {
 
 	params := template.GetParams()
 	tableName := template.Table

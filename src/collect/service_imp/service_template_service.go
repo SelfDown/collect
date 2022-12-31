@@ -21,12 +21,9 @@ type TemplateService struct {
 
 func init() {
 	// 加载配置
-	utils.LoadAppProperties("./conf/application.properties")
-	t := collect.Template{}
 	// 加载系统插件，主要加载count、file_data,
-	routerAll := startup.LoadSystemServices(&t)
+	routerAll := startup.LoadSystemServices()
 	//获取启动注册的服务列表，然后路由设置注册服务
-	//routerAll.SetRegisterList(startup.GetRegisterList())
 	SetRegisterList(&routerAll, GetRegisterList())
 	//设置服务
 	collect.SetLocalRouter(routerAll)

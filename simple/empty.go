@@ -11,6 +11,9 @@ func Empty() {
 	//user := make(map[string]interface{})
 	params := make(map[string]interface{})
 	params["service"] = "hrm.empty_test"
+	params["username"] = "zhangzhi"
 	r := ts.Result(params, true)
+	//r2 := ts.Result(params, true)
 	fmt.Printf("%#v", r)
+	//fmt.Printf("%#v", r2)
 }

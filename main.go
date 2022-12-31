@@ -4,7 +4,7 @@ import "collect.mod/simple"
 
 func main() {
 	// 查询用户
-	simple.QueryUserList()
+	//simple.QueryUserList()
 	// 创建用户
 	//simple.UserCreate()
 	//根据用户名更新 1个条件的

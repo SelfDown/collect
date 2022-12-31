@@ -3,7 +3,7 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
-	"fmt"
+	utils "collect.mod/src/collect/utils"
 )
 
 type Service2Field struct {
@@ -13,10 +13,24 @@ type Service2Field struct {
 func (uf *Service2Field) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 
-	params2 := make(map[string]interface{})
-	params2["service"] = "hrm.empty_test2"
-	r2 := ts.ResultInner(params2)
-	fmt.Printf("%#v", r2)
-	r := common.Ok(params, "处理参数成功")
-	return r
+	//构造服务参数
+	serviceParam := handlerParam.Service
+	for key, value := range serviceParam {
+		valueStr, ok := value.(string)
+		// 判断是否为，参数变量，如果参数变量直接取参数值
+		if ok && utils.IsRenderVar(valueStr) {
+			val := utils.RenderVar(valueStr, params)
+			serviceParam[key] = val
+		}
+	}
+	//拼接剩余参数
+	if handlerParam.AppendParam {
+		for key, value := range params {
+			if _, ok := serviceParam[key]; !ok {
+				serviceParam[key] = value
+			}
+		}
+	}
+	r2 := ts.ResultInner(serviceParam)
+	return r2
 }

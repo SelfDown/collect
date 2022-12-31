@@ -1,6 +1,11 @@
 {{  if  .nick }}
 and nick = {{.nick}}
 {{ end }}
+
+{{  if  .username }}
+and username = {{.username}}
+{{ end }}
+
 {{ if .status }}
 and statu ={{.status}}
 {{ end }}

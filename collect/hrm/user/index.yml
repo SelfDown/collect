@@ -8,9 +8,16 @@ service:
           service: hrm.user_list
           username: "[username]"
         save_field: user_info
+        template: "{{gt (len .user_info) 0}}"
+        err_msg: "用户名【{{.username}}】已经存在"
+    result_handler:
+      - key: service2field
+        service:
+          service: hrm.user_list
+          username: "[username]"
+        save_field: user_info
         template: "{{eq (len .user_info) 0}}"
         err_msg: "用户名【{{.username}}】已经存在"
-
   - key: bulk_update_user
     module: bulk_upsert
     log: true

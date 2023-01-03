@@ -1,6 +1,9 @@
 package main
 
-import "collect.mod/simple"
+import (
+	template_service "collect.mod/src/collect/service_imp"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	// 查询用户
@@ -22,5 +25,15 @@ func main() {
 	//批量更新用户
 	//simple.UserUpdateBulk()
 	// 模块测试
-	simple.Empty()
+
+	r := gin.Default()
+	r.Static("/static", "./static")
+	r.POST("/template_data/data", func(c *gin.Context) {
+		params := make(map[string]interface{})
+		c.Bind(&params)
+		ts := template_service.TemplateService{OpUser: "zhangzhi"}
+		data := ts.Result(params, true)
+		c.JSON(200, data)
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080
 }

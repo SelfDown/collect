@@ -1,0 +1,604 @@
+<html>
+<header>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./index.css">
+    <style>
+        .input .el-textarea__inner {
+            background-color: #fcfcfc;
+        }
+
+
+    </style>
+
+</header>
+<body style="padding: 0;margin: 0px">
+<div id="app">
+    <el-row style="padding: 10px;background: #f0fff0;height: 100%">
+        <el-row style="display: flex">
+            <form id="form">
+                <input name="service" value="jira.uploadExcel"/>
+                <input type="file" name="file">
+
+            </form>
+            <button
+                    @click="upload"
+                    size="mini" type="primary">JIRA文件解析
+            </button>
+
+        </el-row>
+
+        <el-row style="display: flex">
+            <form id="form2">
+                <input name="service" value="test.file_upload"/>
+                <input type="file" name="file">
+                <input type="file" name="file">
+            </form>
+            <button
+                    @click="upload2"
+
+                    type="primary">
+                文件转内容
+            </button>
+
+        </el-row>
+
+        <el-row>
+            <el-col :span="16">
+                <el-input v-model="url" placeholder="访问地址" size="mini"></el-input>
+            </el-col>
+            <el-col :span="8">
+                <el-button-group style="display: flex;">
+
+                    <el-button size="mini" type="primary" @click="post"> POST_BODY</el-button>
+                    <el-button size="mini" type="primary" @click="download"> 下载文件</el-button>
+                    <el-button size="mini" type="primary" @click="toJSON"> 格式化</el-button>
+                </el-button-group>
+
+            </el-col>
+
+        </el-row>
+        <el-col :span="4">
+
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result33_search')">
+                    空模块测试
+                </a>
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result32_search')">
+                    工作流查状态
+                </a>
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result30_search')">
+                    登录
+                </a>
+
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result31_search')">
+                    下载数据库blob字段文件
+                </a>
+
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result29_search')">
+                    模块测试
+                </a>
+
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result28_search')">
+                    用户创建事件
+                </a>
+
+            </div>
+            <div>
+
+                <a href="javascript:void (0)" @click="change('result27_search')">
+                    查询当前用户菜单栏
+                </a>
+
+            </div>
+            <hr>
+            <div>
+                <a href="javascript:void (0)" @click="change('search')">
+                    查询项目
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result24_search')">
+                    修改项目
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result25_search')">
+                    保存项目
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result26_search')">
+                    删除项目
+                </a>
+            </div>
+            <hr>
+
+
+            <div>
+                <a href="javascript:void (0)" @click="change('result23_search')">
+                    [总体]创建用户
+                </a>
+            </div>
+            <hr>
+            <div>
+
+
+                <a href="javascript:void (0)" @click="change('result11_search')">
+                    用户查询
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result12_search')">
+                    用户创建
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result13_search')">
+                    根据用户名查询用户
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result14_search')">
+                    删除用户
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result15_search')">
+                    修改用户
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result16_search')">
+                    用户登陆
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result17_search')">
+                    用户注销
+                </a>
+            </div>
+
+            <hr>
+
+
+            <div>
+                <a href="javascript:void (0)" @click="change('result18_search')">
+                    ldap 根据用户名称搜索
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result19_search')">
+                    ldap 用户登录
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result20_search')">
+                    ldap 创建用户
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result21_search')">
+                    ldap 删除用户
+                </a>
+            </div>
+
+            <div>
+                <a href="javascript:void (0)" @click="change('result22_search')">
+                    ldap 修改用户
+                </a>
+            </div>
+
+            <hr>
+            <div>
+
+
+                <a href="javascript:void (0)" @click="change('result6_search')">
+                    添加sql server监控
+                </a>
+            </div>
+            <div>
+
+
+                <a href="javascript:void (0)" @click="change('result7_search')">
+                    添加oracle监控
+                </a>
+            </div>
+            <hr>
+            <div>
+
+
+                <a href="javascript:void (0)" @click="change('result5_search')">
+                    根据key 获取zabbix 监控项
+                </a>
+            </div>
+            <hr>
+            <div>
+                <a href="javascript:void (0)" @click="change('search')">
+                    加载查询项目例子
+                </a>
+            </div>
+
+            <div>
+                <a href="javascript:void (0)" @click="change('search_filter')">
+                    加载查询条件例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('save')">
+                    加载新增数据例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('update')">
+                    加载修改数据例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('delete')">
+                    加载删除数据例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('bulk_create')">
+                    加载批量创建的例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result_search')">
+                    加载按项目/月查询结果处理例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result2_search')">
+                    加载按人/月查询结果处理例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result3_search')">
+                    加载一级部门、二级部门名称
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result4_search')">
+                    加载查询用户处理例子
+                </a>
+            </div>
+            <div>
+                <a href="javascript:void (0)" @click="change('result8_search')">
+                    下载用户的例子
+                </a>
+            </div>
+
+            <br/>
+            <a href="javascript:void (0)" @click="change('result9_search')">
+                5.主机关联模板
+            </a>
+            <hr>
+            <br/>
+            <a href="javascript:void (0)" @click="change('result10_search')">
+                6.grafana 查询
+            </a>
+
+        </el-col>
+
+        <el-col :span="8">
+
+
+            <el-input
+                    type="textarea"
+                    class="input"
+                    :rows="30"
+                    placeholder="请输入请求内容"
+                    v-model="params">
+            </el-input>
+
+        </el-col>
+        <el-col :span="12">
+
+            <el-input
+                    class="input"
+                    type="textarea"
+                    :rows="2"
+                    placeholder="返回内容"
+                    v-model="result"
+                    rows="30"
+            >
+            </el-input>
+
+        </el-col>
+
+    </el-row>
+</div>
+
+
+</body>
+
+<script src="./vue.js"></script>
+<script src="./axios.min.js"></script>
+<!-- import JavaScript -->
+<script src="./index.js"></script>
+<script src="./jquery.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                url: "/template_data/data",
+                params: '{"service":"project_manage.project"}',
+                result: "",
+                urls: [],
+                test: {
+                    search: '{"service":"project.project_query"}',
+                    search_filter: '{"service":"project_manage.plan_task_query","start_date":"2021-01","end_date":"2021-12"}',
+                    save: '{"service":"project_manage.plan_task_save","project_id":"cbh","user_id":"503","start_date":"2021-03-01","end_date":"2021-03-31","per":100}',
+                    update: '{"service":"project_manage.plan_task_update","plan_task_id":"1","project_id":"cbh","user_id":"503","start_date":"2021-03-01","end_date":"2021-03-31","per":100}',
+                    delete: '{"service":"project_manage.plan_task_delete","plan_task_id_list":["1"]}',
+                    bulk_create: '{"service":"hrm.white_list_save","users":[1],"start_ym":"2022-01-01","end_ym":"2022-01-01"}',
+                    result_search: '{"service":"project_manage.project_month_total","start_date":"2020-01-01","end_date":"2022-01-01"}',
+                    result2_search: '{"service":"project_manage.man_month_total","start_date":"2020-01-01","end_date":"2022-01-01"}',
+                    result3_search: '{"service":"project_manage.plan_task_query","start_date":"2020-01-01","end_date":"2022-01-01"}',
+                    result4_search: '{"service":"hrm.user"}',
+                    result5_search: '{"service":"server.key2item_ids","hostid":"10142","keys":["o_d_192.168.13.131","o_d_192.168.13.136"]}',
+                    result6_search: '{"service":"monitor.oracle_delay_record_save","test_type":"6","test_proxy_param":{"install_soft_id":"1aa0207f-741e-412c-8eac-49fc05496da0","limit":"120","publication":"11"}}',
+                    result7_search: '{"service":"monitor.oracle_delay_record_save","test_type":"3","test_install_soft_id":"1aa0207f-741e-412c-8eac-49fc05496da0"}',
+                    result8_search: '{"service":"hrm.user"}',
+                    result9_search: '{"service":"server.link_template","hostid_list":["10318"],"templateid_list":[10001,10348]}',
+                    result10_search: '{"service":"grafana.query"}',
+                    result11_search: '{"service":"hrm.user_account_query"}',
+                    result12_search: '{"service":"hrm.user_account_save","nick":"张治","username":"zhangzhi","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
+                    result13_search: '{"service":"hrm.get_user","username":"zhangzhi"}',
+                    result14_search: '{"service":"hrm.user_account_delete","user_id_list":[1]}',
+                    result15_search: '{"service":"hrm.user_account_update","user_id":"c4ff9328-2668-42ef-987a-53217d02e0e3","nick":"张治","username":"zhangzhi","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
+                    result16_search: '{"service":"hrm.user_login","username":"zhangzhi","password":"123456"}',
+                    result17_search: '{"service":"hrm.user_logout"}',
+                    result18_search: '{"service":"hrm.ldap_search","username":"zhangzhi"}',
+                    result19_search: '{"service":"hrm.ldap_login","username":"zhangzhi","password":"Wgldap_2021"}',
+                    result20_search: '{"service":"hrm.ldap_add_user","username":"zz1","nick":"zz","password":"zz","email":"zz@163.com"}',
+                    result21_search: '{"service":"hrm.ldap_delete_user","username":"zz"}',
+                    result22_search: '{"service":"hrm.ldap_modify_user","username":"zhangzhi","password":"zhang@888"}',
+                    result23_search: '{"service":"hrm.user_create","nick":"张治","username":"z1z","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
+                    result24_search: '{"service":"project.project_update","sys_project_id":"152c2d0e-5651-4419-b35b-fef6a7262298","project_code":"thzk","project_name":"tt","order_index":100}',
+                    result25_search: '{"service":"project.project_save","project_code":"thzk","project_name":"tt","order_index":100}',
+                    result26_search: '{"service":"project.project_delete","sys_project_id_list":["152c2d0e-5651-4419-b35b-fef6a7262298"]}',
+                    result27_search: '{"service":"hrm.get_current_user_menu"}',
+                    result28_search: '{"service":"event.event_user_create","id":"zz"}',
+                    result29_search: '{"service":"test.module_test"}',
+                    result30_search: '{"service":"hrm.user_login","user_id":"zhangzhi"}',
+                    result31_search: '{"service":"test.make_files"}',
+                    result32_search: '{"service":"flow.publish","req_statu":"100"}',
+                    result33_search: '{"service":"hrm.empty_test","username":"zhangzhi"}',
+                }
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            upload() {
+                let formData = new FormData($("#form")[0])
+                let _this = this
+                $.ajax({
+                    url: _this.url,
+                    type: "post",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        // console.log(res)
+                        _this.result = JSON.stringify(res, null, "\t")
+                    },
+                    error: function (res) {
+                        console.log(res)
+
+                    }
+                })
+            },
+            upload2() {
+                let formData = new FormData($("#form2")[0])
+                let _this = this
+                $.ajax({
+                    url: _this.url,
+                    type: "post",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        // console.log(res)
+                        _this.result = JSON.stringify(res, null, "\t")
+                    },
+                    error: function (res) {
+                        console.log(res)
+
+                    }
+                })
+            },
+
+            convertRes2Blob(response) {
+                // 提取文件名
+                const fileName = response.headers['content-disposition'].match(
+                    /filename=(.*)/
+                )[1]
+                // 将二进制流转为blob
+                const blob = new Blob([response.data], {type: 'application/octet-stream'})
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // 兼容IE，window.navigator.msSaveBlob：以本地方式保存文件
+                    window.navigator.msSaveBlob(blob, decodeURI(fileName))
+                } else {
+                    // 创建新的URL并指向File对象或者Blob对象的地址
+                    const blobURL = window.URL.createObjectURL(blob)
+                    // 创建a标签，用于跳转至下载链接
+                    const tempLink = document.createElement('a')
+                    tempLink.style.display = 'none'
+                    tempLink.href = blobURL
+                    tempLink.setAttribute('download', decodeURI(fileName))
+                    // 兼容：某些浏览器不支持HTML5的download属性
+                    if (typeof tempLink.download === 'undefined') {
+                        tempLink.setAttribute('target', '_blank')
+                    }
+                    // 挂载a标签
+                    document.body.appendChild(tempLink)
+                    tempLink.click()
+                    document.body.removeChild(tempLink)
+                    // 释放blob URL地址
+                    window.URL.revokeObjectURL(blobURL)
+                }
+            },
+
+            download() {
+
+
+                let _this = this
+                axios.post(this.url, JSON.parse(this.params), {
+                    responseType: "blob"
+                }).then(res => {
+                    debugger
+                    if (res.data instanceof Blob) {
+                        this.convertRes2Blob(res)
+
+                    } else {
+                        _this.result = JSON.stringify(res.data, null, "\t")
+                    }
+
+
+                })
+
+            },
+            change(t) {
+
+                try {
+                    this.params = JSON.parse(this.test[t])
+                    this.params = JSON.stringify(this.params, null, "   ")
+                } catch (e) {
+                    this.params = this.test[t]
+                }
+            },
+            async get() {
+                var data = {}
+                try {
+                    data = JSON.parse(this.params)
+                } catch (e) {
+
+                }
+
+
+                const response = await API.GET(this.url, data)
+                if (response && response.data) {
+                    this.result = JSON.stringify(response.data, null, "\t")
+                } else {
+                    this.result = response
+                }
+
+            },
+            async post() {
+                var data = {}
+                try {
+                    data = JSON.parse(this.params)
+                } catch (e) {
+
+                }
+                let _this = this
+                $.ajax({
+                    url: _this.url,
+                    headers: {
+                        'token': 'weigao'
+                    },
+                    type: "post",
+                    data: _this.params,
+                    contentType: "application/json",
+                    success: function (res) {
+                        _this.result = JSON.stringify(res, null, "\t")
+                    },
+                    error: function (res) {
+                        _this.result = res.responseText
+
+                    }
+                })
+
+
+            },
+
+            async post_params() {
+                var data = {}
+                try {
+                    data = JSON.parse(this.params)
+                } catch (e) {
+
+                }
+
+
+                const response = await API.POST_PARAMS(this.url, data)
+                if (response && response.data) {
+                    this.result = JSON.stringify(response.data, null, "\t")
+                } else {
+                    this.result = response
+                }
+
+            },
+
+            async put() {
+                var data = {}
+                try {
+                    data = JSON.parse(this.params)
+                } catch (e) {
+
+                }
+
+
+                const response = await API.PUT(this.url, data)
+                if (response && response.data) {
+                    this.result = JSON.stringify(response.data, null, "\t")
+                } else {
+                    this.result = response
+                }
+
+            },
+            toJSON() {
+                // this.params = JSON.stringify(this.params)
+                this.params = JSON.parse(this.params)
+                this.params = JSON.stringify(this.params, null, "   ")
+            },
+            async remove() {
+                var data = {}
+                try {
+                    data = JSON.parse(this.params)
+                } catch (e) {
+
+                }
+
+
+                const response = await API.DELETE(this.url, data)
+                if (response && response.data) {
+                    this.result = JSON.stringify(response.data, null, "\t")
+                } else {
+                    this.result = response
+                }
+
+            }
+
+        }
+
+
+    })
+
+
+</script>
+
+</html>

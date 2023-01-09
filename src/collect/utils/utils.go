@@ -121,27 +121,15 @@ func RenderTplData(Tpl *text_template.Template, params map[string]interface{}) i
 	if IsRenderVar(name) {
 		return RenderVar(name, params)
 	}
-
-	// todo 先取一级，后算再考虑取二级
-	//if strings.Contains(name, ".") {
-	//	fields := strings.Split(name, ".")
-	//	first := ""
-	//	second := ""
-	//	if len(fields) >= 2 {
-	//		first = fields[0]
-	//		second = fields[1]
-	//	}
-	//	if v, ok := params[first]; ok {
-	//		if v, ok := params[first] {
-	//
-	//		}
-	//	}
-	//}
 	//模板渲染
 	return RenderTpl(Tpl, params)
 }
+func RenderTplDataBool(Tpl *text_template.Template, params map[string]interface{}) bool {
+	data := RenderTplData(Tpl, params)
+	return gocast.ToBool(data)
+}
 
-// 根据模板渲染数据
+// RenderTpl 根据模板渲染数据
 func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) string {
 	var buf bytes.Buffer
 	err := Tpl.Execute(&buf, params)

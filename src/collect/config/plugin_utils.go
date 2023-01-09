@@ -8,12 +8,12 @@ import (
 /*
 * 加载模板级别的插件
  */
-func LoadTemplatePlugins(pluginLoader interface{}, plugins []Plugin, t Template, routerAll *RouterAll) {
+func LoadTemplatePlugins(pluginLoader interface{}, plugins []Plugin, t *Template, routerAll *RouterAll) {
 	for _, plugin := range plugins {
 		_callPluginFunc(pluginLoader, plugin, t, routerAll)
 	}
 }
-func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ...interface{}) *common.Result {
+func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t *Template, args ...interface{}) *common.Result {
 	result := _callPluginFunc(pluginLoader, plugin, t, t.RouterAllConfig, args...)
 	return result
 }
@@ -26,7 +26,7 @@ func CallPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, args ..
 * @routerAll    总路由
  */
 
-func _callPluginFunc(pluginLoader interface{}, plugin Plugin, t Template, routerAll *RouterAll, args ...interface{}) *common.Result {
+func _callPluginFunc(pluginLoader interface{}, plugin Plugin, t *Template, routerAll *RouterAll, args ...interface{}) *common.Result {
 
 	rf := reflect.ValueOf(pluginLoader)
 	rft := rf.Type()

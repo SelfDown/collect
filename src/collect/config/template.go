@@ -1,6 +1,7 @@
 package collect
 
 import (
+	common "collect.mod/src/collect/common"
 	"encoding/json"
 	"log"
 
@@ -16,8 +17,39 @@ type Template struct {
 	EventId   string                 // 事件ID
 	paramPool map[string]interface{} //请求参数池
 	ServiceConfig
-	RouterAllConfig *RouterAll // 总服务路由
+	RouterAllConfig *RouterAll             // 总服务路由
+	count           int64                  // 将模板的里面计算的count 存储到模板中
+	result          *common.Result         // 模板计算的结果
+	tags            map[string]interface{} // 处理tag
+}
 
+// SetCount 设置模板的计算count
+func (t *Template) SetCount(count int64) {
+	t.count = count
+}
+
+// GetCount 获取模板的count
+func (t *Template) GetCount() int64 {
+	return t.count
+}
+
+// SetResult 设置模板的结果
+func (t *Template) SetResult(result *common.Result) {
+	t.result = result
+}
+
+func (t *Template) HasResult() bool {
+	if t.result == nil {
+		return false
+	} else {
+		return true
+	}
+
+}
+
+// GetResult 获取导出结果
+func (t *Template) GetResult() *common.Result {
+	return t.result
 }
 
 // GetBeforePlugins 处理执行前参数
@@ -31,7 +63,7 @@ func (t *Template) GetAfterPlugins() []Plugin {
 }
 
 /**
-* 转换总路由
+*  ParseRouterAll 转换总路由
  */
 func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 	currentDir := utils.ParentDirName(filePath)
@@ -49,10 +81,10 @@ func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 	for i := 0; i < len(services); i++ { // 处理第一层，加载项目层
 		projectService := services[i]
 		path := currentDir + projectService.Path
-		folder_path := utils.ParentDirName(path)
+		folderPath := utils.ParentDirName(path)
 		pl := ProjectLink{}
 		// 设置文件夹路径
-		pl.CurrentDir = folder_path
+		pl.CurrentDir = folderPath
 		msg, success = t.ParseYaml(path, &pl)
 		// 如果项目文件转换失败
 		if !success {
@@ -71,14 +103,14 @@ func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 
 		for j := 0; j < len(pl.Service); j++ { //处理第二层 加载项目里面的文件夹层
 			pls := pl.Service[j]
-			service_index_path := folder_path + pls.Path
-			service_dir := utils.ParentDirName(service_index_path)
+			serviceIndexPath := folderPath + pls.Path
+			serviceDir := utils.ParentDirName(serviceIndexPath)
 			serviceList := ServiceList{}
 			// 设置文件路径
-			serviceList.Path = service_index_path
+			serviceList.Path = serviceIndexPath
 			// 设置文件夹路径
-			serviceList.CurrentDir = service_dir
-			msg, success = t.ParseYaml(service_index_path, &serviceList)
+			serviceList.CurrentDir = serviceDir
+			msg, success = t.ParseYaml(serviceIndexPath, &serviceList)
 			// 如果服务转换失败
 			if !success {
 				t.LogErr(msg)
@@ -87,9 +119,9 @@ func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 			for k := 0; k < len(serviceList.Service); k++ { // 处理第三层 加载文件里面的服务
 				service := serviceList.Service[k]
 				// 设置服务路径
-				service.Path = service_index_path
+				service.Path = serviceIndexPath
 				// 设置服务目录
-				service.CurrentDir = service_dir
+				service.CurrentDir = serviceDir
 				// 设置项目
 				service.Project = projectService.Key
 				// 设置服务全称
@@ -106,7 +138,7 @@ func (t *Template) ParseRouterAll(filePath string) (RouterAll, bool) {
 
 /*
 * 转换yaml 文件
-* todo 这里需要将int 转int32，比如statu=1，类型是int，但是数据库生成是int32，保存失败
+*
 
  */
 func (t *Template) ParseYaml(filePath string, out interface{}) (interface{}, bool) {

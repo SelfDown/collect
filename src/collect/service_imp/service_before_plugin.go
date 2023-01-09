@@ -13,7 +13,7 @@ import (
 type BeforeLoader struct {
 }
 
-func handlerValueType(template collect.Template) {
+func handlerValueType(template *collect.Template) {
 	paramConfig := template.Params
 	for name, config := range paramConfig {
 		if utils.IsValueEmpty(config.Type) {
@@ -30,7 +30,7 @@ func handlerValueType(template collect.Template) {
 	}
 
 }
-func handlerValueTemplate(template collect.Template) {
+func handlerValueTemplate(template *collect.Template) {
 	paramConfig := template.Params
 	//处理template
 	for name, config := range paramConfig {
@@ -46,7 +46,7 @@ func handlerValueTemplate(template collect.Template) {
 	}
 }
 
-func handlerDefaultValue(template collect.Template) {
+func handlerDefaultValue(template *collect.Template) {
 
 	paramConfig := template.Params
 	// 处理默认值
@@ -66,7 +66,7 @@ func handlerDefaultValue(template collect.Template) {
 	//设置当前session用户
 	template.SetParam("session_user_id", template.OpUser)
 }
-func handlerCheckValue(template collect.Template) *common.Result {
+func handlerCheckValue(template *collect.Template) *common.Result {
 	paramConfig := template.Params
 	// 处理默认值
 	for name, config := range paramConfig {
@@ -91,7 +91,7 @@ func handlerCheckValue(template collect.Template) *common.Result {
 	}
 	return common.Ok(nil, "成功")
 }
-func (t *BeforeLoader) HandlerReqParam(config collect.Plugin, template collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+func (t *BeforeLoader) HandlerReqParam(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
 
 	// 处理默认值
 	handlerDefaultValue(template)
@@ -108,6 +108,6 @@ func (t *BeforeLoader) HandlerReqParam(config collect.Plugin, template collect.T
 
 }
 
-func (t *BeforeLoader) HandlerParams(config collect.Plugin, template collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+func (t *BeforeLoader) HandlerParams(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
 	return handlerParams(template, template.HandlerParams, ts)
 }

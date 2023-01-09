@@ -64,7 +64,7 @@ func _handler_plugins_file(dataFile string, dir string, plugins []Plugin) (strin
 * 加载data_file 文件内容，处理require 文件的引用
 * 将服务的文件路径转换成文件内容
  */
-func (t *PluginLoader) LoadDataFile(config Plugin, template Template, routerAll *RouterAll) {
+func (t *PluginLoader) LoadDataFile(config Plugin, template *Template, routerAll *RouterAll) {
 	serviceList := routerAll.GetRegisterServices()
 	// 循环服务,将文件路径对应的内容
 	for _, service := range serviceList {

@@ -182,15 +182,18 @@ type ServiceList struct {
 * 服务
  */
 type ServiceConfig struct {
-	Project          string // 项目
-	Name             string
-	Key              string                  // 服务
-	Service          string                  // 服务全称
-	Params           map[string]ParamConfig  // 参数配置定义
-	Module           string                  // 模块
-	Table            string                  // 表名
-	Http             bool                    //  是否支持http 访问
-	DataFile         string                  `yaml:"data_file"` // 文件路径
+	Project string // 项目
+	Name    string
+	Key     string                 // 服务
+	Service string                 // 服务全称
+	Params  map[string]ParamConfig // 参数配置定义
+	Module  string                 // 模块
+	Table   string                 // 表名
+	Http    bool                   //  是否支持http 访问
+
+	MustLogin *bool  `yaml:"must_login"` // 是否必须登录
+	DataFile  string `yaml:"data_file"`  // 文件路径
+
 	FileData         string                  // 文件内容
 	Pagination       string                  //分页字段
 	FileDataTpl      *text_template.Template // 文件内容的模板
@@ -247,6 +250,7 @@ type HandlerParam struct {
 	Enable        string                  // 是否启用
 	EnableTpl     *text_template.Template // 是否启用模板
 	Name          string                  //名称
+	Field         string                  // 字段
 	AppendParam   bool                    `yaml:"append_param"` // 是否添加参数
 	Foreach       string                  //循环数组
 	Item          string                  // for 循环里面的item

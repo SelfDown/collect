@@ -2,6 +2,8 @@ package main
 
 import (
 	template_service "collect.mod/src/collect/service_imp"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,11 +29,21 @@ func main() {
 	// 模块测试
 
 	r := gin.Default()
+	// 生成cookies
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("session_id", store))
 	r.Static("/static", "./static")
 	r.POST("/template_data/data", func(c *gin.Context) {
+		s := sessions.Default(c)
+		//设置参数
 		params := make(map[string]interface{})
 		c.Bind(&params)
-		ts := template_service.TemplateService{OpUser: "zhangzhi"}
+		// session 中设置用户ID
+		opUser := s.Get("user_id").(string)
+		ts := template_service.TemplateService{OpUser: opUser}
+		// 设置session
+		ts.SetSession(&s)
+		// 处理结果
 		data := ts.Result(params, true)
 		c.JSON(200, data)
 	})

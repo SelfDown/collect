@@ -173,9 +173,9 @@ service:
     params:
       nick:
         default: ""
-      status:
-        template: "1"
-        type: int
+#      status:
+#        template: "1"
+#        type: int
       page:
         type: int
         default: 1
@@ -188,20 +188,26 @@ service:
         type: int
       pagination:
         default: true
-    handler_params:
-      - key: update_field
-        name: 更新字段
-        fields:
-          - field: status
-            template: "[status]"
-          - field: sex
-            template: "男"
-          - field: age
-            type: int
-            template: 19
+      to_obj:
+        default: false
+#    handler_params:
+#      - key: update_field
+#        name: 更新字段
+#        fields:
+#          - field: status
+#            template: "[status]"
+#          - field: sex
+#            template: "男"
+#          - field: age
+#            type: int
+#            template: 19
     data_file: user_list.sql
     count_file: user_list_count.sql
     pagination: pagination
+    result_handler:
+      - key: arr2obj
+        enable: "[to_obj]"
+
 #
 #  - key: user_list_test
 #    module: sql

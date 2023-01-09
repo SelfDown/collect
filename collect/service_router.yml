@@ -4,6 +4,10 @@ services:
     name: '人资管理'
     path: 'hrm/service.yml'
 
+  - key: 'system'
+    name: '登录'
+    path: 'system/service.yml'
+
 # 模块处理器
 module_handler:
   # 模型修改
@@ -54,6 +58,14 @@ data_handler:
     name: 服务转字段
     type: inner
     path: Service2Field
+  - key: arr2obj
+    name: 数组转对象
+    type: inner
+    path: Arr2Obj
+  - key: param2result
+    name: 参数转结果
+    type: inner
+    path: Param2Result
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:

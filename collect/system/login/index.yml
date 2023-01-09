@@ -1,0 +1,26 @@
+service:
+  - key: login
+    module: empty
+    log: true
+    http: true
+    params:
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能为空
+      password:
+        check:
+          template: "{{must .password}}"
+          err_msg: 密码不能为空
+    must_login: false
+    handler_params:
+      - key: service2field
+        service:
+          service: hrm.user_list
+          username: "[username]"
+          to_obj: true
+        save_field: user_info
+        template: "{{must .user_info}}"
+        err_msg: "【{{.username}}】用户名不存在"
+      - key: param2result
+        field: user_info

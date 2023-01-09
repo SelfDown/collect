@@ -8,6 +8,8 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &UpdateField{})
 	l = append(l, &UpdateArray{})
 	l = append(l, &Service2Field{})
+	l = append(l, &Arr2Obj{})
+	l = append(l, &Param2Result{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})
@@ -16,5 +18,6 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &BulkUpsertService{})
 	l = append(l, &SqlService{})
 	l = append(l, &EmptyService{})
+
 	return l
 }

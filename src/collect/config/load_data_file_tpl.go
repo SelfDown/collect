@@ -303,12 +303,12 @@ func (t *arrTplHandler) handler() interface{} {
 
 }
 
-func (t *PluginLoader) LoadRouterAllEnable(config Plugin, template Template, routerAll *RouterAll) {
+func (t *PluginLoader) LoadRouterAllEnable(config Plugin, template *Template, routerAll *RouterAll) {
 	for _, field := range config.Fields { // 将里面的字段转换成模板。
 		t.handler("", "router_all", routerAll, field, template)
 	}
 }
-func (t *PluginLoader) handler(dataFrom string, serviceName string, target interface{}, field SubField, template Template) {
+func (t *PluginLoader) handler(dataFrom string, serviceName string, target interface{}, field SubField, template *Template) {
 	var _handler handlerTpl
 	rule := field.Rule
 	if rule == "simple_field" { // 如果是一级字段直接转值
@@ -338,7 +338,7 @@ func (t *PluginLoader) handler(dataFrom string, serviceName string, target inter
 	_handler.SetDataFrom(dataFrom)
 	_handler.SetFromField(field.From)
 	_handler.SetToField(field.To)
-	_handler.SetTemplate(template)
+	_handler.SetTemplate(*template)
 	_handler.SetField(field.Field)
 	_handler.SetFields(field.Fields)
 	// 设置三级解析字段
@@ -356,7 +356,7 @@ func (t *PluginLoader) handler(dataFrom string, serviceName string, target inter
 * 加载data_file 文件内容,
 * 在启动的时候，就转换好模板，避免在运行的时候，转换模板，减少cpu 使用
  */
-func (t *PluginLoader) LoadDataFileTpl(config Plugin, template Template, routerAll *RouterAll) {
+func (t *PluginLoader) LoadDataFileTpl(config Plugin, template *Template, routerAll *RouterAll) {
 	serviceList := routerAll.GetRegisterServices()
 	for _, service := range serviceList {
 

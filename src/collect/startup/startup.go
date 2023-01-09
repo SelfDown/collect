@@ -18,6 +18,6 @@ func LoadSystemServices() config.RouterAll {
 	}
 	var loader config.PluginLoader
 	//加载启动插件
-	config.LoadTemplatePlugins(&loader, routerALL.LoadStartupPlugin, t, &routerALL)
+	config.LoadTemplatePlugins(&loader, routerALL.LoadStartupPlugin, &t, &routerALL)
 	return routerALL
 }

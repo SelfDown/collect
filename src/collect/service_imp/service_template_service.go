@@ -10,12 +10,13 @@ import (
 	utils "collect.mod/src/collect/utils"
 	"fmt"
 	"github.com/demdxx/gocast"
+	"github.com/gin-contrib/sessions"
 	text_template "text/template"
 )
 
 type TemplateService struct {
 	OpUser  string
-	Session interface{}
+	session *sessions.Session // 设置session
 	Request interface{}
 }
 
@@ -28,6 +29,9 @@ func init() {
 	//设置服务
 	collect.SetLocalRouter(routerAll)
 
+}
+func (t *TemplateService) SetSession(session *sessions.Session) {
+	t.session = session
 }
 
 func (t *TemplateService) getModuleResultObj(moduleName string) ModuleResult {
@@ -50,8 +54,8 @@ func IsPluginEnable(Tpl *text_template.Template, plugin collect.Plugin) bool {
 func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*collect.Template, *common.Result) {
 	serviceName := collect.GetServiceName(params)
 	if utils.IsValueEmpty(serviceName) {
-		err_msg := "请求参数【service】不存在，请检查传入参数"
-		return nil, common.NotOk(err_msg)
+		errMsg := "请求参数【service】不存在，请检查传入参数"
+		return nil, common.NotOk(errMsg)
 	}
 
 	// 根据service 名称获取配置
@@ -77,13 +81,28 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 		temp.LogData(msg)
 		temp.LogData(params)
 	}
+	// 如果是http 请求，并且配置必须登录，如果没有用户ID,则提示必须登录
+	mustLogin := true
+	if temp.MustLogin != nil && *temp.MustLogin == false {
+		mustLogin = false
+	}
+	// http 登录判断
+	if is_http && !temp.Http {
+		errMsg := serviceName + "不支持http 访问"
+		return nil, common.NotOk(errMsg)
+	}
+	// 用户登录判断
+	if mustLogin && utils.IsValueEmpty(t.OpUser) {
+		errMsg := "请登录！！！"
+		return nil, common.NotOk(errMsg)
+	}
 	var loader BeforeLoader
 	for _, plugin := range temp.GetBeforePlugins() {
 		//插件是否启用
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		pluginResult := collect.CallPluginFunc(&loader, plugin, temp, t)
+		pluginResult := collect.CallPluginFunc(&loader, plugin, &temp, t)
 		if !pluginResult.Success {
 			return nil, pluginResult
 		}
@@ -111,6 +130,7 @@ func (t *TemplateService) execute(temp *collect.Template) *common.Result {
 		return common.NotOk(errMsg)
 	}
 	data := result.Result(temp, t)
+
 	return data
 }
 func (t *TemplateService) after(temp *collect.Template) *common.Result {
@@ -121,7 +141,7 @@ func (t *TemplateService) after(temp *collect.Template) *common.Result {
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}
-		pluginResult := collect.CallPluginFunc(&loader, plugin, *temp, t)
+		pluginResult := collect.CallPluginFunc(&loader, plugin, temp, t)
 		if !pluginResult.Success {
 			return pluginResult
 		}
@@ -143,6 +163,14 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	}
 	// 处理中
 	data := t.execute(temp)
+	// 设置结果
+	// 如果参数处理中没有设置过结果，则设置模块处理的结果 ，优先参数返回的结果，
+	// 一般是空模块参数中配置了结果，如果实在参数中配置了结果，模块中也需要结果，那么参数中的结果不能配置
+	// 最好result_handler 配置结果
+	if !temp.HasResult() {
+		temp.SetResult(data)
+	}
+
 	if !data.Success {
 		return data
 	}
@@ -150,5 +178,7 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	if !afterResult.Success {
 		return afterResult
 	}
-	return data
+	// 获取结果
+	result := temp.GetResult()
+	return result
 }

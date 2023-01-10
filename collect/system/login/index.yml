@@ -12,6 +12,7 @@ service:
         check:
           template: "{{must .password}}"
           err_msg: 密码不能为空
+        template: "{{md5 .password}}"
     must_login: false
     handler_params:
       - key: service2field
@@ -22,5 +23,10 @@ service:
         save_field: user_info
         template: "{{must .user_info}}"
         err_msg: "【{{.username}}】用户名不存在"
+      - key: check_field
+        fields:
+          - field: password
+            template: "{{eq .password .user_info.userpwd}}"
+            err_msg: "用户名【{{.username}}】 密码错误！！！"
       - key: param2result
         field: user_info

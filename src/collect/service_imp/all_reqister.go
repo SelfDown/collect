@@ -6,6 +6,7 @@ func GetRegisterList() []ModuleResult {
 	l := make([]ModuleResult, 0)
 	// handler_params 参数处理
 	l = append(l, &UpdateField{})
+	l = append(l, &CheckField{})
 	l = append(l, &UpdateArray{})
 	l = append(l, &Service2Field{})
 	l = append(l, &Arr2Obj{})

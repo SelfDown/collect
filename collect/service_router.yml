@@ -50,6 +50,10 @@ data_handler:
     name: 添加参数
     type: inner
     path: UpdateField
+  - key: check_field
+    name: 检查参数
+    type: inner
+    path: CheckField
   - key: update_array
     name: 添加参数
     type: inner

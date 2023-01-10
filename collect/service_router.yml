@@ -70,6 +70,19 @@ data_handler:
     name: 参数转结果
     type: inner
     path: Param2Result
+  - key: params2result
+    name: 多个参数转结果
+    type: inner
+    path: Params2Result
+  - key: session_add
+    name: 添加session
+    type: inner
+    path: SessionAdd
+
+  - key: session_get
+    name: 获取session
+    type: inner
+    path: SessionGet
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:
@@ -148,6 +161,8 @@ load_startup_plugin:
         third_array_fields:
           - from: Template
             to: TemplateTpl
+          - from: From
+            to: FromTpl
           - from: Field
             to: FieldTpl
           - from: ErrMsg

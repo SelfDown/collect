@@ -61,6 +61,13 @@
 
             <div>
 
+                <a href="javascript:void (0)" @click="change('result36_search')">
+                    获取当前用户信息
+                </a>
+            </div>
+
+            <div>
+
                 <a href="javascript:void (0)" @click="change('result35_search')">
                     登录
                 </a>
@@ -126,51 +133,14 @@
         data() {
             return {
                 url: "/template_data/data",
-                params: '{"service":"project_manage.project"}',
+                params: '{"service":"hrm.user_list"}',
                 result: "",
                 urls: [],
                 test: {
-                    search: '{"service":"project.project_query"}',
-                    search_filter: '{"service":"project_manage.plan_task_query","start_date":"2021-01","end_date":"2021-12"}',
-                    save: '{"service":"project_manage.plan_task_save","project_id":"cbh","user_id":"503","start_date":"2021-03-01","end_date":"2021-03-31","per":100}',
-                    update: '{"service":"project_manage.plan_task_update","plan_task_id":"1","project_id":"cbh","user_id":"503","start_date":"2021-03-01","end_date":"2021-03-31","per":100}',
-                    delete: '{"service":"project_manage.plan_task_delete","plan_task_id_list":["1"]}',
-                    bulk_create: '{"service":"hrm.white_list_save","users":[1],"start_ym":"2022-01-01","end_ym":"2022-01-01"}',
-                    result_search: '{"service":"project_manage.project_month_total","start_date":"2020-01-01","end_date":"2022-01-01"}',
-                    result2_search: '{"service":"project_manage.man_month_total","start_date":"2020-01-01","end_date":"2022-01-01"}',
-                    result3_search: '{"service":"project_manage.plan_task_query","start_date":"2020-01-01","end_date":"2022-01-01"}',
-                    result4_search: '{"service":"hrm.user"}',
-                    result5_search: '{"service":"server.key2item_ids","hostid":"10142","keys":["o_d_192.168.13.131","o_d_192.168.13.136"]}',
-                    result6_search: '{"service":"monitor.oracle_delay_record_save","test_type":"6","test_proxy_param":{"install_soft_id":"1aa0207f-741e-412c-8eac-49fc05496da0","limit":"120","publication":"11"}}',
-                    result7_search: '{"service":"monitor.oracle_delay_record_save","test_type":"3","test_install_soft_id":"1aa0207f-741e-412c-8eac-49fc05496da0"}',
-                    result8_search: '{"service":"hrm.user"}',
-                    result9_search: '{"service":"server.link_template","hostid_list":["10318"],"templateid_list":[10001,10348]}',
-                    result10_search: '{"service":"grafana.query"}',
-                    result11_search: '{"service":"hrm.user_account_query"}',
-                    result12_search: '{"service":"hrm.user_account_save","nick":"张治","username":"zhangzhi","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
-                    result13_search: '{"service":"hrm.get_user","username":"zhangzhi"}',
-                    result14_search: '{"service":"hrm.user_account_delete","user_id_list":[1]}',
-                    result15_search: '{"service":"hrm.user_account_update","user_id":"c4ff9328-2668-42ef-987a-53217d02e0e3","nick":"张治","username":"zhangzhi","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
-                    result16_search: '{"service":"hrm.user_login","username":"zhangzhi","password":"123456"}',
-                    result17_search: '{"service":"hrm.user_logout"}',
-                    result18_search: '{"service":"hrm.ldap_search","username":"zhangzhi"}',
-                    result19_search: '{"service":"hrm.ldap_login","username":"zhangzhi","password":"Wgldap_2021"}',
-                    result20_search: '{"service":"hrm.ldap_add_user","username":"zz1","nick":"zz","password":"zz","email":"zz@163.com"}',
-                    result21_search: '{"service":"hrm.ldap_delete_user","username":"zz"}',
-                    result22_search: '{"service":"hrm.ldap_modify_user","username":"zhangzhi","password":"zhang@888"}',
-                    result23_search: '{"service":"hrm.user_create","nick":"张治","username":"z1z","password":"123456","user_status":"0","entry_date":"2021-10-08","phone":"18874948657","email":"18874948657@163.com"}',
-                    result24_search: '{"service":"project.project_update","sys_project_id":"152c2d0e-5651-4419-b35b-fef6a7262298","project_code":"thzk","project_name":"tt","order_index":100}',
-                    result25_search: '{"service":"project.project_save","project_code":"thzk","project_name":"tt","order_index":100}',
-                    result26_search: '{"service":"project.project_delete","sys_project_id_list":["152c2d0e-5651-4419-b35b-fef6a7262298"]}',
-                    result27_search: '{"service":"hrm.get_current_user_menu"}',
-                    result28_search: '{"service":"event.event_user_create","id":"zz"}',
-                    result29_search: '{"service":"test.module_test"}',
-                    result30_search: '{"service":"hrm.user_login","user_id":"zhangzhi"}',
-                    result31_search: '{"service":"test.make_files"}',
-                    result32_search: '{"service":"flow.publish","req_statu":"100"}',
                     result33_search: '{"service":"hrm.empty_test","username":"zhangzhi"}',
                     result34_search: '{"service":"hrm.user_list"}',
                     result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhang@888"}',
+                    result36_search: '{"service":"system.current_user"}',
                 }
             }
         },

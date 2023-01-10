@@ -31,7 +31,13 @@ func init() {
 
 }
 func (t *TemplateService) SetSession(session *sessions.Session) {
+
 	t.session = session
+}
+
+// GetSession 获取session
+func (t *TemplateService) GetSession() *sessions.Session {
+	return t.session
 }
 
 func (t *TemplateService) getModuleResultObj(moduleName string) ModuleResult {

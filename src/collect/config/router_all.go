@@ -220,7 +220,9 @@ type ParamConfig struct {
 	Default     interface{}             //默认值
 }
 type SubField struct {
+	Key         string                  // 关键字
 	From        string                  // 来源
+	FromTpl     *text_template.Template // 来源模板
 	To          string                  // 目标
 	Name        string                  // 名称
 	Template    string                  // 渲染模板

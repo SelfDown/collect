@@ -42,6 +42,7 @@ func main() {
 		opUser := s.Get("user_id").(string)
 		ts := template_service.TemplateService{OpUser: opUser}
 		// 设置session
+
 		ts.SetSession(&s)
 		// 处理结果
 		data := ts.Result(params, true)

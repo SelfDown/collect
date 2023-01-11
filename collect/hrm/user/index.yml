@@ -169,7 +169,6 @@ service:
   - key: user_list
     module: sql
     http: true
-    log: true
     params:
       nick:
         default: ""

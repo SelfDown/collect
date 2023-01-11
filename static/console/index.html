@@ -14,17 +14,17 @@
 <body style="padding: 0;margin: 0px">
 <div id="app">
     <el-row style="padding: 10px;background: #f0fff0;height: 100%">
-        <el-row style="display: flex">
-            <form id="form">
-                <input name="service" value="jira.uploadExcel"/>
-                <input type="file" name="file">
 
-            </form>
-            <button
-                    @click="upload"
-                    size="mini" type="primary">JIRA文件解析
-            </button>
+        <el-row style="margin-bottom: 20px">
+            <div style="margin-top: 20px">
 
+                <a href="javascript:void (0)" @click="change('result35_search')" style="margin-right: 100px">
+                    登录
+                </a>
+                <a href="javascript:void (0)" @click="change('result37_search')">
+                    登出
+                </a>
+            </div>
         </el-row>
 
         <el-row style="display: flex">
@@ -66,12 +66,6 @@
                 </a>
             </div>
 
-            <div>
-
-                <a href="javascript:void (0)" @click="change('result35_search')">
-                    登录
-                </a>
-            </div>
 
             <div>
 
@@ -141,6 +135,7 @@
                     result34_search: '{"service":"hrm.user_list"}',
                     result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhang@888"}',
                     result36_search: '{"service":"system.current_user"}',
+                    result37_search: '{"service":"system.logout"}',
                 }
             }
         },

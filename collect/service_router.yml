@@ -78,6 +78,10 @@ data_handler:
     name: 添加session
     type: inner
     path: SessionAdd
+  - key: session_remove
+    name: 删除session
+    type: inner
+    path: SessionRemove
 
   - key: session_get
     name: 获取session

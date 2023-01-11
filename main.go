@@ -8,8 +8,6 @@ import (
 )
 
 func main() {
-	// 查询用户
-	//simple.QueryUserList()
 	// 创建用户
 	//simple.UserCreate()
 	//根据用户名更新 1个条件的
@@ -39,7 +37,13 @@ func main() {
 		params := make(map[string]interface{})
 		c.Bind(&params)
 		// session 中设置用户ID
-		opUser := s.Get("user_id").(string)
+		userId := s.Get("user_id")
+		var opUser string
+		if userId != nil {
+			opUser = userId.(string)
+		} else {
+			opUser = ""
+		}
 		ts := template_service.TemplateService{OpUser: opUser}
 		// 设置session
 

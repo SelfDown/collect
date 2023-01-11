@@ -57,7 +57,7 @@ func IsPluginEnable(Tpl *text_template.Template, plugin collect.Plugin) bool {
 	return gocast.ToBool(buf.String())
 
 }
-func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*collect.Template, *common.Result) {
+func (t *TemplateService) before(params map[string]interface{}, isHttp bool) (*collect.Template, *common.Result) {
 	serviceName := collect.GetServiceName(params)
 	if utils.IsValueEmpty(serviceName) {
 		errMsg := "请求参数【service】不存在，请检查传入参数"
@@ -93,12 +93,12 @@ func (t *TemplateService) before(params map[string]interface{}, is_http bool) (*
 		mustLogin = false
 	}
 	// http 登录判断
-	if is_http && !temp.Http {
+	if isHttp && !temp.Http {
 		errMsg := serviceName + "不支持http 访问"
 		return nil, common.NotOk(errMsg)
 	}
 	// 用户登录判断
-	if mustLogin && utils.IsValueEmpty(t.OpUser) {
+	if isHttp && mustLogin && utils.IsValueEmpty(t.OpUser) {
 		errMsg := "请登录！！！"
 		return nil, common.NotOk(errMsg)
 	}

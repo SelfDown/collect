@@ -11,14 +11,30 @@ service:
             field: nick
           - key: userid
             field: userid
+          - key: user_id
+            field: user_id
       - key: params2result
         fields:
           - from: "{{.userid}}"
             to: userid
+          - from: "{{.user_id}}"
+            to: user_id
           - from: "{{.nick}}"
             to: nick
           - from: "{{.username}}"
             to: username
+  - key: logout
+    module: empty
+    http: true
+    log: true
+    handler_params:
+      - key: session_remove
+        fields:
+          - key: username
+          - key: nick
+          - key: userid
+          - key: user_id
+
   - key: login
     module: empty
     log: true
@@ -55,6 +71,8 @@ service:
           - key: nick
             template: "{{.user_info.nick}}"
           - key: userid
+            template: "{{.user_info.userid}}"
+          - key: user_id
             template: "{{.user_info.userid}}"
       - key: service2field
         service:

@@ -1,14 +1,25 @@
-{{  if  .nick }}
-and nick = {{.nick}}
+{{ if .exclude }}
+and a.userid != {{.exclude}}
 {{ end }}
 
+{{  if  .nick }}
+and a.nick = {{.nick}}
+{{ end }}
+{{ if .search }}
+and (
+    a.nick like {{.search}}
+    or a.username like {{.search}}
+)
+{{ end  }}
+
 {{  if  .username }}
-and username = {{.username}}
+and a.username = {{.username}}
 {{ end }}
 
 {{ if .status }}
-and statu ={{.status}}
+and a.statu ={{.status}}
 {{ end }}
+order by a.create_time desc
 {{ if  .pagination  }}
 limit {{.start}} , {{.size}}
 {{ end }}

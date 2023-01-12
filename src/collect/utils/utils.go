@@ -104,6 +104,15 @@ func IsRenderVar(name string) bool {
 	}
 	return false
 }
+
+//取参数变量、或者取值
+func RenderVarOrValue(name interface{}, params map[string]interface{}) interface{} {
+	pKey, ok := name.(string)
+	if ok && IsRenderVar(pKey) {
+		return RenderVar(pKey, params)
+	}
+	return pKey
+}
 func RenderVar(name string, params map[string]interface{}) interface{} {
 	varName := strings.Replace(name, "[", "", -1)
 	// 替换右边括号

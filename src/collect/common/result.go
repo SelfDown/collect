@@ -8,11 +8,12 @@ const SuccessValue = "0"
 const UnSuccessValue = "-1"
 
 type Result struct {
+	Count   int64  `json:"count"`   // 总数
 	Success bool   `json:"success"` // 是否成功
 	Code    string `json:"code"`    //编码
 	Msg     string `json:"msg"`     // 消息
 	Data    any    `json:"data"`    //请求参数
-	Count   int64  `json:"count"`   // 总数
+
 }
 
 func (r *Result) GetSuccess() bool {

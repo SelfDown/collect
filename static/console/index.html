@@ -15,14 +15,16 @@
 <div id="app">
     <el-row style="padding: 10px;background: #f0fff0;height: 100%">
 
-        <el-row style="margin-bottom: 20px">
-            <div style="margin-top: 20px">
-
-                <a href="javascript:void (0)" @click="change('result35_search')" style="margin-right: 100px">
+        <el-row style="margin-bottom: 15px">
+            <div style="margin-top: 10px">
+                <a href="javascript:void (0)" @click="change('result35_search')" style="margin-right: 50px">
                     登录
                 </a>
-                <a href="javascript:void (0)" @click="change('result37_search')">
+                <a href="javascript:void (0)" @click="change('result37_search')" style="margin-right: 50px">
                     登出
+                </a>
+                <a href="javascript:void (0)" @click="change('result36_search')">
+                    获取当前用户信息
                 </a>
             </div>
         </el-row>
@@ -58,28 +60,18 @@
 
         </el-row>
         <el-col :span="4">
-
-            <div>
-
-                <a href="javascript:void (0)" @click="change('result36_search')">
-                    获取当前用户信息
-                </a>
-            </div>
+            <el-row v-for="(item,index) in urls" key="index">
 
 
-            <div>
+                <h3 v-if="item.type=='title'">用户模块</h3>
+                <div v-else>
 
-                <a href="javascript:void (0)" @click="change('result34_search')">
-                    查询用户列表
-                </a>
-            </div>
+                    <a href="javascript:void (0)" @click="change(item.data)">
+                        {{item.name}}
+                    </a>
+                </div>
 
-            <div>
-
-                <a href="javascript:void (0)" @click="change('result33_search')">
-                    空模块测试
-                </a>
-            </div>
+            </el-row>
 
 
         </el-col>
@@ -129,13 +121,39 @@
                 url: "/template_data/data",
                 params: '{"service":"hrm.user_list"}',
                 result: "",
-                urls: [],
+                urls: [
+                    {
+                        type: "title",
+                        name: "用户管理"
+                    },
+                    {
+                        type: "url",
+                        name: "用户查询",
+                        data: '{"service":"hrm.user_list","search":"张","page":1,"size":20}'
+                    },
+                    {
+                        type: "url",
+                        name: "创建用户",
+                        data: '{"service":"hrm.create_user","username":"zhangsan","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"188********"}'
+                    },
+                    {
+                        type: "url",
+                        name: "修改用户",
+                        data: '{"service":"hrm.update_user_by_userid","userid":"c85ed77a-4815-46c8-ad06-9ba2fdb257de","username":"zhangsan","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"188********"}'
+                    },
+                    {
+                        type: "url",
+                        name: "删除用户",
+                        data: '{"service":"hrm.delete_user_by_userid_list","userid_list":["330bc524-f934-4ddd-8560-405dce4a45d6"]}'
+                    }
+                ],
+
                 test: {
                     result33_search: '{"service":"hrm.empty_test","username":"zhangzhi"}',
-                    result34_search: '{"service":"hrm.user_list"}',
                     result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhang@888"}',
                     result36_search: '{"service":"system.current_user"}',
                     result37_search: '{"service":"system.logout"}',
+
                 }
             }
         },
@@ -234,10 +252,10 @@
                 })
 
             },
-            change(t) {
+            change(data) {
 
                 try {
-                    this.params = JSON.parse(this.test[t])
+                    this.params = JSON.parse(data)
                     this.params = JSON.stringify(this.params, null, "   ")
                 } catch (e) {
                     this.params = this.test[t]

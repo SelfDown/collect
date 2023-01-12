@@ -1,6 +1,7 @@
 select *
-from user_account 
+from user_account a
 where
 1=1
 require('./base_where.common')
+
 

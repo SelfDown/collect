@@ -133,15 +133,10 @@ func (s *BaseHandler) HandlerFilter(template *config.Template) (interface{}, []i
 	query := ""
 	whereList := make([]string, 0)
 	valueList := make([]interface{}, 0)
+	params := template.GetParams()
 	for key, paramKey := range template.Filter {
-		var value interface{}
-		if reflect.TypeOf(paramKey).String() == "string" {
-			value = template.GetParam(utils.Strval(paramKey))
-		}
+		value := utils.RenderVarOrValue(paramKey, params)
 		// 如果参数中没有定义此值则，取配置的值
-		if value == nil {
-			value = paramKey
-		}
 		field := GetFieldName(key)
 		op := GetOpName(key)
 		opNew, valueNew := getOp(op, value)

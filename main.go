@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-	// 创建用户
-	//simple.UserCreate()
+
 	//根据用户名更新 1个条件的
 	//simple.UserUpdate()
 	// 根据用户名和昵称更新，2个条件的

@@ -64,7 +64,7 @@ service:
           err_msg: 用户名不能空
     table: "user_account"
     filter:
-      userid__in: userid_list
+      userid__in: "[userid_list]"
   - key: update_user_all
     module: model_update
     http: true
@@ -86,6 +86,7 @@ service:
           template: "{{must .userid_list}}"
           err_msg: 用户名不能空
     table: "user_account"
+
     filter:
       userid__in: "[userid_list]"
     ignore_fields:
@@ -109,6 +110,35 @@ service:
       nick: "[username]"
     update_fields:
       - address
+  - key: update_user_by_userid
+    module: model_update
+    http: true
+    log: true
+    params:
+      userid:
+        check:
+          template: "{{must .userid}}"
+          err_msg: 用户ID不能为空
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能空
+      nick:
+        check:
+          template: "{{must .nick}}"
+          err_msg: 昵称不能空
+    handler_params:
+      - key: service2field
+        service:
+          service: hrm.user_list
+          exclude: "[userid]"
+          username: "[username]"
+        save_field: user_info
+        template:  "{{ if .user_info  }}false{{ else  }}true{{end}}"
+        err_msg: "用户名 {{.username}} 已经存在【{{len .user_info}}】次"
+    table: "user_account"
+    filter:
+      userid: "[userid]"
 
 
 
@@ -135,6 +165,7 @@ service:
     params:
       userpwd:
         template: "{{ if .userpwd }}{{md5 .userpwd}}{{ end }}"
+        default: "123456"
       userid:
         template: "{{uuid}}"
       username:
@@ -170,11 +201,10 @@ service:
     module: sql
     http: true
     params:
+      search:
+        template: "{{ if .search }}%{{.search}}%{{ end }}"
       nick:
         default: ""
-#      status:
-#        template: "1"
-#        type: int
       page:
         type: int
         default: 1

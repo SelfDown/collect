@@ -44,7 +44,10 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 		template.LogData(realValues)
 	}
 	// 执行结果
-	maps, _ := sqlToData(sql, realValues...)
+	maps, error := sqlToData(sql, realValues...)
+	if error != nil {
+		return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
+	}
 	var count int64
 	if template.CountFileDataTpl != nil {
 		// count 设置不分页
@@ -59,7 +62,10 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 			template.LogData(countRealValues)
 		}
 		// 执行结果
-		countMaps, _ := sqlToData(countSql, countRealValues...)
+		countMaps, countError := sqlToData(countSql, countRealValues...)
+		if countError != nil {
+			return common.NotOk("执行sql报错:\n" + countSql + "\n详情:" + countError.Error())
+		}
 		if len(countMaps) != 0 {
 			countData := countMaps[0]
 			var countValue interface{}

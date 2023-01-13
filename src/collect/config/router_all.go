@@ -182,17 +182,17 @@ type ServiceList struct {
 * 服务
  */
 type ServiceConfig struct {
-	Project string // 项目
-	Name    string
-	Key     string                 // 服务
-	Service string                 // 服务全称
-	Params  map[string]ParamConfig // 参数配置定义
-	Module  string                 // 模块
-	Table   string                 // 表名
-	Http    bool                   //  是否支持http 访问
-
-	MustLogin *bool  `yaml:"must_login"` // 是否必须登录
-	DataFile  string `yaml:"data_file"`  // 文件路径
+	Project   string // 项目
+	Name      string
+	Key       string                 // 服务
+	Service   string                 // 服务全称
+	Params    map[string]ParamConfig // 参数配置定义
+	Module    string                 // 模块
+	Table     string                 // 表名
+	Http      bool                   //  是否支持http 访问
+	Options   string                 // 可以选择字段
+	MustLogin *bool                  `yaml:"must_login"` // 是否必须登录
+	DataFile  string                 `yaml:"data_file"`  // 文件路径
 
 	FileData         string                  // 文件内容
 	Pagination       string                  //分页字段

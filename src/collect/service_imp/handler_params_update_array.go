@@ -13,11 +13,10 @@ type UpdateArray struct {
 func (uf *UpdateArray) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 	// 直接渲染变量
-	dataList, ok := utils.RenderVar(handlerParam.Foreach, params).([]map[string]interface{})
-	if !ok {
-		return common.NotOk(handlerParam.Foreach + "不是对象数组")
+	dataList, errMsg := utils.RenderVarToArrMap(handlerParam.Foreach, params)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
 	}
-
 	var paramsCopy map[string]interface{}
 	if !utils.IsValueEmpty(handlerParam.Item) { // 如果没有配置item 则取本身
 		paramsCopy = utils.CopyMap(params)

@@ -113,6 +113,24 @@ func RenderVarOrValue(name interface{}, params map[string]interface{}) interface
 	}
 	return pKey
 }
+func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string]interface{}, string) {
+	// 直接渲染变量
+	dataList, ok := RenderVar(name, params).([]map[string]interface{})
+	if ok {
+		return dataList, ""
+	}
+	// 在深层次取，挨个转换
+	tmp := RenderVar(name, params).([]interface{})
+	if tmp == nil {
+		return nil, name + "对象非数组"
+	}
+	dataList = make([]map[string]interface{}, 0)
+	for _, item := range tmp {
+		dataList = append(dataList, item.(map[string]interface{}))
+	}
+	return dataList, ""
+}
+
 func RenderVar(name string, params map[string]interface{}) interface{} {
 	varName := strings.Replace(name, "[", "", -1)
 	// 替换右边括号
@@ -339,7 +357,7 @@ func ToSchemaName(name string) string {
 	return result
 }
 
-func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string) (map[string]interface{}, []string) {
+func SetDataValueByParams(params map[string]interface{}, data interface{}, ignoreFields []string, updateFields []string, optionFields []string) (map[string]interface{}, []string) {
 	dv := reflect.ValueOf(data)
 	if dv.Kind() != reflect.Ptr { // 如果不是指针，则取地址
 		dv = reflect.ValueOf(&data)
@@ -363,6 +381,10 @@ func SetDataValueByParams(params map[string]interface{}, data interface{}, ignor
 			}
 			//如果不在updateFields 则跳过，如果updateFields不为空
 			if updateFields != nil && !StringArrayContain(updateFields, name) {
+				continue
+			}
+			// 如果不在optionFields 则跳过，如果optionFields 不能为空
+			if optionFields != nil && !StringArrayContain(optionFields, name) {
 				continue
 			}
 			fieldNames = append(fieldNames, name)

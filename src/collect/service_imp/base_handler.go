@@ -78,26 +78,63 @@ func (s *BaseHandler) Result(template *config.Template, ts *TemplateService) *co
 func (s *BaseHandler) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	return common.Ok(nil, "")
 }
-func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (interface{}, []string) {
-	_, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
+
+func (s *BaseHandler) getFieldOptions(options string, params map[string]interface{}) ([]string, string) {
+
+	if !utils.IsValueEmpty(options) {
+		ops := utils.RenderVar(options, params)
+		if ops == nil {
+			return nil, "参数中字段" + options + "不存在"
+		}
+		fieldTmp, ok := ops.([]interface{})
+		if !ok {
+			return nil, "参数中字段" + options + "非数组类型"
+		}
+		fieldOptions := make([]string, 0)
+		for _, field := range fieldTmp { // 如果数组里面包含* 这跳过
+			fieldStr, fieldOk := field.(string)
+			if !fieldOk {
+				return nil, utils.Strval(field) + "非字符串类型，请检查配置"
+			}
+			if fieldStr == "*" {
+				return nil, ""
+			}
+			fieldOptions = append(fieldOptions, fieldStr)
+		}
+
+		return fieldOptions, ""
+	}
+	return nil, ""
+}
+
+// UpdateFields 更新字段，model_update 更新用的
+func (s *BaseHandler) UpdateFields(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string, optionFields []string) (interface{}, []string) {
+	_, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields, optionFields)
 	return modelData, names
 }
-func (s *BaseHandler) UpdateFieldsToMap(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string) (map[string]interface{}, []string) {
-	data, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields)
+
+func (s *BaseHandler) UpdateFieldsToMap(params map[string]interface{}, modelData interface{}, ignoreFields []string, updateFields []string, optionFields []string) (map[string]interface{}, []string) {
+	data, names := utils.SetDataValueByParams(params, modelData, ignoreFields, updateFields, optionFields)
 	return data, names
 }
-func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, modelData interface{}, template *config.Template) ([]map[string]interface{}, []string) {
+
+// UpdateFieldsToMapList 批量更新字段，批量创建和批量修改用的
+func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, modelData interface{}, template *config.Template) ([]map[string]interface{}, []string, string) {
 	modelList := make([]map[string]interface{}, 0)
 	var fieldNames []string
+	fieldOptions, errMsg := s.getFieldOptions(template.Options, template.GetParams())
+	if !utils.IsValueEmpty(errMsg) {
+		return nil, nil, errMsg
+	}
 	for _, item := range models {
 		modelItem := model.CloneModel(template.Table)
-		dataItem, names := s.UpdateFieldsToMap(item, &modelItem, template.IgnoreFields, template.UpdateFields)
+		dataItem, names := s.UpdateFieldsToMap(item, &modelItem, template.IgnoreFields, template.UpdateFields, fieldOptions)
 		modelList = append(modelList, dataItem)
 		if fieldNames == nil {
 			fieldNames = names
 		}
 	}
-	return modelList, fieldNames
+	return modelList, fieldNames, ""
 }
 
 func getOp(op string, value interface{}) (string, interface{}) {

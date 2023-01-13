@@ -34,7 +34,11 @@ func (s *ModelUpdateService) Result(template *config.Template, ts *TemplateServi
 			template.IgnoreFields = append(template.IgnoreFields, k)
 		}
 	}
-	_, fieldNames := s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
+	fieldOptions, errMsg := s.getFieldOptions(template.Options, params)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
+	_, fieldNames := s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields, fieldOptions)
 	gormDB := s.GetGormDb()
 	//生成where 条件+参数
 	query, args := s.HandlerFilter(template)

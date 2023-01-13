@@ -17,13 +17,13 @@
 
         <el-row style="margin-bottom: 15px">
             <div style="margin-top: 10px">
-                <a href="javascript:void (0)" @click="change('result35_search')" style="margin-right: 50px">
+                <a href="javascript:void (0)" @click="sys('result35_search')" style="margin-right: 50px">
                     登录
                 </a>
-                <a href="javascript:void (0)" @click="change('result37_search')" style="margin-right: 50px">
+                <a href="javascript:void (0)" @click="sys('result37_search')" style="margin-right: 50px">
                     登出
                 </a>
-                <a href="javascript:void (0)" @click="change('result36_search')">
+                <a href="javascript:void (0)" @click="sys('result36_search')">
                     获取当前用户信息
                 </a>
             </div>
@@ -145,6 +145,21 @@
                         type: "url",
                         name: "删除用户",
                         data: '{"service":"hrm.delete_user_by_userid_list","userid_list":["330bc524-f934-4ddd-8560-405dce4a45d6"]}'
+                    },
+                    {
+                        type: "url",
+                        name: "批量更新用户,统一字段",
+                        data: '{"service":"hrm.update_user_by_userid_list","userid_list":["c85ed77a-4815-46c8-ad06-9ba2fdb257de","e0ade542-1a41-45d8-bd31-5a5a32502ef9","fa44609d-2d24-424e-9be2-0cca94d678e1"],"fields":["*"],"nick":"张三","comments":""}'
+                    },
+                    {
+                        type: "url",
+                        name: "批量新建用户",
+                        data: '{"service":"hrm.bulk_create_user","user_list":[{"username":"zhangsan","nick":"张治","email":"1@163.com","statu":1,"userpwd":"123456","address":"cs","tel":"18874948657"},{"username":"zhangsan3","nick":"张治1","email":"1@163.com","statu":1,"userpwd":"123456","address":"长沙","tel":"18874948657"}]}'
+                    },
+                    {
+                        type: "根据用户ID批量更新",
+                        name: "批量新建用户",
+                        data: '{"service":"hrm.bulk_update_user","fields":["*"],"user_list":[{"userid":"62bf15d1-5564-447d-ae80-34c529b3d17d","username":"zhangsan","nick":"张治1111","email":"1@163.com","statu":1,"userpwd":"123456","address":"cs11","tel":"18874948657"},{"username":"zhangsan3","userid":"d67e5dd6-909b-415b-aa73-dd4f532725f5","nick":"张治111","email":"1@163.com","statu":1,"userpwd":"123456","address":"长沙1111","tel":"18874948657"}]}'
                     }
                 ],
 
@@ -256,6 +271,15 @@
 
                 try {
                     this.params = JSON.parse(data)
+                    this.params = JSON.stringify(this.params, null, "   ")
+                } catch (e) {
+                    this.params = this.test[t]
+                }
+            },
+            sys(t) {
+
+                try {
+                    this.params = JSON.parse(this.test[t])
                     this.params = JSON.stringify(this.params, null, "   ")
                 } catch (e) {
                     this.params = this.test[t]

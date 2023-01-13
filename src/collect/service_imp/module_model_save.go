@@ -4,6 +4,7 @@ import (
 	"collect.mod/model"
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
+	utils "collect.mod/src/collect/utils"
 )
 
 type ModelSaveService struct {
@@ -18,7 +19,11 @@ func (s *ModelSaveService) Result(template *config.Template, ts *TemplateService
 	if modelData == nil {
 		return common.NotOk(tableName + "没有找到，请检查模型数据")
 	}
-	s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields)
+	fieldOptions, errMsg := s.getFieldOptions(template.Options, params)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
+	s.UpdateFields(params, &modelData, template.IgnoreFields, template.UpdateFields, fieldOptions)
 	gormDB := s.GetGormDb()
 	dbx := gormDB.Create(modelData)
 	affected := dbx.RowsAffected

@@ -24,8 +24,10 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 	if utils.IsValueEmpty(modelField) {
 		return common.NotOk(template.GetService() + "没有配置model_field")
 	}
-	models := params[modelField]
-	dataList := models.([]map[string]interface{})
+	dataList, errMsg := utils.RenderVarToArrMap(modelField, params)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
 	if len(dataList) <= 0 {
 		return common.NotOk(template.GetService() + "列表" + modelField + "数据为空")
 	}
@@ -39,7 +41,10 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 		}
 	}
 	//执行
-	modelList, fieldNames := s.UpdateFieldsToMapList(dataList, modelData, template)
+	modelList, fieldNames, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
 	//保存
 	gormDB := s.GetGormDb()
 	if template.Log {

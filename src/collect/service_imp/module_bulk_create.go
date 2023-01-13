@@ -23,13 +23,18 @@ func (s *BulkCreateService) Result(template *config.Template, ts *TemplateServic
 	if utils.IsValueEmpty(modelField) {
 		return common.NotOk(template.GetService() + "没有配置model_field")
 	}
-	models := params[modelField]
-	dataList := models.([]map[string]interface{})
+	dataList, errMsg := utils.RenderVarToArrMap(modelField, params)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
 	if len(dataList) <= 0 {
 		return common.NotOk(template.GetService() + "列表" + modelField + "数据为空")
 	}
 	// 将参数列表，转成模型列表
-	modelList, _ := s.UpdateFieldsToMapList(dataList, modelData, template)
+	modelList, _, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template)
+	if !utils.IsValueEmpty(errMsg) {
+		return common.NotOk(errMsg)
+	}
 	//保存
 	gormDB := s.GetGormDb()
 	dbx := gormDB.Model(modelData).Create(modelList)

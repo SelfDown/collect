@@ -15,6 +15,8 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &SessionAdd{})
 	l = append(l, &SessionGet{})
 	l = append(l, &SessionRemove{})
+	l = append(l, &Data2Excel{})
+	l = append(l, &File2Result{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

@@ -1,6 +1,7 @@
 package collect
 
 import (
+	"github.com/xuri/excelize/v2"
 	"strings"
 	text_template "text/template"
 
@@ -194,21 +195,24 @@ type ServiceConfig struct {
 	MustLogin *bool                  `yaml:"must_login"` // 是否必须登录
 	DataFile  string                 `yaml:"data_file"`  // 文件路径
 
-	FileData         string                  // 文件内容
-	Pagination       string                  //分页字段
-	FileDataTpl      *text_template.Template // 文件内容的模板
-	CountFile        string                  `yaml:"count_file"` // count文件路径
-	CountFileData    string                  // count文件内容
-	CountFileDataTpl *text_template.Template // count文件内容模板
-	CurrentDir       string                  // 当前路径目录
-	Path             string                  // 当前路径
-	IgnoreFields     []string                `yaml:"ignore_fields"` //忽略字段
-	UpdateFields     []string                `yaml:"update_fields"` // 更新路径
-	Log              bool                    // 是否写日志
-	HandlerParams    []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
-	ResultHandler    []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数
-	Filter           map[string]interface{}  //过滤条件
-	ModelField       string                  `yaml:"model_field"`
+	FileData           string                  // 文件内容
+	Pagination         string                  //分页字段
+	FileDataTpl        *text_template.Template // 文件内容的模板
+	CountFile          string                  `yaml:"count_file"` // count文件路径
+	CountFileData      string                  // count文件内容
+	CountFileDataTpl   *text_template.Template // count文件内容模板
+	CurrentDir         string                  // 当前路径目录
+	Path               string                  // 当前路径
+	IgnoreFields       []string                `yaml:"ignore_fields"` //忽略字段
+	UpdateFields       []string                `yaml:"update_fields"` // 更新路径
+	Log                bool                    // 是否写日志
+	HandlerParams      []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
+	ResultHandler      []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数
+	Filter             map[string]interface{}  //过滤条件
+	ModelField         string                  `yaml:"model_field"`
+	ExcelConfig        string                  `yaml:"excel_config"` // 保存路径
+	ExcelConfigContent string
+	ExcelConfigData    *ExcelConfig //
 }
 type ParamConfig struct {
 	Name        string                  // 名称
@@ -239,7 +243,8 @@ type SubField struct {
 	ThirdArrayField  string       `yaml:"third_array_field"`
 	ThirdArrayFields []ThirdField `yaml:"third_array_fields"` // 三级字段列表
 
-	Rule string // 规则
+	Rule  string // 规则
+	Width float64
 }
 type ThirdField struct {
 	From  string // 来源
@@ -272,4 +277,19 @@ type HandlerParam struct {
 	DataJson      string                  `yaml:"data_json"`   // 来源json 数据地址
 	ResultName    string                  `yaml:"result_name"` // 结果参数
 	SaveField     string                  `yaml:"save_field"`  // 保存字段
+	Path          string                  // 保存路径
+
+}
+type ExcelConfig struct {
+	Name   string   // 名称
+	Sheets []Sheets // sheet 页
+}
+type Sheets struct {
+	TitleHeight float64 `json:"title_height"`
+	Data        string
+	Title       string
+	TitleTpl    *text_template.Template // 是否启用模板
+	Fields      []SubField              // 字段信息
+	TitleStyle  excelize.Style          `json:"title_style"` // 标题样式
+	NameStyle   excelize.Style          `json:"name_style"`  // 标题样式
 }

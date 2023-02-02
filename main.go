@@ -2,6 +2,7 @@ package main
 
 import (
 	template_service "collect.mod/src/collect/service_imp"
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -49,7 +50,15 @@ func main() {
 		ts.SetSession(&s)
 		// 处理结果
 		data := ts.Result(params, true)
-		c.JSON(200, data)
+		if ts.IsFileResponse {
+			filename := ts.ResponseFileName
+			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+			c.Writer.Header().Add("Content-Type", "application/octet-stream")
+			c.File(ts.ResponseFilePath)
+		} else {
+			c.JSON(200, data)
+		}
+
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

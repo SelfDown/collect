@@ -15,9 +15,12 @@ import (
 )
 
 type TemplateService struct {
-	OpUser  string
-	session *sessions.Session // 设置session
-	Request interface{}
+	OpUser           string
+	session          *sessions.Session // 设置session
+	Request          interface{}
+	IsFileResponse   bool
+	ResponseFilePath string
+	ResponseFileName string
 }
 
 func init() {

@@ -18,10 +18,33 @@ import (
 	"time"
 )
 
+func CreateDirs(path string) error {
+	if !IsPathExist(path) {
+		err := os.MkdirAll(path, os.ModePerm)
+		return err
+	}
+	return nil
+}
+func IsPathExist(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
+
+}
 func ParentDirName(filePath string) string {
 	filePath = strings.ReplaceAll(filePath, "\\", "/")
 	arr := strings.Split(filePath, "/")
 	return strings.Join(arr[:len(arr)-1], "/") + "/"
+}
+func FileName(filePath string) string {
+	filePath = strings.ReplaceAll(filePath, "\\", "/")
+	arr := strings.Split(filePath, "/")
+	return arr[len(arr)-1]
 }
 
 /**
@@ -56,6 +79,15 @@ type Interface interface {
 func CurrentDateTime() string {
 	timeStamp := time.Now().Unix()
 	timeLayout := "2006-01-02 15:04:05"
+	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
+	return timeStr
+}
+func CurrentDateFormat(timeLayout string) string {
+	timeStamp := time.Now().Unix()
+	if IsValueEmpty(timeLayout) {
+		timeLayout = "2006-01-02 15:04:05"
+	}
+
 	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
 	return timeStr
 }
@@ -164,7 +196,8 @@ func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) strin
 		fmt.Println(err)
 		return err.Error()
 	}
-	return buf.String()
+
+	return strings.TrimSpace(buf.String())
 }
 
 func Copy(src interface{}) interface{} {
@@ -253,6 +286,9 @@ func CopyRecursive(src, dst reflect.Value) {
 // 浮点型 3.0将会转换成字符串3, "3"
 // 非数值或字符类型的变量将会被转换成JSON格式字符串
 func Strval(value interface{}) string {
+	if v, ok := value.(string); ok {
+		return v
+	}
 	var key string
 	if value == nil {
 		return key

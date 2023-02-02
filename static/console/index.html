@@ -51,9 +51,13 @@
             <el-col :span="8">
                 <el-button-group style="display: flex;">
 
-                    <el-button size="mini" type="primary" @click="post"> POST_BODY</el-button>
-                    <el-button size="mini" type="primary" @click="download"> 下载文件</el-button>
-                    <el-button size="mini" type="primary" @click="toJSON"> 格式化</el-button>
+                    <el-button size="mini" type="primary"
+                               v-if="!show_download_file"
+                               @click="post"> 发送请求</el-button>
+                    <el-button size="mini" type="danger"
+                               v-if="show_download_file"
+                               @click="download"> 下载文件</el-button>
+                    <el-button size="mini" type="warning" @click="toJSON"> 格式化</el-button>
                 </el-button-group>
 
             </el-col>
@@ -63,10 +67,10 @@
             <el-row v-for="(item,index) in urls" key="index">
 
 
-                <h3 v-if="item.type=='title'">用户模块</h3>
+                <h3 v-if="item.type=='title'">{{item.name}}</h3>
                 <div v-else>
 
-                    <a href="javascript:void (0)" @click="change(item.data)">
+                    <a href="javascript:void (0)" @click="change(item)">
                         {{item.name}}
                     </a>
                 </div>
@@ -121,6 +125,7 @@
                 url: "/template_data/data",
                 params: '{"service":"hrm.user_list"}',
                 result: "",
+                show_download_file:false,
                 urls: [
                     {
                         type: "title",
@@ -160,9 +165,14 @@
                         type: "url",
                         name: "根据用户ID批量更新",
                         data: '{"service":"hrm.bulk_update_user","fields":["*"],"user_list":[{"userid":"62bf15d1-5564-447d-ae80-34c529b3d17d","username":"zhangsan","nick":"张治1111","email":"1@163.com","statu":1,"userpwd":"123456","address":"cs11","tel":"18874948657"},{"username":"zhangsan3","userid":"d67e5dd6-909b-415b-aa73-dd4f532725f5","nick":"张治111","email":"1@163.com","statu":1,"userpwd":"123456","address":"长沙1111","tel":"18874948657"}]}'
+                    },
+                    {
+                        type: "url",
+                        name: "用户下载",
+                        show_download_file: true,
+                        data: '{"service":"hrm.user_list_download","search":"张","page":1,"size":20}'
                     }
                 ],
-
                 test: {
                     result33_search: '{"service":"hrm.empty_test","username":"zhangzhi"}',
                     result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhang@888"}',
@@ -255,7 +265,7 @@
                 axios.post(this.url, JSON.parse(this.params), {
                     responseType: "blob"
                 }).then(res => {
-                    debugger
+
                     if (res.data instanceof Blob) {
                         this.convertRes2Blob(res)
 
@@ -267,8 +277,13 @@
                 })
 
             },
-            change(data) {
+            change(item) {
+                let data= item.data
 
+                this.show_download_file = false
+                if (item.show_download_file){
+                    this.show_download_file = true
+                }
                 try {
                     this.params = JSON.parse(data)
                     this.params = JSON.stringify(this.params, null, "   ")

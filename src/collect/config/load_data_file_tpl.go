@@ -183,14 +183,7 @@ func (t *baseTplHandler) SetThirdArrayField(field string) {
 func (t *baseTplHandler) SetThirdArrayFields(fields []ThirdField) {
 	t.thirdArrayFields = fields
 }
-
-/*
-* 处理字段的模板转换
-* @tplContent 表示模板内容
-* @toField 表示转换的目标对象的字段
-* @target  表示目标对象
- */
-func (t *baseTplHandler) _handler_value_tpl(tplContent string, toField string, target interface{}) error {
+func ToTpl(tplContent string, toField string, target interface{}) error {
 	if utils.IsValueEmpty(tplContent) {
 		return nil
 	}
@@ -202,6 +195,27 @@ func (t *baseTplHandler) _handler_value_tpl(tplContent string, toField string, t
 	}
 	utils.SetDataValue(toField, tpl, target)
 	return nil
+}
+
+/*
+* 处理字段的模板转换
+* @tplContent 表示模板内容
+* @toField 表示转换的目标对象的字段
+* @target  表示目标对象
+ */
+func (t *baseTplHandler) _handler_value_tpl(tplContent string, toField string, target interface{}) error {
+	//if utils.IsValueEmpty(tplContent) {
+	//	return nil
+	//}
+	//// 根据来源文件转，文件内容
+	//tpl, err := _load_template(tplContent)
+	//if err != nil {
+	//	return err
+	//
+	//}
+	//utils.SetDataValue(toField, tpl, target)
+	//return nil
+	return ToTpl(tplContent, toField, target)
 }
 
 /*

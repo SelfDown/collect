@@ -1,4 +1,26 @@
 service:
+  - key: user_list_import
+    module: empty
+    http: true
+    excel_config: "./user_list2excel.json"
+    handler_params:
+      - key: excel2data
+        save_field: user_list
+      - key: ignore_data
+        foreach: "[user_list]"
+        params: "params"
+        fields:
+          - name: "userid 为空的数据"
+            template: "{{ if .userid }}false{{else}}true{{end}}"
+      - key: service2field
+        enable: "{{gt (len .user_list) 0 }}"
+        service:
+          service: hrm.bulk_update_user
+          user_list: "[user_list]"
+      - key: params2result
+        fields:
+          - from: "[user_list]"
+            to: user_list
   - key: user_list_download
     module: empty
     http: true
@@ -16,12 +38,6 @@ service:
         save_field: user_list
       - key: data2excel
         path: "[excel_path]"
-      - key: params2result
-        fields:
-          - from: "[user_list]"
-            to: user_list
-          - from: "[excel_path]"
-            to: excel_path
       - key: file2result
         path: "[excel_path]"
         result_name: "[response_name]"

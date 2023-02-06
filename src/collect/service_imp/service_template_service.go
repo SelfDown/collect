@@ -5,6 +5,8 @@ import (
 	common "collect.mod/src/collect/common"
 	"collect.mod/src/collect/config"
 	startup "collect.mod/src/collect/startup"
+	"github.com/gin-gonic/gin"
+	"mime/multipart"
 	"time"
 
 	utils "collect.mod/src/collect/utils"
@@ -21,6 +23,54 @@ type TemplateService struct {
 	IsFileResponse   bool
 	ResponseFilePath string
 	ResponseFileName string
+	File             multipart.File // 单个上传文件
+}
+
+func HandlerRequest(c *gin.Context) {
+	s := sessions.Default(c)
+	//设置参数
+	params := make(map[string]interface{})
+	c.Bind(&params)
+
+	// session 中设置用户ID
+	userId := s.Get("user_id")
+	var opUser string
+	if userId != nil {
+		opUser = userId.(string)
+	} else {
+		opUser = ""
+	}
+	ts := TemplateService{OpUser: opUser}
+	if c.Request.PostForm != nil {
+		for k, v := range c.Request.PostForm {
+			if len(v) > 0 {
+				params[k] = v[0]
+			} else {
+				params[k] = nil
+			}
+
+		}
+		// 处理单个文件上传
+		file, _, error := c.Request.FormFile("file")
+		if error != nil {
+			data := common.NotOk(error.Error())
+			c.JSON(200, data)
+		}
+		ts.File = file
+	}
+	// 设置session
+
+	ts.SetSession(&s)
+	// 处理结果
+	data := ts.Result(params, true)
+	if ts.IsFileResponse {
+		filename := ts.ResponseFileName
+		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+		c.Writer.Header().Add("Content-Type", "application/octet-stream")
+		c.File(ts.ResponseFilePath)
+	} else {
+		c.JSON(200, data)
+	}
 }
 
 func init() {

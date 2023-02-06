@@ -27,13 +27,17 @@ func (t *PluginLoader) LoadExcelConfig(config Plugin, template *Template, router
 					config.Sheets[i].TitleTpl = tpl
 				}
 				for j, secondField := range sheet.Fields {
-					tplName, err := _load_template(secondField.Field)
+					// 如果没有配置模板，这跳过
+					if utils.IsValueEmpty(secondField.Template) {
+						continue
+					}
+					tplName, err := _load_template(secondField.Template)
 					if err != nil {
 						template.LogData(err)
 						continue
 					}
 					// 将field 编译成模板
-					config.Sheets[i].Fields[j].FieldTpl = tplName
+					config.Sheets[i].Fields[j].TemplateTpl = tplName
 
 				}
 			}

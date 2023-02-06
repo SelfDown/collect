@@ -1,5 +1,5 @@
 {
-  "name":"将用户列表转excel",
+  "name": "将用户列表转excel",
   "sheets": [
     {
       "sheet_index": 0,
@@ -13,7 +13,9 @@
         },
         "fill": {
           "type": "pattern",
-          "color": ["#3366FF"],
+          "color": [
+            "#3366FF"
+          ],
           "pattern": 1
         },
         "alignment": {
@@ -29,23 +31,28 @@
         },
         "fill": {
           "type": "pattern",
-          "color": ["#0066CC"],
+          "color": [
+            "#0066CC"
+          ],
           "pattern": 1
         },
         "alignment": {
           "vertical": "center"
         }
       },
+      "content_style": {
+        "NumFmt": 49
+      },
       "title": "用户列表\r\n1.ID 是作为系统的唯一标志，如果id存在则编辑数据，空着则新增\r\n2.带* 是必须保存",
       "data": "[user_list]",
       "fields": [
         {
-          "field":"[userid]",
+          "field": "[userid]",
           "name": "id",
           "width": 10
         },
         {
-          "field":"[nick]",
+          "field": "[nick]",
           "name": "*昵称",
           "width": 20
         },
@@ -65,7 +72,8 @@
           "width": 20
         },
         {
-          "field": "{{ if  eq .statu 1}} 正常 {{ else }}删除{{ end }}",
+          "field": "[statu]",
+          "template": "{{ if  eq .statu 1}} 正常 {{ else }}删除{{ end }}",
           "name": "状态",
           "width": 10
         },

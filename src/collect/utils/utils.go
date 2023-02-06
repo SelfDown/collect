@@ -122,6 +122,9 @@ func RenderTplBool(Tpl *text_template.Template, params map[string]interface{}) b
 func RenderTplDataWithType(Tpl *text_template.Template, params map[string]interface{}, dataType string) interface{} {
 
 	value := RenderTplData(Tpl, params)
+	if value == nil {
+		return value
+	}
 	t := reflect.TypeOf(value)
 	//如果是非字符串类型，直接返回
 	if t.Kind().String() != "string" {
@@ -163,10 +166,15 @@ func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string
 	return dataList, ""
 }
 
-func RenderVar(name string, params map[string]interface{}) interface{} {
+func GetRenderVarName(name string) string {
 	varName := strings.Replace(name, "[", "", -1)
 	// 替换右边括号
 	varName = strings.Replace(varName, "]", "", -1)
+	return varName
+}
+func RenderVar(name string, params map[string]interface{}) interface{} {
+
+	varName := GetRenderVarName(name)
 	// 取一级变量
 	v, _ := params[varName]
 	return v

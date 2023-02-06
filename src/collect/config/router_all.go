@@ -278,18 +278,19 @@ type HandlerParam struct {
 	ResultName    string                  `yaml:"result_name"` // 结果参数
 	SaveField     string                  `yaml:"save_field"`  // 保存字段
 	Path          string                  // 保存路径
-
+	Params        string
 }
 type ExcelConfig struct {
 	Name   string   // 名称
 	Sheets []Sheets // sheet 页
 }
 type Sheets struct {
-	TitleHeight float64 `json:"title_height"`
-	Data        string
-	Title       string
-	TitleTpl    *text_template.Template // 是否启用模板
-	Fields      []SubField              // 字段信息
-	TitleStyle  excelize.Style          `json:"title_style"` // 标题样式
-	NameStyle   excelize.Style          `json:"name_style"`  // 标题样式
+	TitleHeight  float64 `json:"title_height"`
+	Data         string
+	Title        string
+	TitleTpl     *text_template.Template // 是否启用模板
+	Fields       []SubField              // 字段信息
+	TitleStyle   excelize.Style          `json:"title_style"`   // 标题样式
+	NameStyle    excelize.Style          `json:"name_style"`    // 标题样式
+	ContentStyle excelize.Style          `json:"content_style"` // 标题样式
 }

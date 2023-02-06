@@ -2,7 +2,6 @@ package main
 
 import (
 	template_service "collect.mod/src/collect/service_imp"
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -32,33 +31,7 @@ func main() {
 	r.Use(sessions.Sessions("session_id", store))
 	r.Static("/static", "./static")
 	r.POST("/template_data/data", func(c *gin.Context) {
-		s := sessions.Default(c)
-		//设置参数
-		params := make(map[string]interface{})
-		c.Bind(&params)
-		// session 中设置用户ID
-		userId := s.Get("user_id")
-		var opUser string
-		if userId != nil {
-			opUser = userId.(string)
-		} else {
-			opUser = ""
-		}
-		ts := template_service.TemplateService{OpUser: opUser}
-		// 设置session
-
-		ts.SetSession(&s)
-		// 处理结果
-		data := ts.Result(params, true)
-		if ts.IsFileResponse {
-			filename := ts.ResponseFileName
-			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
-			c.Writer.Header().Add("Content-Type", "application/octet-stream")
-			c.File(ts.ResponseFilePath)
-		} else {
-			c.JSON(200, data)
-		}
-
+		template_service.HandlerRequest(c)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

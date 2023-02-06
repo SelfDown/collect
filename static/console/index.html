@@ -29,20 +29,6 @@
             </div>
         </el-row>
 
-        <el-row style="display: flex">
-            <form id="form2">
-                <input name="service" value="test.file_upload"/>
-                <input type="file" name="file">
-                <input type="file" name="file">
-            </form>
-            <button
-                    @click="upload2"
-
-                    type="primary">
-                文件转内容
-            </button>
-
-        </el-row>
 
         <el-row>
             <el-col :span="16">
@@ -52,11 +38,17 @@
                 <el-button-group style="display: flex;">
 
                     <el-button size="mini" type="primary"
-                               v-if="!show_download_file"
-                               @click="post"> 发送请求</el-button>
+                               v-if="!show_download_file && !show_upload_file"
+                               @click="post"> 发送请求
+                    </el-button>
                     <el-button size="mini" type="danger"
                                v-if="show_download_file"
-                               @click="download"> 下载文件</el-button>
+                               @click="download"> 下载文件
+                    </el-button>
+                    <el-button size="mini" type="danger"
+                               v-if="show_upload_file"
+                               @click="upload"> 上传文件
+                    </el-button>
                     <el-button size="mini" type="warning" @click="toJSON"> 格式化</el-button>
                 </el-button-group>
 
@@ -64,12 +56,13 @@
 
         </el-row>
         <el-col :span="4">
-            <el-row v-for="(item,index) in urls" key="index">
+            <el-row v-for="(item,index) in urls" :key="index">
 
 
                 <h3 v-if="item.type=='title'">{{item.name}}</h3>
                 <div v-else>
 
+                   <i v-if="item.show_download_file || item.show_upload_file" style="color: red" class="el-icon-tickets"></i>
                     <a href="javascript:void (0)" @click="change(item)">
                         {{item.name}}
                     </a>
@@ -82,6 +75,11 @@
 
         <el-col :span="8">
 
+            <el-row style="display: flex">
+                <form id="form" v-if="show_upload_file">
+                    <input type="file" name="file">
+                </form>
+            </el-row>
 
             <el-input
                     type="textarea"
@@ -125,7 +123,8 @@
                 url: "/template_data/data",
                 params: '{"service":"hrm.user_list"}',
                 result: "",
-                show_download_file:false,
+                show_download_file: false,
+                show_upload_file: false,
                 urls: [
                     {
                         type: "title",
@@ -171,6 +170,12 @@
                         name: "用户下载",
                         show_download_file: true,
                         data: '{"service":"hrm.user_list_download","search":"张","page":1,"size":20}'
+                    },
+                    {
+                        type: "url",
+                        name: "用户上传",
+                        show_upload_file: true,
+                        data: '{"service":"hrm.user_list_import"}'
                     }
                 ],
                 test: {
@@ -188,6 +193,7 @@
         methods: {
             upload() {
                 let formData = new FormData($("#form")[0])
+                formData.append()
                 let _this = this
                 $.ajax({
                     url: _this.url,
@@ -206,8 +212,12 @@
                     }
                 })
             },
-            upload2() {
-                let formData = new FormData($("#form2")[0])
+            upload() {
+                let formData = new FormData($("#form")[0])
+                let params = JSON.parse(this.params)
+                for (let key in params){
+                    formData.append(key, params[key])
+                }
                 let _this = this
                 $.ajax({
                     url: _this.url,
@@ -278,11 +288,14 @@
 
             },
             change(item) {
-                let data= item.data
+                let data = item.data
 
                 this.show_download_file = false
-                if (item.show_download_file){
+                this.show_upload_file = false
+                if (item.show_download_file) {
                     this.show_download_file = true
+                } else if (item.show_upload_file) {
+                    this.show_upload_file = true
                 }
                 try {
                     this.params = JSON.parse(data)

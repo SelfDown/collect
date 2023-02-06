@@ -91,6 +91,14 @@ data_handler:
     name: 数据转excel
     type: inner
     path: Data2Excel
+  - key: excel2data
+    name: 数据转excel
+    type: inner
+    path: Excel2Data
+  - key: ignore_data
+    name: 忽略数据
+    type: inner
+    path: IgnoreData
   - key: file2result
     name: 数据转excel
     type: inner

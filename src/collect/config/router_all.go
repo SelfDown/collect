@@ -213,6 +213,11 @@ type ServiceConfig struct {
 	ExcelConfig        string                  `yaml:"excel_config"` // 保存路径
 	ExcelConfigContent string
 	ExcelConfigData    *ExcelConfig //
+	HttpJson           string       `yaml:"http_json"` // http路径
+	HttpJsonContent    string
+	HttpConfigData     *HttpConfig //
+	Success            string
+	SuccessTpl         *text_template.Template // http 请求验证模板
 }
 type ParamConfig struct {
 	Name        string                  // 名称
@@ -283,6 +288,17 @@ type HandlerParam struct {
 type ExcelConfig struct {
 	Name   string   // 名称
 	Sheets []Sheets // sheet 页
+}
+type HttpConfig struct {
+	Url         string // 名称
+	UrlTpl      *text_template.Template
+	Method      string
+	AppendParam bool  `yaml:"append_param"`
+	ResultJson  *bool `yaml:"result_json"`
+	Header      map[string]string
+	HeaderTpl   map[string]*text_template.Template
+	Data        interface{}
+	DataTpl     *text_template.Template
 }
 type Sheets struct {
 	TitleHeight  float64 `json:"title_height"`

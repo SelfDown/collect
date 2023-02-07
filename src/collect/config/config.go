@@ -10,7 +10,7 @@ import (
  */
 var localRouter RouterAll
 
-const SERVICE_NAME = "service"
+const ServiceName = "service"
 
 //func GetModuleRegister(name string) module_result.ModuleResult {
 //	return localRouter.GetModuleRegister(name)
@@ -20,7 +20,7 @@ const SERVICE_NAME = "service"
 * 获取服务名称
  */
 func GetServiceName(params map[string]interface{}) string {
-	service := utils.Strval(params[SERVICE_NAME])
+	service := utils.Strval(params[ServiceName])
 	return service
 
 }
@@ -30,7 +30,7 @@ func GetServiceName(params map[string]interface{}) string {
  */
 func NewTemplateService(params map[string]interface{}) *common.Result {
 	r := common.Result{}
-	service := utils.Strval(params[SERVICE_NAME])
+	service := utils.Strval(params[ServiceName])
 	if utils.IsValueEmpty(service) {
 		return r.NotOk("服务没有找到")
 	}

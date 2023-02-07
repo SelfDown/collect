@@ -181,12 +181,12 @@ func (t *Template) GetAppKey(key string) string {
 
 func (t *Template) LogData(data interface{}) {
 	// :todo 写日志
-	log.Println(t.getLogData(data))
+	log.Printf("%#v", t.getLogData(data))
 }
 func (t *Template) LogErr(data interface{}) {
 	// :todo 写日志
 
-	log.Println(t.getLogData(data))
+	log.Printf("%#v", t.getLogData(data))
 }
 func (t *Template) getLogData(data interface{}) string {
 	s, ok := data.(string)
@@ -203,7 +203,7 @@ func (t *Template) GetService() string {
 	if !utils.IsValueEmpty(name) {
 		return name
 	}
-	n := t.paramPool[SERVICE_NAME]
+	n := t.paramPool[ServiceName]
 	return utils.Strval(n)
 
 }

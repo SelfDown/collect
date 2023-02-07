@@ -11,6 +11,7 @@ func GetFilters() map[string]any {
 		"replace":             Replace,
 		"md5":                 Md5,
 		"sub_str":             SubStr,
+		"get_key":             GetKey,
 	}
 
 }

@@ -7,6 +7,9 @@ services:
   - key: 'system'
     name: '登录'
     path: 'system/service.yml'
+  - key: 'wechat'
+    name: '企业微信'
+    path: 'wechat/service.yml'
 
 # 模块处理器
 module_handler:
@@ -44,6 +47,10 @@ module_handler:
     name: 批量新增
     type: inner
     path: EmptyService
+  - key: http
+    name: 发送http请求
+    type: inner
+    path: HttpService
 # 数据处理
 data_handler:
   - key: update_field
@@ -74,6 +81,10 @@ data_handler:
     name: 多个参数转结果
     type: inner
     path: Params2Result
+  - key: result2params
+    name: 结果转参数
+    type: inner
+    path: Result2Params
   - key: session_add
     name: 添加session
     type: inner
@@ -119,9 +130,15 @@ load_startup_plugin:
       - name: 将excel配置地址转文件内容
         from: ExcelConfig
         to: ExcelConfigContent
+      - name: 将http配置地址转文件内容
+        from: HttpJson
+        to: HttpJsonContent
   - key: load_excel_config
     method: LoadExcelConfig
     name: 转换excel配置
+  - key: load_http_config
+    method: LoadHttpJson
+    name: 转换http配置
   - key: load_router_all_enable
     method: LoadRouterAllEnable
     name: 加载模板能用,处理handler_req_param 是否能用
@@ -149,6 +166,11 @@ load_startup_plugin:
       - from: CountFileData
         to: CountFileDataTpl
         name: 将count_file转换成模板
+        rule: simple_field
+
+      - from: Success
+        to: SuccessTpl
+        name: 将success转换成模板
         rule: simple_field
 
       - rule: map_field
@@ -221,6 +243,8 @@ load_startup_plugin:
             to: FieldTpl
           - from: ErrMsg
             to: ErrMsgTpl
+          - from: From
+            to: FromTpl
 
 
 

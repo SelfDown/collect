@@ -176,6 +176,25 @@
                         name: "用户上传",
                         show_upload_file: true,
                         data: '{"service":"hrm.user_list_import"}'
+                    },
+                    {
+                        type: "title",
+                        name: "企业微信"
+                    },
+                    {
+                        type: "url",
+                        name: "企业微信生成token",
+                        data: '{"service":"wechat.gettoken"}'
+                    },
+                    {
+                        type: "url",
+                        name: "获取企业微信用户列表",
+                        data: '{"service":"wechat.user_list"}'
+                    },
+                    {
+                        type: "url",
+                        name: "根据电话号码获取用户ID",
+                        data: '{"service":"wechat.get_userid"}'
                     }
                 ],
                 test: {

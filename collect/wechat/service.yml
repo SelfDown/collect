@@ -1,0 +1,7 @@
+# 项目点路由
+service:
+  - name: "登录"
+    path: "login/index.yml"
+
+  - name: "用户列表"
+    path: "user_list/index.yml"

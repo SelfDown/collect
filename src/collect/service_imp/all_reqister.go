@@ -19,6 +19,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &File2Result{})
 	l = append(l, &Excel2Data{})
 	l = append(l, &IgnoreData{})
+	l = append(l, &Result2Params{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})
@@ -27,6 +28,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &BulkUpsertService{})
 	l = append(l, &SqlService{})
 	l = append(l, &EmptyService{})
+	l = append(l, &HttpService{})
 
 	return l
 }

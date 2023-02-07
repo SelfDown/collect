@@ -9,6 +9,12 @@ import (
 
 func main() {
 
+	//req, err := http.NewRequest("GET", "http://www.baidu.com", nil)
+	//fmt.Println(err)
+	//
+	//req.Header.Set("xx", "x")
+	//resp, err := http.DefaultClient.Do(req)
+	//fmt.Println(resp)
 	//根据用户名更新 1个条件的
 	//simple.UserUpdate()
 	// 根据用户名和昵称更新，2个条件的

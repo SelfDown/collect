@@ -3,6 +3,7 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	config "collect.mod/src/collect/config"
+	utils "collect.mod/src/collect/utils"
 )
 
 type Param2Result struct {
@@ -12,7 +13,7 @@ type Param2Result struct {
 func (pr *Param2Result) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 
-	result, ok := params[handlerParam.Field]
+	result, ok := params[utils.GetRenderVarName(handlerParam.Field)]
 	if !ok {
 		return common.NotOk(handlerParam.Field + "在参数中没有找到")
 	}

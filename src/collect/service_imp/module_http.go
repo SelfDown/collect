@@ -1,0 +1,235 @@
+package collect
+
+import (
+	"bytes"
+	common "collect.mod/src/collect/common"
+	config "collect.mod/src/collect/config"
+	utils "collect.mod/src/collect/utils"
+	"encoding/json"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"strings"
+)
+
+type HttpService struct {
+	BaseHandler
+}
+
+//var db0 *sql.DB
+
+func (s *HttpService) Result(template *config.Template, ts *TemplateService) *common.Result {
+
+	params := template.GetParams()
+	configData := template.HttpConfigData
+
+	//configData.Data
+	//http.Post()
+
+	//request, error := http.NewRequest("POST", httpposturl, bytes.NewBuffer(jsonData))
+	handler := GetHandler(configData, params)
+	defer handler.Close()
+	// 创建请求
+	result := handler.CreateRequest()
+	if template.Log {
+		template.LogData(handler.GetLogData())
+	}
+	if !result.Success {
+		return result
+	}
+	// 自定义处理请求
+	result = handler.HandlerRequest()
+	if !result.Success {
+		return result
+	}
+	result = handler.GetResult()
+	if !result.Success {
+		return result
+	}
+	if template.SuccessTpl != nil {
+		r, ok := result.GetData().(map[string]interface{})
+		if ok {
+			success := utils.RenderTplBool(template.SuccessTpl, r)
+			if !success {
+				return common.NotOk(utils.Strval(r))
+			}
+		}
+	}
+	return result
+}
+
+type RequestHandler interface {
+	SetConfig(*config.HttpConfig)
+	GetConfig() *config.HttpConfig
+	GetParams() map[string]interface{}
+	SetParams(map[string]interface{})
+	GetMethod() string
+	GetUrl() string
+	SetUrl(url string)
+	GetBody() io.Reader
+	SetBody(io.Reader)
+	CreateRequest() *common.Result
+	HandlerRequest() *common.Result
+	GetResult() *common.Result
+	GetLogData() map[string]interface{}
+	GetData() map[string]interface{}
+	SetData(data map[string]interface{})
+	Close()
+	//config *config.HttpConfig
+}
+type BaseRequestHandler struct {
+	RequestHandler
+	config *config.HttpConfig
+	params map[string]interface{}
+	url    string
+	body   io.Reader
+	data   map[string]interface{}
+	req    *http.Request
+	resp   *http.Response
+}
+
+func (t *BaseRequestHandler) SetConfig(config *config.HttpConfig) {
+	t.config = config
+}
+func (t *BaseRequestHandler) GetConfig() *config.HttpConfig {
+	return t.config
+}
+func (t *BaseRequestHandler) SetParams(params map[string]interface{}) {
+	t.params = params
+}
+func (t *BaseRequestHandler) GetParams() map[string]interface{} {
+	return t.params
+}
+func (t *BaseRequestHandler) GetMethod() string {
+	return strings.ToUpper(t.config.Method)
+}
+
+func (t *BaseRequestHandler) SetUrl(url string) {
+	t.url = url
+}
+func (t *BaseRequestHandler) GetBody() io.Reader {
+	data := t.GetData()
+	buf := bytes.NewBuffer(nil)
+	encoder := json.NewEncoder(buf)
+	encoder.Encode(data)
+	return buf
+}
+
+func (t *BaseRequestHandler) SetBody(body io.Reader) {
+	t.body = body
+}
+func (t *BaseRequestHandler) GetData() map[string]interface{} {
+
+	data := t.GetDataStr()
+	p := make(map[string]interface{})
+	json.Unmarshal([]byte(data), &p)
+	return p
+}
+func (t *BaseRequestHandler) GetDataStr() string {
+	data := utils.RenderTpl(t.config.DataTpl, t.params)
+	return data
+}
+func (t *BaseRequestHandler) SetData(data map[string]interface{}) {
+	t.data = data
+}
+
+func (t *BaseRequestHandler) GetLogData() map[string]interface{} {
+
+	p := make(map[string]interface{})
+	p["url"] = t.url
+	p["method"] = t.config.Method
+	p["data"] = t.data
+	return p
+}
+func (t *BaseRequestHandler) Close() {
+	if t.resp != nil {
+		t.resp.Body.Close()
+	}
+}
+
+func GetHandler(config *config.HttpConfig, params map[string]interface{}) RequestHandler {
+	method := config.Method
+	method = strings.ToLower(method)
+	var handler RequestHandler
+	if method == "get" {
+		handler = &GetRequestHandler{}
+	} else if method == "post" {
+		handler = &PostRequestHandler{}
+	} else {
+		handler = &BaseRequestHandler{}
+	}
+	handler.SetConfig(config)
+	handler.SetParams(params)
+	// 设置url
+	handler.SetUrl(handler.GetUrl())
+	// 处理data
+	handler.SetData(handler.GetData())
+	handler.SetBody(handler.GetBody())
+
+	return handler
+}
+
+type GetRequestHandler struct {
+	BaseRequestHandler
+}
+
+func (t *BaseRequestHandler) GetUrl() string {
+	url := utils.RenderTpl(t.config.UrlTpl, t.params)
+	return url
+}
+func (t *BaseRequestHandler) GetResult() *common.Result {
+	req := t.req
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return common.NotOk(err.Error())
+	}
+	t.resp = resp
+	body, err := ioutil.ReadAll(resp.Body)
+	resultJson := t.config.ResultJson
+	// 处理不转json
+	//或者状态码大于200
+	if (resultJson != nil && *resultJson == false) || resp.StatusCode > 200 {
+		return common.NotOk(utils.Strval(body))
+	}
+	result := make(map[string]interface{})
+	json.Unmarshal(body, &result)
+	return common.Ok(result, "请求发送成功")
+}
+
+// CreateRequest 处理请求
+func (t *BaseRequestHandler) CreateRequest() *common.Result {
+	req, err := http.NewRequest(t.GetMethod(), t.url, t.body)
+	if err != nil {
+		return common.NotOk(err.Error())
+	}
+	// 设置请求
+	t.req = req
+	return common.Ok(req, "参数构造成功")
+} // DoRequest 处理请求
+
+// HandlerRequest 处理请求
+func (t *BaseRequestHandler) HandlerRequest() *common.Result {
+	return common.Ok(nil, "参数处理成功")
+}
+
+func (t *GetRequestHandler) HandlerRequest() *common.Result {
+	req := t.req
+	// 处理url get请求
+	query := req.URL.Query()
+	data := t.data
+	for k, v := range data {
+		query.Set(k, utils.Strval(v))
+	}
+	req.URL.RawQuery = query.Encode()
+	return common.Ok(req, "参数构造成功")
+}
+
+func (t *GetRequestHandler) GetBody() io.Reader {
+
+	return nil
+}
+
+type PostRequestHandler struct {
+	BaseRequestHandler
+}

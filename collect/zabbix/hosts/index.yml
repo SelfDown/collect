@@ -1,0 +1,5 @@
+service:
+  - key: hostgroup
+    module: http
+    http: true
+    http_json: hostgroup.json

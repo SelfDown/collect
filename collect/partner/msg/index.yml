@@ -1,0 +1,6 @@
+service:
+  - key: pushalertmsgzbx
+    log: true
+    module: http
+    http: true
+    http_json: pushalertmsgzbx.json

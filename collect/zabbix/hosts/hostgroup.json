@@ -1,0 +1,22 @@
+{
+  "url": "http://172.26.0.150/zabbix/api_jsonrpc.php",
+  "method": "POST",
+  "header": {
+    "content-type": "application/json"
+  },
+  "data": {
+    "jsonrpc": "2.0",
+    "method": "hostgroup.get",
+    "params": {
+      "output": "extend",
+      "filter": {
+        "name": [
+          "[LMYY]利民医院"
+        ]
+      }
+
+    },
+    "auth": "0f8bd590815bf5bf2c74e90f995594f1",
+    "id": 1
+  }
+}

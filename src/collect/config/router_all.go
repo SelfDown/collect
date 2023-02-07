@@ -293,12 +293,19 @@ type HttpConfig struct {
 	Url         string // 名称
 	UrlTpl      *text_template.Template
 	Method      string
-	AppendParam bool  `yaml:"append_param"`
-	ResultJson  *bool `yaml:"result_json"`
+	AppendParam bool  `json:"append_param"`
+	ResultJson  *bool `json:"result_json"`
 	Header      map[string]string
 	HeaderTpl   map[string]*text_template.Template
+	BasicAuth   BasicAuth `json:"basic_auth"`
 	Data        interface{}
 	DataTpl     *text_template.Template
+}
+type BasicAuth struct {
+	Username    string
+	Password    string
+	UsernameTpl *text_template.Template
+	PasswordTpl *text_template.Template
 }
 type Sheets struct {
 	TitleHeight  float64 `json:"title_height"`

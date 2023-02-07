@@ -1,0 +1,5 @@
+service:
+  - key: version_search
+    module: http
+    http: true
+    http_json: version_search.json

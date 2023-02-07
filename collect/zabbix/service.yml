@@ -1,0 +1,6 @@
+# 项目点路由
+service:
+  - name: "主机"
+    path: "hosts/index.yml"
+
+

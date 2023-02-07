@@ -1,0 +1,6 @@
+# 项目点路由
+service:
+  - name: "版本查询"
+    path: "version/index.yml"
+
+

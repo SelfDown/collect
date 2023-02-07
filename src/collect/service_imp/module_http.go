@@ -72,8 +72,8 @@ type RequestHandler interface {
 	HandlerRequest() *common.Result
 	GetResult() *common.Result
 	GetLogData() map[string]interface{}
-	GetData() map[string]interface{}
-	SetData(data map[string]interface{})
+	GetData() interface{}
+	SetData(data interface{})
 	Close()
 	//config *config.HttpConfig
 }
@@ -83,7 +83,7 @@ type BaseRequestHandler struct {
 	params map[string]interface{}
 	url    string
 	body   io.Reader
-	data   map[string]interface{}
+	data   interface{}
 	req    *http.Request
 	resp   *http.Response
 }
@@ -108,7 +108,11 @@ func (t *BaseRequestHandler) SetUrl(url string) {
 	t.url = url
 }
 func (t *BaseRequestHandler) GetBody() io.Reader {
-	data := t.GetData()
+	data := t.data
+	if dataStr, ok := data.(string); ok {
+		return strings.NewReader(dataStr)
+	}
+
 	buf := bytes.NewBuffer(nil)
 	encoder := json.NewEncoder(buf)
 	encoder.Encode(data)
@@ -118,18 +122,22 @@ func (t *BaseRequestHandler) GetBody() io.Reader {
 func (t *BaseRequestHandler) SetBody(body io.Reader) {
 	t.body = body
 }
-func (t *BaseRequestHandler) GetData() map[string]interface{} {
+func (t *BaseRequestHandler) GetData() interface{} {
 
+	//如果是map 类型先装json字符串，进行渲染，然后给json转回来
 	data := t.GetDataStr()
 	p := make(map[string]interface{})
 	json.Unmarshal([]byte(data), &p)
+	if utils.IsValueEmpty(p) && !utils.IsValueEmpty(data) { // 处理字符串
+		return data
+	}
 	return p
 }
 func (t *BaseRequestHandler) GetDataStr() string {
 	data := utils.RenderTpl(t.config.DataTpl, t.params)
 	return data
 }
-func (t *BaseRequestHandler) SetData(data map[string]interface{}) {
+func (t *BaseRequestHandler) SetData(data interface{}) {
 	t.data = data
 }
 
@@ -164,6 +172,7 @@ func GetHandler(config *config.HttpConfig, params map[string]interface{}) Reques
 	handler.SetUrl(handler.GetUrl())
 	// 处理data
 	handler.SetData(handler.GetData())
+	// 设置body
 	handler.SetBody(handler.GetBody())
 
 	return handler
@@ -200,6 +209,20 @@ func (t *BaseRequestHandler) GetResult() *common.Result {
 // CreateRequest 处理请求
 func (t *BaseRequestHandler) CreateRequest() *common.Result {
 	req, err := http.NewRequest(t.GetMethod(), t.url, t.body)
+	// 设置header
+	if !utils.IsValueEmpty(t.config.Header) {
+		for k, tpl := range t.config.HeaderTpl {
+			req.Header.Set(k, utils.RenderTpl(tpl, t.params))
+		}
+	}
+	// 设置basic auth 登录
+	usernameTpl := t.config.BasicAuth.UsernameTpl
+	passwordTpl := t.config.BasicAuth.PasswordTpl
+	if usernameTpl != nil && passwordTpl != nil {
+		username := utils.RenderTpl(usernameTpl, t.params)
+		password := utils.RenderTpl(passwordTpl, t.params)
+		req.SetBasicAuth(username, password)
+	}
 	if err != nil {
 		return common.NotOk(err.Error())
 	}
@@ -218,7 +241,7 @@ func (t *GetRequestHandler) HandlerRequest() *common.Result {
 	// 处理url get请求
 	query := req.URL.Query()
 	data := t.data
-	for k, v := range data {
+	for k, v := range data.(map[string]interface{}) {
 		query.Set(k, utils.Strval(v))
 	}
 	req.URL.RawQuery = query.Encode()

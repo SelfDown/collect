@@ -195,6 +195,33 @@
                         type: "url",
                         name: "根据电话号码获取用户ID",
                         data: '{"service":"wechat.get_userid"}'
+                    },
+                    {
+                        type: "title",
+                        name: "zabbix"
+                    },
+                    {
+                        type: "url",
+                        name: "查看zabbix分组，测试设置头",
+                        data: '{"service":"zabbix.hostgroup"}'
+                    },
+                    {
+                        type: "title",
+                        name: "nexus"
+                    },
+                    {
+                        type: "url",
+                        name: "查看nexus 版本，测试basic auth",
+                        data: '{"service":"nexus.version_search"}'
+                    },
+                    {
+                        type: "title",
+                        name: "partner"
+                    },
+                    {
+                        type: "url",
+                        name: "推送消息，直接传字符串",
+                        data: '{"service":"partner.pushalertmsgzbx"}'
                     }
                 ],
                 test: {

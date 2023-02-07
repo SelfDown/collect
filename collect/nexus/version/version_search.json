@@ -1,0 +1,40 @@
+{
+  "url": "http://172.26.0.19:8081/service/extdirect",
+  "method": "POST",
+  "header": {
+    "content-type": "application/json"
+  },
+  "basic_auth": {
+    "username": "zhangzhi",
+    "password": "zhang@888"
+  },
+  "data": {
+    "action": "coreui_Search",
+    "method": "read",
+    "data": [
+      {
+        "page": 1,
+        "start": 0,
+        "limit": 5,
+        "sort": [
+          {
+            "property": "version",
+            "direction": "DESC"
+          }
+        ],
+        "filter": [
+          {
+            "property": "group.raw",
+            "value": "com.wghis.frontend"
+          },
+          {
+            "property": "name.raw",
+            "value": "mis-ui"
+          }
+        ]
+      }
+    ],
+    "type": "rpc",
+    "tid": 20
+  }
+}

@@ -3,13 +3,21 @@ services:
   - key: 'hrm'
     name: '人资管理'
     path: 'hrm/service.yml'
-
   - key: 'system'
     name: '登录'
     path: 'system/service.yml'
   - key: 'wechat'
     name: '企业微信'
     path: 'wechat/service.yml'
+  - key: 'zabbix'
+    name: 'zabbix'
+    path: 'zabbix/service.yml'
+  - key: 'nexus'
+    name: 'nexus'
+    path: 'nexus/service.yml'
+  - key: 'partner'
+    name: 'partner'
+    path: 'partner/service.yml'
 
 # 模块处理器
 module_handler:

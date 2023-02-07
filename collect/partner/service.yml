@@ -1,0 +1,4 @@
+# 项目点路由
+service:
+  - name: "消息推送"
+    path: "msg/index.yml"

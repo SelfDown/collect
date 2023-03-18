@@ -85,7 +85,7 @@ service:
 #    update_fields:
 #      - address
     ignore_fields:
-      - username
+      - password
   - key: bulk_create_user
     module: bulk_create
     log: true

@@ -26,6 +26,28 @@ type TemplateService struct {
 	File             multipart.File // 单个上传文件
 }
 
+func handlerAmis(result *common.Result) {
+	// 将结果转成支持amis形式
+	if utils.GetAppKey("to_amis") == "true" {
+		if result.Success { // 将status 设置成数字
+			result.Status = 0
+		} else {
+			result.Status = -1
+		}
+		dataResult := result.GetData()
+		// 处理data
+		if _, ok := dataResult.(map[string]interface{}); !ok {
+			rData := make(map[string]interface{})
+			rData["data"] = dataResult
+			// 只有查询返回list,list 才有count
+			if _, isList := dataResult.([]map[string]interface{}); isList {
+				rData["count"] = result.GetCount()
+			}
+			result.Data = rData
+		}
+
+	}
+}
 func HandlerRequest(c *gin.Context) {
 	s := sessions.Default(c)
 	//设置参数
@@ -63,6 +85,8 @@ func HandlerRequest(c *gin.Context) {
 	ts.SetSession(&s)
 	// 处理结果
 	data := ts.Result(params, true)
+	// 处理amis结果
+	handlerAmis(data)
 	if ts.IsFileResponse {
 		filename := ts.ResponseFileName
 		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
@@ -239,5 +263,6 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	}
 	// 获取结果
 	result := temp.GetResult()
+
 	return result
 }

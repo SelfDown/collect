@@ -30,7 +30,8 @@ func main() {
 	//批量更新用户
 	//simple.UserUpdateBulk()
 	// 模块测试
-
+	// todo go profile 使用
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// 生成cookies
 	store := cookie.NewStore([]byte("secret"))

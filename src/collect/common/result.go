@@ -8,6 +8,7 @@ const SuccessValue = "0"
 const UnSuccessValue = "-1"
 
 type Result struct {
+	Status  int64  `json:"status"`  // 0成功，其他失败
 	Count   int64  `json:"count"`   // 总数
 	Success bool   `json:"success"` // 是否成功
 	Code    string `json:"code"`    //编码

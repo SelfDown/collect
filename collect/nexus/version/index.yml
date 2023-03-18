@@ -1,5 +1,6 @@
 service:
   - key: version_search
     module: http
+    must_login: false
     http: true
     http_json: version_search.json

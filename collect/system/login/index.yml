@@ -39,6 +39,7 @@ service:
     module: empty
     log: true
     http: true
+
     params:
       username:
         check:

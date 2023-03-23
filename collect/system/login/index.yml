@@ -63,7 +63,7 @@ service:
       - key: check_field
         fields:
           - field: password
-            template: "{{eq .password .user_info.userpwd}}"
+            template: "{{eq .password .user_info.password}}"
             err_msg: "用户名【{{.username}}】 密码错误！！！"
       - key: session_add
         fields:
@@ -72,9 +72,9 @@ service:
           - key: nick
             template: "{{.user_info.nick}}"
           - key: userid
-            template: "{{.user_info.userid}}"
+            template: "{{.user_info.user_id}}"
           - key: user_id
-            template: "{{.user_info.userid}}"
+            template: "{{.user_info.user_id}}"
       - key: service2field
         service:
           service: system.current_user

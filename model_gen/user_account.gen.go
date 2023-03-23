@@ -27,26 +27,26 @@ func newUserAccount(db *gorm.DB, opts ...gen.DOOption) userAccount {
 
 	tableName := _userAccount.userAccountDo.TableName()
 	_userAccount.ALL = field.NewAsterisk(tableName)
-	_userAccount.Userid = field.NewString(tableName, "userid")
-	_userAccount.RoleID = field.NewString(tableName, "role_id")
-	_userAccount.Username = field.NewString(tableName, "username")
-	_userAccount.Userpwd = field.NewString(tableName, "userpwd")
-	_userAccount.LastLoginTime = field.NewTime(tableName, "last_login_time")
-	_userAccount.LastLoginIP = field.NewString(tableName, "last_login_ip")
-	_userAccount.Email = field.NewString(tableName, "email")
+	_userAccount.UserID = field.NewString(tableName, "user_id")
 	_userAccount.Nick = field.NewString(tableName, "nick")
-	_userAccount.Statu = field.NewInt32(tableName, "statu")
-	_userAccount.Address = field.NewString(tableName, "address")
-	_userAccount.Note = field.NewString(tableName, "note")
-	_userAccount.Email2 = field.NewString(tableName, "email2")
-	_userAccount.CreateTime = field.NewTime(tableName, "create_time")
-	_userAccount.LastLoginFailureTime = field.NewTime(tableName, "last_login_failure_time")
-	_userAccount.LoginFailureCount = field.NewInt32(tableName, "login_failure_count")
-	_userAccount.Avatar = field.NewString(tableName, "avatar")
-	_userAccount.ModifyTime = field.NewTime(tableName, "modify_time")
-	_userAccount.Comments = field.NewString(tableName, "comments")
-	_userAccount.Tel = field.NewString(tableName, "tel")
-	_userAccount.WechatUserid = field.NewString(tableName, "wechat_userid")
+	_userAccount.UserName = field.NewString(tableName, "user_name")
+	_userAccount.Password = field.NewString(tableName, "password")
+	_userAccount.UserStatus = field.NewString(tableName, "user_status")
+	_userAccount.EntryDate = field.NewString(tableName, "entry_date")
+	_userAccount.Email = field.NewString(tableName, "email")
+	_userAccount.Phone = field.NewString(tableName, "phone")
+	_userAccount.LeaveDate = field.NewString(tableName, "leave_date")
+	_userAccount.IsDelete = field.NewString(tableName, "is_delete")
+	_userAccount.CreateTime = field.NewString(tableName, "create_time")
+	_userAccount.CreateUser = field.NewString(tableName, "create_user")
+	_userAccount.ModifyUser = field.NewString(tableName, "modify_user")
+	_userAccount.ModifyTime = field.NewString(tableName, "modify_time")
+	_userAccount.WorkCode = field.NewString(tableName, "work_code")
+	_userAccount.CreateLdap = field.NewString(tableName, "create_ldap")
+	_userAccount.LadpUserLoginID = field.NewString(tableName, "ladp_user_login_id")
+	_userAccount.LeaveReason = field.NewString(tableName, "leave_reason")
+	_userAccount.WechatID = field.NewString(tableName, "wechat_id")
+	_userAccount.AttendanceID = field.NewString(tableName, "attendance_id")
 
 	_userAccount.fillFieldMap()
 
@@ -56,27 +56,27 @@ func newUserAccount(db *gorm.DB, opts ...gen.DOOption) userAccount {
 type userAccount struct {
 	userAccountDo
 
-	ALL                  field.Asterisk
-	Userid               field.String
-	RoleID               field.String
-	Username             field.String
-	Userpwd              field.String
-	LastLoginTime        field.Time   // 最后一次登录时间
-	LastLoginIP          field.String // 最后一次登录IP
-	Email                field.String // 用户邮箱
-	Nick                 field.String // 用户昵称
-	Statu                field.Int32
-	Address              field.String // 物理地址
-	Note                 field.String
-	Email2               field.String // 用户备用邮箱
-	CreateTime           field.Time   // 记录创建时间（数据库自动写入）
-	LastLoginFailureTime field.Time   // 最近一次登录失败时间
-	LoginFailureCount    field.Int32  // 登录失败计数
-	Avatar               field.String // 用户头像base64
-	ModifyTime           field.Time   // 记录修改时间（数据库自动写入）
-	Comments             field.String // 备注说明
-	Tel                  field.String
-	WechatUserid         field.String
+	ALL             field.Asterisk
+	UserID          field.String
+	Nick            field.String
+	UserName        field.String
+	Password        field.String
+	UserStatus      field.String
+	EntryDate       field.String
+	Email           field.String
+	Phone           field.String
+	LeaveDate       field.String
+	IsDelete        field.String
+	CreateTime      field.String
+	CreateUser      field.String
+	ModifyUser      field.String
+	ModifyTime      field.String
+	WorkCode        field.String
+	CreateLdap      field.String
+	LadpUserLoginID field.String
+	LeaveReason     field.String
+	WechatID        field.String
+	AttendanceID    field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -93,26 +93,26 @@ func (u userAccount) As(alias string) *userAccount {
 
 func (u *userAccount) updateTableName(table string) *userAccount {
 	u.ALL = field.NewAsterisk(table)
-	u.Userid = field.NewString(table, "userid")
-	u.RoleID = field.NewString(table, "role_id")
-	u.Username = field.NewString(table, "username")
-	u.Userpwd = field.NewString(table, "userpwd")
-	u.LastLoginTime = field.NewTime(table, "last_login_time")
-	u.LastLoginIP = field.NewString(table, "last_login_ip")
-	u.Email = field.NewString(table, "email")
+	u.UserID = field.NewString(table, "user_id")
 	u.Nick = field.NewString(table, "nick")
-	u.Statu = field.NewInt32(table, "statu")
-	u.Address = field.NewString(table, "address")
-	u.Note = field.NewString(table, "note")
-	u.Email2 = field.NewString(table, "email2")
-	u.CreateTime = field.NewTime(table, "create_time")
-	u.LastLoginFailureTime = field.NewTime(table, "last_login_failure_time")
-	u.LoginFailureCount = field.NewInt32(table, "login_failure_count")
-	u.Avatar = field.NewString(table, "avatar")
-	u.ModifyTime = field.NewTime(table, "modify_time")
-	u.Comments = field.NewString(table, "comments")
-	u.Tel = field.NewString(table, "tel")
-	u.WechatUserid = field.NewString(table, "wechat_userid")
+	u.UserName = field.NewString(table, "user_name")
+	u.Password = field.NewString(table, "password")
+	u.UserStatus = field.NewString(table, "user_status")
+	u.EntryDate = field.NewString(table, "entry_date")
+	u.Email = field.NewString(table, "email")
+	u.Phone = field.NewString(table, "phone")
+	u.LeaveDate = field.NewString(table, "leave_date")
+	u.IsDelete = field.NewString(table, "is_delete")
+	u.CreateTime = field.NewString(table, "create_time")
+	u.CreateUser = field.NewString(table, "create_user")
+	u.ModifyUser = field.NewString(table, "modify_user")
+	u.ModifyTime = field.NewString(table, "modify_time")
+	u.WorkCode = field.NewString(table, "work_code")
+	u.CreateLdap = field.NewString(table, "create_ldap")
+	u.LadpUserLoginID = field.NewString(table, "ladp_user_login_id")
+	u.LeaveReason = field.NewString(table, "leave_reason")
+	u.WechatID = field.NewString(table, "wechat_id")
+	u.AttendanceID = field.NewString(table, "attendance_id")
 
 	u.fillFieldMap()
 
@@ -130,26 +130,26 @@ func (u *userAccount) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (u *userAccount) fillFieldMap() {
 	u.fieldMap = make(map[string]field.Expr, 20)
-	u.fieldMap["userid"] = u.Userid
-	u.fieldMap["role_id"] = u.RoleID
-	u.fieldMap["username"] = u.Username
-	u.fieldMap["userpwd"] = u.Userpwd
-	u.fieldMap["last_login_time"] = u.LastLoginTime
-	u.fieldMap["last_login_ip"] = u.LastLoginIP
-	u.fieldMap["email"] = u.Email
+	u.fieldMap["user_id"] = u.UserID
 	u.fieldMap["nick"] = u.Nick
-	u.fieldMap["statu"] = u.Statu
-	u.fieldMap["address"] = u.Address
-	u.fieldMap["note"] = u.Note
-	u.fieldMap["email2"] = u.Email2
+	u.fieldMap["user_name"] = u.UserName
+	u.fieldMap["password"] = u.Password
+	u.fieldMap["user_status"] = u.UserStatus
+	u.fieldMap["entry_date"] = u.EntryDate
+	u.fieldMap["email"] = u.Email
+	u.fieldMap["phone"] = u.Phone
+	u.fieldMap["leave_date"] = u.LeaveDate
+	u.fieldMap["is_delete"] = u.IsDelete
 	u.fieldMap["create_time"] = u.CreateTime
-	u.fieldMap["last_login_failure_time"] = u.LastLoginFailureTime
-	u.fieldMap["login_failure_count"] = u.LoginFailureCount
-	u.fieldMap["avatar"] = u.Avatar
+	u.fieldMap["create_user"] = u.CreateUser
+	u.fieldMap["modify_user"] = u.ModifyUser
 	u.fieldMap["modify_time"] = u.ModifyTime
-	u.fieldMap["comments"] = u.Comments
-	u.fieldMap["tel"] = u.Tel
-	u.fieldMap["wechat_userid"] = u.WechatUserid
+	u.fieldMap["work_code"] = u.WorkCode
+	u.fieldMap["create_ldap"] = u.CreateLdap
+	u.fieldMap["ladp_user_login_id"] = u.LadpUserLoginID
+	u.fieldMap["leave_reason"] = u.LeaveReason
+	u.fieldMap["wechat_id"] = u.WechatID
+	u.fieldMap["attendance_id"] = u.AttendanceID
 }
 
 func (u userAccount) clone(db *gorm.DB) userAccount {

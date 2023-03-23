@@ -58,6 +58,7 @@ func (s *BaseHandler) GetDatasource() (*sql.DB, error) {
 	driverName := utils.GetAppKey("driverName")
 
 	db, err := sql.Open(driverName, dataSourceName)
+
 	if err != nil {
 		log.Fatal("数据库打开出现了问题：", err)
 		return nil, err
@@ -67,7 +68,12 @@ func (s *BaseHandler) GetDatasource() (*sql.DB, error) {
 		log.Fatal("数据库连接出现了问题：", err)
 		return nil, err
 	}
+	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(50)
+	db.SetConnMaxLifetime(0)
+	db.SetConnMaxIdleTime(0)
 	db0 = db
+
 	return db, err
 }
 

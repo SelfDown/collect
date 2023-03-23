@@ -12,6 +12,7 @@ func GetFilters() map[string]any {
 		"md5":                 Md5,
 		"sub_str":             SubStr,
 		"get_key":             GetKey,
+		"pinyin":              Pinyin,
 	}
 
 }

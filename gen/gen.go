@@ -41,8 +41,8 @@ func main() {
 	// Generate the code
 	g.ApplyBasic(
 		g.GenerateModel("user_account"),
-		g.GenerateModel("sys_projects"),
-		g.GenerateModel("server_instance"),
+		//g.GenerateModel("sys_projects"),
+		//g.GenerateModel("server_instance"),
 	)
 	g.Execute()
 }

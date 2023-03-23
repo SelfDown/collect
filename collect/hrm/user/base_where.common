@@ -8,12 +8,12 @@ and a.nick = {{.nick}}
 {{ if .search }}
 and (
     a.nick like {{.search}}
-    or a.username like {{.search}}
+    or a.user_name like {{.search}}
 )
 {{ end  }}
 
 {{  if  .username }}
-and a.username = {{.username}}
+and a.user_name = {{.username}}
 {{ end }}
 
 {{ if .status }}

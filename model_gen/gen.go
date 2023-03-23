@@ -16,44 +16,34 @@ import (
 )
 
 var (
-	Q              = new(Query)
-	ServerInstance *serverInstance
-	SysProjects    *sysProjects
-	UserAccount    *userAccount
+	Q           = new(Query)
+	UserAccount *userAccount
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
-	ServerInstance = &Q.ServerInstance
-	SysProjects = &Q.SysProjects
 	UserAccount = &Q.UserAccount
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:             db,
-		ServerInstance: newServerInstance(db, opts...),
-		SysProjects:    newSysProjects(db, opts...),
-		UserAccount:    newUserAccount(db, opts...),
+		db:          db,
+		UserAccount: newUserAccount(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	ServerInstance serverInstance
-	SysProjects    sysProjects
-	UserAccount    userAccount
+	UserAccount userAccount
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:             db,
-		ServerInstance: q.ServerInstance.clone(db),
-		SysProjects:    q.SysProjects.clone(db),
-		UserAccount:    q.UserAccount.clone(db),
+		db:          db,
+		UserAccount: q.UserAccount.clone(db),
 	}
 }
 
@@ -67,24 +57,18 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:             db,
-		ServerInstance: q.ServerInstance.replaceDB(db),
-		SysProjects:    q.SysProjects.replaceDB(db),
-		UserAccount:    q.UserAccount.replaceDB(db),
+		db:          db,
+		UserAccount: q.UserAccount.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	ServerInstance IServerInstanceDo
-	SysProjects    ISysProjectsDo
-	UserAccount    IUserAccountDo
+	UserAccount IUserAccountDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		ServerInstance: q.ServerInstance.WithContext(ctx),
-		SysProjects:    q.SysProjects.WithContext(ctx),
-		UserAccount:    q.UserAccount.WithContext(ctx),
+		UserAccount: q.UserAccount.WithContext(ctx),
 	}
 }
 

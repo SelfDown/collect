@@ -7,6 +7,7 @@ require (
 	github.com/dengsgo/math-engine v0.0.0-20220911070221-a5a560a8684b
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.2
+	github.com/mozillazg/go-pinyin v0.19.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/xuri/excelize/v2 v2.7.0
 	golang.org/x/text v0.6.0

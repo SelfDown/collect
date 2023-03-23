@@ -36,7 +36,7 @@ func handlerAmis(result *common.Result) {
 		}
 		dataResult := result.GetData()
 		// 处理data
-		if _, ok := dataResult.(map[string]interface{}); !ok {
+		if _, ok := dataResult.(map[string]interface{}); !ok && result.Success {
 			rData := make(map[string]interface{})
 			rData["data"] = dataResult
 			// 只有查询返回list,list 才有count

@@ -93,6 +93,14 @@ data_handler:
     name: 结果转参数
     type: inner
     path: Result2Params
+  - key: result2map
+    name: 结果转map
+    type: inner
+    path: Result2Map
+  - key: count2map
+    name: count转map
+    type: inner
+    path: Count2Map
   - key: session_add
     name: 添加session
     type: inner

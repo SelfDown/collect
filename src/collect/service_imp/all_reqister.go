@@ -20,6 +20,8 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &Excel2Data{})
 	l = append(l, &IgnoreData{})
 	l = append(l, &Result2Params{})
+	l = append(l, &Result2Map{})
+	l = append(l, &Count2Map{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

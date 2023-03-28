@@ -2,3 +2,5 @@
 service:
   - name: "用户管理"
     path: "user/index.yml"
+  - name: "角色管理"
+    path: "role/index.yml"

@@ -1,0 +1,29 @@
+service:
+  - key: role_query
+    http: true
+    module: sql
+    params:
+      search:
+        template: "{{ if .search }}%{{.search}}%{{ end }}"
+      nick:
+        default: ""
+      page:
+        type: int
+        default: 1
+      size:
+        default: 20
+        type: int
+      start:
+        template: " ({{.page}}-1) * {{.size}}"
+        exec: true
+        type: int
+      pagination:
+        default: true
+      result_field:
+        default: "data"
+    data_file: role_query.sql
+    count_file: role_query_count.sql
+    pagination: pagination
+    result_handler:
+      - key: result2map
+        field: "[result_field]"

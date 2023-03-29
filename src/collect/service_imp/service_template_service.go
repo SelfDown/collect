@@ -86,7 +86,7 @@ func HandlerRequest(c *gin.Context) {
 	// 处理结果
 	data := ts.Result(params, true)
 	// 处理amis结果
-	//handlerAmis(data)
+	handlerAmis(data)
 	if ts.IsFileResponse {
 		filename := ts.ResponseFileName
 		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名

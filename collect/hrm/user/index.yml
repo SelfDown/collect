@@ -311,13 +311,6 @@ service:
     result_handler:
       - key: arr2obj
         enable: "[to_obj]"
-      - key: result2map
-        enable: " {{ not .to_obj}}"
-        field: "data"
-      - key: count2map
-        enable: " {{ not .to_obj}}"
-        field: "total"
-
 
 
 #

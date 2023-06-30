@@ -31,6 +31,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &SqlService{})
 	l = append(l, &EmptyService{})
 	l = append(l, &HttpService{})
+	l = append(l, &LdapService{})
 
 	return l
 }

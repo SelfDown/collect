@@ -128,6 +128,25 @@
                 urls: [
                     {
                         type: "title",
+                        name: "ldap 管理"
+                    },
+                    {
+                        type: "url",
+                        name: "系统 登陆",
+                        data: '{"service":"hrm.system_login","username":"zhangzhi","password":"zhangzhi@888"}'
+                    },
+                    {
+                        type: "url",
+                        name: "ldap 登陆",
+                        data: '{"service":"hrm.ldap_login","username":"zhangzhi","password":"zhangzhi@888"}'
+                    },
+                    {
+                        type: "url",
+                        name: "ldap 搜索",
+                        data: '{"service":"hrm.ldap_search","search_username":"zhangzhi","to_obj":true}'
+                    },
+                    {
+                        type: "title",
                         name: "用户管理"
                     },
                     {
@@ -236,7 +255,7 @@
                 ],
                 test: {
                     result33_search: '{"service":"hrm.empty_test","username":"zhangzhi"}',
-                    result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhang@888"}',
+                    result35_search: '{"service":"system.login","username":"zhangzhi","password":"zhangzhi@888"}',
                     result36_search: '{"service":"system.current_user"}',
                     result37_search: '{"service":"system.logout"}',
 

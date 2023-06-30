@@ -3,6 +3,7 @@ package collect
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	text_template "text/template"
 
 	filters "collect.mod/src/collect/filters"
@@ -302,17 +303,42 @@ type arrTplHandler struct {
 
 func (t *arrTplHandler) handler() interface{} {
 	dv := reflect.ValueOf(t.get_target()).Elem()
-	out := dv.FieldByName(t.field)
-	// 拷贝新数据
-	dataNew := reflect.New(out.Type()).Elem()
-	utils.CopyRecursive(out, dataNew)
-	for i := 0; i < out.Len(); i++ {
-		iv := dataNew.Index(i)
-		t._handler_config_field(iv)
-		dataNew.Index(i).Set(iv)
+	field := t.field
+	// 如果字段包含. 则取2级字段
+	// 默认是指针
+	if strings.Contains(field, ".") {
+		tmp := strings.Split(field, ".")
+		firstField := tmp[0]
+		secondField := tmp[1]
+		out1 := dv.FieldByName(firstField)
+		if out1.IsNil() {
+			return t.get_target()
+		}
+		out12 := out1.Elem()
+		s := out12.FieldByName(secondField)
+		for i := 0; i < s.Len(); i++ {
+			iv := s.Index(i)
+			t._handler_config_field(iv)
+			s.Index(i).Set(iv)
+		}
+	} else {
+		out := dv.FieldByName(field)
+		if out.IsNil() {
+			return t.get_target()
+		}
 
+		// 拷贝新数据
+		dataNew := reflect.New(out.Type()).Elem()
+		utils.CopyRecursive(out, dataNew)
+		for i := 0; i < out.Len(); i++ {
+			iv := dataNew.Index(i)
+			t._handler_config_field(iv)
+			dataNew.Index(i).Set(iv)
+
+		}
+		dv.FieldByName(t.field).Set(dataNew)
 	}
-	dv.FieldByName(t.field).Set(dataNew)
+
 	return t.get_target()
 
 }

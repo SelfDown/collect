@@ -1,0 +1,40 @@
+service:
+  - key: ldap_login
+    http: true
+    module: ldap
+    params:
+      ldap_addr:
+        template: '{{get_key "ldap_addr"}}'
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能为空
+        template: 'cn={{.username}},{{if ne .username "Manager"}}{{get_key "ou"}},{{end}}{{get_key "base_dn"}}'
+      password:
+        check:
+          template: "{{must .password}}"
+          err_msg: 密码不能为空
+      to_obj:
+        default: false
+    data_file: ldap_login.json
+
+  - key: ldap_search
+    http: true
+    module: ldap
+    params:
+      ldap_addr:
+        template: '{{get_key "ldap_addr"}}'
+      username:
+        template: 'cn={{get_key "manager_username"}},{{get_key "base_dn"}}'
+      password:
+        template: '{{get_key "manager_password"}}'
+      search_username:
+        check:
+          template: "{{must .search_username}}"
+          err_msg: 用户名不能为空
+      to_obj:
+        default: false
+    data_file: search.json
+    result_handler:
+      - key: arr2obj
+        enable: "[to_obj]"

@@ -7,6 +7,8 @@ require (
 	github.com/dengsgo/math-engine v0.0.0-20220911070221-a5a560a8684b
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.2
+	github.com/go-ldap/ldap/v3 v3.4.4
+	github.com/godoes/gorm-oracle v1.3.34
 	github.com/mozillazg/go-pinyin v0.19.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/xuri/excelize/v2 v2.7.0
@@ -14,12 +16,15 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.4.4
 	gorm.io/gen v0.3.18
-	gorm.io/gorm v1.24.2
+	gorm.io/gorm v1.24.6
 	gorm.io/plugin/dbresolver v1.3.0
 )
 
 require (
+	github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e // indirect
+	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
@@ -40,6 +45,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect
+	github.com/sijms/go-ora/v2 v2.6.11 // indirect
+	github.com/thoas/go-funk v0.9.3 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/xuri/efp v0.0.0-20220603152613-6918739fd470 // indirect
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect

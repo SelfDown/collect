@@ -1,0 +1,5 @@
+# 项目点路由
+service:
+  - name: "nacos"
+    path: "env_nacos_info/index.yml"
+

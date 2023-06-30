@@ -210,7 +210,7 @@ service:
         template: "{{ if .password }}{{md5 .password}}{{ end }}"
     table: "user_account"
     filter:
-      username: "[username]"
+      user_name: "[username]"
 #    update_fields:
 #      - address
   - key: get_pinyin

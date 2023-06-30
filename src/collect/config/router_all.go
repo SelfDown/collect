@@ -215,7 +215,10 @@ type ServiceConfig struct {
 	ExcelConfigData    *ExcelConfig //
 	HttpJson           string       `yaml:"http_json"` // http路径
 	HttpJsonContent    string
-	HttpConfigData     *HttpConfig //
+	DataJson           string `yaml:"data_json"` // data_json
+	DataJsonContent    string
+	DataJsonConfig     *DataJsonConfig // data_json 配置
+	HttpConfigData     *HttpConfig     //
 	Success            string
 	SuccessTpl         *text_template.Template // http 请求验证模板
 }
@@ -284,10 +287,18 @@ type HandlerParam struct {
 	SaveField     string                  `yaml:"save_field"`  // 保存字段
 	Path          string                  // 保存路径
 	Params        string
+	NodeNext      string                  `yaml:"node_next"json:"node_next"` // 流程流转用户
+	NodeNextTpl   *text_template.Template //
+	NodeKey       string                  `yaml:"node_key"json:"node_key"`   // 保存字段
+	NodeType      string                  `yaml:"node_type"json:"node_type"` // 保存字段
 }
 type ExcelConfig struct {
 	Name   string   // 名称
 	Sheets []Sheets // sheet 页
+}
+type DataJsonConfig struct {
+	Finish   HandlerParam   //结束
+	Services []HandlerParam // 服务
 }
 type HttpConfig struct {
 	Url         string // 名称

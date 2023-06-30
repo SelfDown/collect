@@ -1,0 +1,7 @@
+{
+  "connection": {
+    "server": "{{.ldap_addr}}",
+    "user": "{{.username}}",
+    "password": "{{.password}}"
+  }
+}

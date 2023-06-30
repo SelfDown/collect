@@ -2,6 +2,7 @@ package collect
 
 import (
 	common "collect.mod/src/collect/common"
+
 	handler_template "collect.mod/src/collect/service_imp/handler_template"
 	utils "collect.mod/src/collect/utils"
 	"database/sql"

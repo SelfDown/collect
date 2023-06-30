@@ -1,0 +1,23 @@
+{
+  "connection": {
+    "server": "{{.ldap_addr}}",
+    "user": "{{.username}}",
+    "password": "{{.password}}"
+  },
+  "method": "search",
+  "scope_desc": "ScopeBaseObject   = 0\n\tScopeSingleLevel  = 1\n\tScopeWholeSubtree = 2",
+  "params": {
+    "BaseDN": "dc=weigao,dc=com",
+    "Scope":2,
+    "DerefAliases": 0,
+    "filter": "(&(objectClass=inetOrgPerson)(cn={{.search_username}}))",
+    "attributes": [
+      "cn",
+      "sn",
+      "givenName",
+      "mail",
+      "mobile"
+    ]
+  }
+
+}

@@ -52,13 +52,18 @@ module_handler:
     type: inner
     path: BulkUpsertService
   - key: empty
-    name: 批量新增
+    name: 空模块
     type: inner
     path: EmptyService
   - key: http
     name: 发送http请求
     type: inner
     path: HttpService
+
+  - key: ldap
+    name: 发送ldap请求
+    type: inner
+    path: LdapService
 # 数据处理
 data_handler:
   - key: update_field
@@ -149,11 +154,17 @@ load_startup_plugin:
       - name: 将http配置地址转文件内容
         from: HttpJson
         to: HttpJsonContent
+      - name: 将DataJson配置地址转文件内容
+        from: DataJson
+        to: DataJsonContent
   - key: load_excel_config
     method: LoadExcelConfig
     name: 转换excel配置
   - key: load_http_config
     method: LoadHttpJson
+    name: 转换http配置
+  - key: load_data_json_config
+    method: LoadDataJson
     name: 转换http配置
   - key: load_router_all_enable
     method: LoadRouterAllEnable
@@ -201,7 +212,13 @@ load_startup_plugin:
             to: TemplateTpl
           - from: ErrMsg
             to: ErrMsgTpl
-
+      - rule: array_field
+        name: 将data_json 中的services 转参数
+        field: DataJsonConfig.Services
+        fields:
+          - from: NodeNext
+            name: next 转 模板
+            to: NodeNextTpl
       - rule: array_field
         name: 将字典中参数转字转成模板
         field: HandlerParams

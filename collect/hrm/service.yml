@@ -4,3 +4,10 @@ service:
     path: "user/index.yml"
   - name: "角色管理"
     path: "role/index.yml"
+
+
+  - name: "ldap"
+    path: "ldap/index.yml"
+
+  - name: "login"
+    path: "login/index.yml"

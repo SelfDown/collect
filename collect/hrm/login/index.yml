@@ -10,7 +10,7 @@ service:
           err_msg: 用户不能为空
   - key: system_login
     http: true
-    module: empty
+    module: service_flow
     log: true
     params:
       username:
@@ -24,25 +24,16 @@ service:
         template: "{{md5 .password}}"
       has_user:
         default: true
-    handler_params:
-      - key: service2field
-        service:
-          service: hrm.user_list
-          username: "[username]"
-          to_obj: true
-        save_field: user_info
-      - key: update_field
-        fields:
-          - field: has_user
-            type: bool
-            template: "{{must .user_info}}"
-      - key: check_field
-        enable: "{{must .user_info}}"
-        fields:
-          - field: password
-            template: "{{eq .password_md5 .user_info.password}}"
-            err_msg: "用户名【{{.username}}】 密码错误！！！"
+#    handler_params:
+#      - key: service2field
+#        service:
+#          service: hrm.user_list
+#          username: "[username]"
+#          to_obj: true
+#        save_field: user_info
+#      - key: update_field
+#        fields:
+#          - field: has_user
+#            type: bool
+#            template: "{{must .user_info}}"
     data_json: system_login.json
-    result_handler:
-      - key: param2result
-        field: "[has_user]"

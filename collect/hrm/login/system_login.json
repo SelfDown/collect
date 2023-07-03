@@ -10,16 +10,30 @@
       "node_key": "start",
       "node_type": "start",
       "name": "开始",
-      "node_next": "{{ if .has_user}}system_login_check{{ else }}ldap_login{{ end }}"
+      "node_next": "get_user"
+    },
+    {
+      "node_key": "get_user",
+      "name": "获取用户信息",
+      "node_type": "node",
+      "key": "service2field",
+      "service": {
+        "service": "hrm.user_list",
+        "username": "[username]",
+        "to_obj": true
+      },
+      "save_field": "user_info",
+      "node_next": "{{ if .user_info }}system_login_check{{ else }}ldap_login{{ end }}"
     },
     {
       "node_key": "system_login_check",
       "key": "check_field",
+      "name": "检查名称",
       "node_type": "node",
       "fields": [
         {
           "field": "password",
-          "template": "{{eq .password .user_info.password}}",
+          "template": "{{eq .password_md5 .user_info.password}}",
           "err_msg": "用户名【{{.username}}】 密码错误！！！"
         }
       ],
@@ -29,6 +43,7 @@
     {
       "node_key": "ldap_login",
       "node_type": "node",
+      "name": "ldap 登陆",
       "key": "service2field",
       "append_param": true,
       "service": {

@@ -208,6 +208,9 @@ func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) strin
 	return strings.TrimSpace(buf.String())
 }
 
+/*
+* 指针拷贝引用
+ */
 func Copy(src interface{}) interface{} {
 	if src == nil {
 		return nil
@@ -215,6 +218,21 @@ func Copy(src interface{}) interface{} {
 	original := reflect.ValueOf(src)
 	cpy := reflect.New(original.Type()).Elem()
 	CopyRecursive(original, cpy)
+
+	value := cpy.Interface()
+	return value
+}
+
+/*
+* 指针也同时生成一份
+ */
+func CopyWithPtr(src interface{}) interface{} {
+	if src == nil {
+		return nil
+	}
+	original := reflect.ValueOf(src)
+	cpy := reflect.New(original.Type()).Elem()
+	CopyRecursivePtr(original, cpy)
 
 	value := cpy.Interface()
 	return value
@@ -229,17 +247,20 @@ func CopyRecursive(src, dst reflect.Value) {
 	}
 
 	switch src.Kind() {
-	// 这里将指针拷贝去掉，直接引用，如果需要将指针重新分配对象，这里可以改造一个方法，将此段开发
-	// 目前主要处理模板指针对象，发现模板函数uuid 方法没有挂载上，经过排除发现template 有个common 对象
-	// 没有赋值，还nil,所以改成直接引用指针对象
+	//这里将指针拷贝去掉，直接引用，如果需要将指针重新分配对象，这里可以改造一个方法，将此段开发
+	//目前主要处理模板指针对象，发现模板函数uuid 方法没有挂载上，经过排除发现template 有个common 对象
+	//没有赋值，还nil,所以改成直接引用指针对象
+
 	//case reflect.Ptr:
+	//if withPtr {
 	//	originalValue := src.Elem()
 	//
 	//	if !originalValue.IsValid() {
 	//		return
 	//	}
 	//	dst.Set(reflect.New(originalValue.Type()))
-	//	CopyRecursive(originalValue, dst.Elem())
+	//	CopyRecursive(originalValue, dst.Elem(), withPtr)
+	//}
 
 	case reflect.Interface:
 		if src.IsNil() {
@@ -281,6 +302,76 @@ func CopyRecursive(src, dst reflect.Value) {
 			originalValue := src.MapIndex(key)
 			copyValue := reflect.New(originalValue.Type()).Elem()
 			CopyRecursive(originalValue, copyValue)
+			copyKey := Copy(key.Interface())
+			dst.SetMapIndex(reflect.ValueOf(copyKey), copyValue)
+		}
+
+	default:
+		dst.Set(src)
+	}
+}
+
+func CopyRecursivePtr(src, dst reflect.Value) {
+	if src.CanInterface() {
+		if copier, ok := src.Interface().(Interface); ok {
+			dst.Set(reflect.ValueOf(copier.DeepCopy()))
+			return
+		}
+	}
+
+	switch src.Kind() {
+	//这里将指针拷贝去掉，直接引用，如果需要将指针重新分配对象，这里可以改造一个方法，将此段开发
+	//目前主要处理模板指针对象，发现模板函数uuid 方法没有挂载上，经过排除发现template 有个common 对象
+	//没有赋值，还nil,所以改成直接引用指针对象
+
+	case reflect.Ptr:
+		originalValue := src.Elem()
+		if !originalValue.IsValid() {
+			return
+		}
+		dst.Set(reflect.New(originalValue.Type()))
+		CopyRecursivePtr(originalValue, dst.Elem())
+
+	case reflect.Interface:
+		if src.IsNil() {
+			return
+		}
+		originalValue := src.Elem()
+		copyValue := reflect.New(originalValue.Type()).Elem()
+		CopyRecursivePtr(originalValue, copyValue)
+		dst.Set(copyValue)
+
+	case reflect.Struct:
+		t, ok := src.Interface().(time.Time)
+		if ok {
+			dst.Set(reflect.ValueOf(t))
+			return
+		}
+		for i := 0; i < src.NumField(); i++ {
+			if src.Type().Field(i).PkgPath != "" {
+				continue
+			}
+			CopyRecursivePtr(src.Field(i), dst.Field(i))
+		}
+
+	case reflect.Slice:
+		if src.IsNil() {
+			return
+		}
+		dst.Set(reflect.MakeSlice(src.Type(), src.Len(), src.Cap()))
+		for i := 0; i < src.Len(); i++ {
+			CopyRecursivePtr(src.Index(i), dst.Index(i))
+		}
+
+	case reflect.Map:
+		if src.IsNil() {
+			return
+		}
+		dst.Set(reflect.MakeMap(src.Type()))
+		for _, key := range src.MapKeys() {
+			originalValue := src.MapIndex(key)
+			copyValue := reflect.New(originalValue.Type()).Elem()
+			CopyRecursivePtr(originalValue, copyValue)
 			copyKey := Copy(key.Interface())
 			dst.SetMapIndex(reflect.ValueOf(copyKey), copyValue)
 		}
@@ -539,6 +630,11 @@ func IsMultipleField(field string) bool {
 func IsValueEmpty(value any) bool {
 
 	switch s := value.(type) {
+	case string:
+		if len(s) == 0 {
+			return true
+		}
+		return false
 	case bool:
 	case int:
 	case int8:
@@ -555,9 +651,9 @@ func IsValueEmpty(value any) bool {
 		return false
 	case nil:
 		return true
+
 	default:
 		if reflect.ValueOf(s).Len() == 0 {
-
 			return true
 		}
 	}

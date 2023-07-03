@@ -64,6 +64,10 @@ module_handler:
     name: 发送ldap请求
     type: inner
     path: LdapService
+  - key: service_flow
+    name: 服务流程化
+    type: inner
+    path: ServiceFlowService
 # 数据处理
 data_handler:
   - key: update_field
@@ -219,6 +223,34 @@ load_startup_plugin:
           - from: NodeNext
             name: next 转 模板
             to: NodeNextTpl
+          - from: NodeFail
+            name: fail 转 模板
+            to: NodeFailTpl
+          - from: Enable
+            name: 编译是否启用
+            to: EnableTpl
+          - from: Template
+            name: 编辑检查数据模板
+            to: TemplateTpl
+          - from: ErrMsg
+            name: 编译错误提示模板
+            to: ErrMsgTpl
+          - from: IfTemplate
+            name: 编译 if 判断模板
+            to: IfTemplateTpl
+          - from: Value
+            name: 编译取值模板
+            to: ValueTpl
+        third_array_field: Fields
+        third_array_fields:
+          - from: Template
+            to: TemplateTpl
+          - from: From
+            to: FromTpl
+          - from: Field
+            to: FieldTpl
+          - from: ErrMsg
+            to: ErrMsgTpl
       - rule: array_field
         name: 将字典中参数转字转成模板
         field: HandlerParams

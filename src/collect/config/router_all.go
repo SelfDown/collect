@@ -240,7 +240,7 @@ type SubField struct {
 	Template    string                  // 渲染模板
 	Type        string                  //类型
 	TemplateTpl *text_template.Template // 检查内容模板
-	ErrMsg      string                  `yaml:"err_msg"` // 错误提示
+	ErrMsg      string                  `yaml:"err_msg"json:"err_msg"` // 错误提示
 	ErrMsgTpl   *text_template.Template // 错误提示模板
 	Field       string                  // 字段
 	FieldTpl    *text_template.Template // 字段模板
@@ -266,31 +266,34 @@ type HandlerParam struct {
 	EnableTpl     *text_template.Template // 是否启用模板
 	Name          string                  //名称
 	Field         string                  // 字段
-	AppendParam   bool                    `yaml:"append_param"` // 是否添加参数
+	AppendParam   bool                    `yaml:"append_param"json:"append_param"` // 是否添加参数
 	Foreach       string                  //循环数组
 	Item          string                  // for 循环里面的item
 	Fields        []SubField              // 子字段
 	Service       map[string]interface{}  // 服务
 	Template      string                  // 检查模板
 	TemplateTpl   *text_template.Template //
-	ErrMsg        string                  `yaml:"err_msg"` /// 错误校验
+	ErrMsg        string                  `yaml:"err_msg"json:"err_msg"` /// 错误校验
 	ErrMsgTpl     *text_template.Template //
-	FromList      string                  `yaml:"from_list"`   // 来源数组
-	FromItem      string                  `yaml:"from_item"`   // 来源数组子项
-	IfTemplate    string                  `yaml:"if_template"` // 判断2个数组是否相等
+	FromList      string                  `yaml:"from_list"json:"from_list"`     // 来源数组
+	FromItem      string                  `yaml:"from_item"json:"from_item"`     // 来源数组子项
+	IfTemplate    string                  `yaml:"if_template"json:"if_template"` // 判断2个数组是否相等
 	IfTemplateTpl *text_template.Template //
 	Value         string                  // 取值
 	ValueTpl      *text_template.Template //
 	File          string                  // 文件取值字段
-	DataJson      string                  `yaml:"data_json"`   // 来源json 数据地址
-	ResultName    string                  `yaml:"result_name"` // 结果参数
-	SaveField     string                  `yaml:"save_field"`  // 保存字段
+	DataJson      string                  `yaml:"data_json"json:"data_json"`     // 来源json 数据地址
+	ResultName    string                  `yaml:"result_name"json:"result_name"` // 结果参数
+	SaveField     string                  `yaml:"save_field"json:"save_field"`   // 保存字段
 	Path          string                  // 保存路径
 	Params        string
 	NodeNext      string                  `yaml:"node_next"json:"node_next"` // 流程流转用户
 	NodeNextTpl   *text_template.Template //
-	NodeKey       string                  `yaml:"node_key"json:"node_key"`   // 保存字段
+	NodeKey       string                  `yaml:"node_key"json:"node_key"` // 保存字段
+	IgnoreError   bool                    `yaml:"ignore_error"json:"ignore_error"`
 	NodeType      string                  `yaml:"node_type"json:"node_type"` // 保存字段
+	NodeFail      string                  `yaml:"node_fail"json:"node_fail"` // 失败流转
+	NodeFailTpl   *text_template.Template //
 }
 type ExcelConfig struct {
 	Name   string   // 名称

@@ -26,6 +26,9 @@ type LdapConnection struct {
 	Password string
 }
 
+/**
+* 连接信息直接json 转的
+ */
 func (s *LdapService) Result(template *config.Template, ts *TemplateService) *common.Result {
 
 	params := template.GetParams()

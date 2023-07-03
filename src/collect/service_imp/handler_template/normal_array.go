@@ -10,14 +10,14 @@ type NormalArray struct {
 	NormalParam
 }
 
-const ARR_SPLIT = "________________COLLECT_SQL_ARR_PARAM_SPLIT________________"
+const ArrSplit = "________________COLLECT_SQL_ARR_PARAM_SPLIT________________"
 
-func (t *NormalArray) _ori_arr_key(index int) string {
-	return t.ParamKey + ARR_SPLIT + strconv.Itoa(index) + ARR_SPLIT
+func (t *NormalArray) oriArrKey(index int) string {
+	return t.ParamKey + ArrSplit + strconv.Itoa(index) + ArrSplit
 }
 
 func (t *NormalArray) get_arr_key(index int) string {
-	return "{{." + t._ori_arr_key(index) + "}}"
+	return "{{." + t.oriArrKey(index) + "}}"
 }
 
 // 获取数组的参数变量
@@ -62,7 +62,7 @@ func (t *NormalArray) GetSqlParamParamKeyList() []AttrParam {
 
 	apList := make([]AttrParam, 0)
 	for i := 0; i < reflect.ValueOf(t.ParamValue).Len(); i++ {
-		arr_key := t._ori_arr_key(i)
+		arr_key := t.oriArrKey(i)
 		// 将数组中每个值，转换成独立变量
 		ap := AttrParam{AttrName: arr_key, AttrValue: reflect.ValueOf(t.ParamValue).Index(i).Interface()}
 		apList = append(apList, ap)

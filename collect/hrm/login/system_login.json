@@ -1,8 +1,9 @@
 {
   "finish": {
+    "key": "service2field",
     "append_param": true,
     "service": {
-      "service": "icon.auto_deploy_save"
+      "service": "hrm.system_login_finish"
     }
   },
   "services": [

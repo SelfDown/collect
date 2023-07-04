@@ -207,5 +207,6 @@ func (s *BaseFlow) _executeFlow(template *config.Template,
 func (s *BaseFlow) flow(template *config.Template, ts *TemplateService, handlerNode func(param *config.HandlerParam, template *config.Template, ts *TemplateService) *common.Result) *common.Result {
 	// 执行中
 	result := s._executeFlow(template, ts, handlerNode)
+	// 处理finish
 	return result
 }

@@ -39,16 +39,16 @@ func getServiceDict(serviceList []config.HandlerParam) (resultDict map[string]*c
 		}
 		nodeType := item.NodeType
 		if utils.IsValueEmpty(nodeType) {
-			return d, fmt.Sprintf("第【%d】个节点没有配置【node_type】属性", index+1)
+			return d, fmt.Sprintf("第【%d】个节点%s没有配置【node_type】属性", index+1, key)
 		}
 		name := item.Name
 		if utils.IsValueEmpty(name) {
-			return d, fmt.Sprintf("第【%d】个节点没有配置【name】属性", index+1)
+			return d, fmt.Sprintf("第【%d】个节点%s没有配置【name】属性", index+1, key)
 		}
 		// 除了尾节点，必须有next 属性
 		nodeNext := item.NodeNext
 		if nodeType != EndName && utils.IsValueEmpty(nodeNext) {
-			return d, fmt.Sprintf("第【%d】个节点没有配置【name】属性", index+1)
+			return d, fmt.Sprintf("第【%d】个节点%s没有配置【node_next】属性", index+1, key)
 		}
 		if _, ok := d[key]; ok {
 			// 如果已经注册过，则报错

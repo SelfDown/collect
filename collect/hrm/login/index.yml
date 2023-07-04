@@ -10,6 +10,8 @@ service:
           err_msg: 用户不能为空
   - key: system_login
     http: true
+    must_login: false
+    log: true
     module: service_flow
     params:
       username:
@@ -24,3 +26,6 @@ service:
       has_user:
         default: true
     data_json: system_login.json
+    result_handler:
+      - key: param2result
+        field: "[session_user]"

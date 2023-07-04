@@ -18,10 +18,17 @@ func (pr *Params2Result) HandlerData(template *config.Template, handlerParam *co
 			return common.NotOk("参数转结果处理器中，未配置from 字段")
 		}
 		fromValue := utils.RenderTplDataWithType(field.FromTpl, params, field.Type)
-		toField, ok := params[utils.GetRenderVarName(field.To)].(string)
-		if utils.IsValueEmpty(toField) || !ok {
+		var toField string
+		// 先从参数从取一次
+		if utils.IsRenderVar(field.To) {
+			toField, _ = params[utils.GetRenderVarName(field.To)].(string)
+
+		}
+		// 如果取不到就取配置的字段
+		if utils.IsValueEmpty(toField) {
 			toField = field.To
 		}
+
 		result[toField] = fromValue
 	}
 

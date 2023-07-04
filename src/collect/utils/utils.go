@@ -176,8 +176,29 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 
 	varName := GetRenderVarName(name)
 	// 取一级变量
-	v, _ := params[varName]
-	return v
+	tmpArr := strings.Split(varName, ".")
+	first := tmpArr[0]
+	v, _ := params[first]
+	if len(tmpArr) == 1 {
+		return v
+	}
+	second := tmpArr[1]
+	if len(tmpArr) == 2 { // 处理2级
+		// 如果是map[string]字符串类型转换成功
+		param2, ok := v.(map[string]string)
+		if ok {
+			v2, _ := param2[second]
+			return v2
+		}
+		// 如果map[interface] 类型
+		param3, ok := v.(map[string]interface{})
+		if ok {
+			v3, _ := param3[second]
+			return v3
+		}
+	}
+
+	return nil
 }
 
 // RenderTplData 根据模板渲染数据，优选取参数里面的字段

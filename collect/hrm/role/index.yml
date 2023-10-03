@@ -19,11 +19,11 @@ service:
         type: int
       pagination:
         default: true
-      result_field:
-        default: "data"
+#      result_field:
+#        default: "data"
     data_file: role_query.sql
     count_file: role_query_count.sql
     pagination: pagination
-    result_handler:
-      - key: result2map
-        field: "[result_field]"
+#    result_handler:
+#      - key: result2map
+#        field: "[result_field]"

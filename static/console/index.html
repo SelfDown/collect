@@ -127,6 +127,20 @@
                 show_upload_file: false,
                 urls: [
                     {
+                        type:"title",
+                        name: 'amis 路由'
+                    },
+                    {
+                        type:"url",
+                        name:"用户管理",
+                        data:'{"service": "amis_router.user_manage"}'
+                    },
+                    {
+                        type:"url",
+                        name:"项目总路由",
+                        data:'{"service": "amis_router.project_router"}'
+                    },
+                    {
                         type: "title",
                         name: "ldap 管理"
                     },
@@ -166,6 +180,11 @@
                     },
                     {
                         type: "url",
+                        name: "创建用户+角色+ldap",
+                        data: '{"service":"hrm.create_user_flow","username":"zhangsan","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"188********","roles":"common","create_ldap":"0"}'
+                    },
+                    {
+                        type: "url",
                         name: "根据中文名称获取拼音码",
                         data: '{"service":"hrm.get_pinyin","content":"张治","result_name":"username"}'
                     },
@@ -177,7 +196,7 @@
                     {
                         type: "url",
                         name: "删除用户",
-                        data: '{"service":"hrm.delete_user_by_userid_list","userid_list":["330bc524-f934-4ddd-8560-405dce4a45d6"]}'
+                        data: '{"service":"hrm.delete_user_by_user_id_list","user_id_list":["330bc524-f934-4ddd-8560-405dce4a45d6"]}'
                     },
                     {
                         type: "url",

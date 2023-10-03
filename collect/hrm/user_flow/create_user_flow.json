@@ -1,0 +1,54 @@
+{
+  "services": [
+    {
+      "node_key": "start",
+      "node_type": "start",
+      "name": "开始",
+      "node_next": "create_user"
+    },
+    {
+      "node_key": "create_user",
+      "name": "创建用户信息",
+      "node_type": "node",
+      "key": "service2field",
+      "append_param": true,
+      "service": {
+        "service": "hrm.create_user"
+      },
+      "fail": "end",
+      "node_next": "{{ if .roles }}create_roles{{ else if eq .create_ldap \"1\"}}create_ldap{{ else }}end{{ end }}"
+    },
+    {
+      "node_key": "create_roles",
+      "key": "check_field",
+      "name": "创建角色",
+      "node_type": "node",
+      "fields": [
+        {
+          "field": "password",
+          "template": "{{eq .password_md5 .user_info.password}}",
+          "err_msg": "用户名【{{.username}}】 密码错误！！！"
+        }
+      ],
+      "node_next": "{{ if eq .create_ldap \"1\" }} create_ldap {{ else }} end {{ end }}",
+      "node_fail": "end"
+    },
+    {
+      "node_key": "create_ldap",
+      "node_type": "node",
+      "name": "ldap 登陆",
+      "key": "service2field",
+      "append_param": true,
+      "service": {
+        "service": "hrm.ldap_login"
+      },
+      "node_fail": "end",
+      "node_next": "end"
+    },
+    {
+      "node_key": "end",
+      "node_type": "end",
+      "name": "结束"
+    }
+  ]
+}

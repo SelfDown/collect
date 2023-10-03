@@ -7,13 +7,16 @@ import (
 
 	// "log"
 
-	"time"
-
 	uuid "github.com/satori/go.uuid"
 
 	text_template "text/template"
 )
 
+import utils "collect.mod/src/collect/utils"
+
+func Must(value interface{}) bool {
+	return !utils.IsValueEmpty(value)
+}
 func Uuid() string {
 	u4 := uuid.NewV4()
 	return u4.String()
@@ -23,19 +26,31 @@ func Test1(t *testing.T) {
 	// 这里是测试代码，如果是模板渲染，1w个，golang只需要96毫秒，如果是python 渲染需要19s
 	// 这里96ms
 	// 经过测试模板如果能提前parse,100w 个只要765ms,100w个生产uuuid 2.1秒
-	tpl := text_template.New("sql-template").Funcs(text_template.FuncMap{"uuid": Uuid})
-	tpl2, _ := tpl.Parse("{{.nick}}1,{{uuid}}]")
-	startTime := time.Now()
-	for i := 0; i < 1; i++ {
-		params := make(map[string]interface{})
-		params["nick"] = "张治"
-		params["a"] = "张治"
-		var buf bytes.Buffer
-		tpl2.Execute(&buf, params)
-		fmt.Println(buf.String())
+	d := utils.CurrentDateTime()
+	fmt.Println(d)
+	tpl := text_template.New("sql-template").Funcs(text_template.FuncMap{"uuid": Uuid, "must": Must})
+	tpl2, err := tpl.Parse("{{or (must .nick1) (must .nick)}}")
+	fmt.Println(err)
 
-	}
-	fmt.Println(time.Since(startTime))
+	params := make(map[string]interface{})
+	params["test"] = 1
+	var buf bytes.Buffer
+	err = tpl2.Execute(&buf, params)
+	a := buf.String()
+	fmt.Println(err)
+	fmt.Println(a)
+	//tpl2, _ := tpl.Parse("{{.nick}}1,{{uuid}}]")
+	//startTime := time.Now()
+	//for i := 0; i < 1; i++ {
+	//	params := make(map[string]interface{})
+	//	params["nick"] = "张治"
+	//	params["a"] = "张治"
+	//	var buf bytes.Buffer
+	//	tpl2.Execute(&buf, params)
+	//	fmt.Println(buf.String())
+	//
+	//}
+	//fmt.Println(time.Since(startTime))
 	/*
 		这里运行只要19s
 			import  time

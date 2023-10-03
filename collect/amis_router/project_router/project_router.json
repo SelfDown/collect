@@ -1,0 +1,31 @@
+{
+  "pages": [
+    {
+      "children": [
+        {
+          "label": "系统管理",
+          "url": "/system_manage",
+          "schema": {
+            "type": "page",
+            "title": "欢迎进入系统管理"
+          },
+          "children": [
+            {
+              "label": "用户管理",
+              "url": "user_manage",
+              "schemaApi": {
+                "method": "post",
+                "url": "/template_data/data",
+                "data": {
+                  "service": "amis_router.user_manage"
+                },
+                "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
+              }
+            }
+
+          ]
+        }
+      ]
+    }
+  ]
+}

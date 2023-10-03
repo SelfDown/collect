@@ -1,0 +1,30 @@
+service:
+  - key: create_user_flow
+    http: true
+    module: empty
+    params:
+      user_id:
+        template: "{{uuid}}"
+
+    handler_params:
+      - key: field2array
+        enable: "{{must .roles}}"
+        field: "[roles]"
+        save_field: role_list
+      - key: arr2arrayObj
+        enable: "{{must .role_list}}"
+        foreach: "[role_list]"
+        item: item
+        fields:
+          - field: "role_code"
+            template: "{{.item}}"
+          - field: user_id
+            template: "{{.session_user_id}}"
+          - field: user_role_id
+            template: "{{uuid}}"
+        save_field: user_role_list
+
+    data_json: create_user_flow.json
+    result_handler:
+      - key: param2result
+        field: "[user_role_list]"

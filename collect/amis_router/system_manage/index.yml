@@ -1,0 +1,10 @@
+service:
+  - key: user_manage
+    http: true
+    handler_params:
+      - key: file2datajson
+        save_field: data
+      - key: param2result
+        field: data
+    data_file: user_manage.json
+    module: empty

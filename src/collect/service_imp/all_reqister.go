@@ -22,6 +22,9 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &Result2Params{})
 	l = append(l, &Result2Map{})
 	l = append(l, &Count2Map{})
+	l = append(l, &File2DataJson{})
+	l = append(l, &Field2Array{})
+	l = append(l, &Arr2arrayObj{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

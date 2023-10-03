@@ -1,5 +1,8 @@
 # 系统总路由
 services:
+  - key: 'amis_router'
+    name: '项目路由'
+    path: 'amis_router/service.yml'
   - key: 'hrm'
     name: '人资管理'
     path: 'hrm/service.yml'
@@ -139,6 +142,18 @@ data_handler:
     name: 数据转excel
     type: inner
     path: File2Result
+  - key: file2datajson
+    name: 文件转data_json
+    type: inner
+    path: File2DataJson
+  - key: field2array
+    name: 字段转数组
+    type: inner
+    path: Field2Array
+  - key: arr2arrayObj
+    name: 字段转数组
+    type: inner
+    path: Arr2arrayObj
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:

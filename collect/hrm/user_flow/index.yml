@@ -16,7 +16,7 @@ service:
         foreach: "[role_list]"
         item: item
         fields:
-          - field: "role_code"
+          - field: "role_id"
             template: "{{.item}}"
           - field: user_id
             template: "{{.session_user_id}}"

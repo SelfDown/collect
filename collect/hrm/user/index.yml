@@ -273,7 +273,7 @@ service:
           service: hrm.user_list
           username: "[username]"
         save_field: user_info
-        template: "{{eq (len .user_info) 0}}"
+        template: "{{lt (len .user_info) 0}}"
         err_msg: "用户名【{{.username}}】已经存在"
     table: "user_account"
     ignore_fields:

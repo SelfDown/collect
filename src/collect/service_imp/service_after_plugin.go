@@ -59,7 +59,10 @@ func HandlerOneParams(handlerParam *collect.HandlerParam,
 func handlerParams(template *collect.Template, HandlerParams []collect.HandlerParam, ts *TemplateService) *common.Result {
 
 	for _, handlerParam := range HandlerParams {
-		HandlerOneParams(&handlerParam, template, ts)
+		ret := HandlerOneParams(&handlerParam, template, ts)
+		if !ret.Success {
+			return ret
+		}
 		//params := template.GetParams()
 		//// 处理是否启用
 		//if !utils.IsValueEmpty(handlerParam.Enable) { // 如果配置enable ，则判断是否启用

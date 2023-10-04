@@ -1,0 +1,11 @@
+service:
+  - key: user_role_bulk_create
+    module: bulk_create
+    http: true
+    params:
+      user_role_list:
+        check:
+          template: "{{must .user_role_list}}"
+          err_msg: 用户角色不能为空
+    model_field: "[user_role_list]"
+    table: "user_role"

@@ -16,34 +16,159 @@ import (
 )
 
 var (
-	Q           = new(Query)
-	UserAccount *userAccount
+	Q                       = new(Query)
+	Attendance              *attendance
+	AttendanceResult        *attendanceResult
+	AuthGroup               *authGroup
+	AuthGroupPermissions    *authGroupPermissions
+	AuthPermission          *authPermission
+	AuthUser                *authUser
+	AuthUserGroups          *authUserGroups
+	AuthUserUserPermissions *authUserUserPermissions
+	CollectEvent            *collectEvent
+	DjangoAdminLog          *djangoAdminLog
+	DjangoContentType       *djangoContentType
+	DjangoMigrations        *djangoMigrations
+	DjangoSession           *djangoSession
+	LdapGroup               *ldapGroup
+	Project                 *project
+	ReportGitcommitinfo     *reportGitcommitinfo
+	ReportGituserFix        *reportGituserFix
+	Role                    *role
+	RoleLdapGroup           *roleLdapGroup
+	RoleMenu                *roleMenu
+	SysCode                 *sysCode
+	SysMenu                 *sysMenu
+	SysParam                *sysParam
+	TemplateEventLog        *templateEventLog
+	UserAccount             *userAccount
+	UserRole                *userRole
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	Attendance = &Q.Attendance
+	AttendanceResult = &Q.AttendanceResult
+	AuthGroup = &Q.AuthGroup
+	AuthGroupPermissions = &Q.AuthGroupPermissions
+	AuthPermission = &Q.AuthPermission
+	AuthUser = &Q.AuthUser
+	AuthUserGroups = &Q.AuthUserGroups
+	AuthUserUserPermissions = &Q.AuthUserUserPermissions
+	CollectEvent = &Q.CollectEvent
+	DjangoAdminLog = &Q.DjangoAdminLog
+	DjangoContentType = &Q.DjangoContentType
+	DjangoMigrations = &Q.DjangoMigrations
+	DjangoSession = &Q.DjangoSession
+	LdapGroup = &Q.LdapGroup
+	Project = &Q.Project
+	ReportGitcommitinfo = &Q.ReportGitcommitinfo
+	ReportGituserFix = &Q.ReportGituserFix
+	Role = &Q.Role
+	RoleLdapGroup = &Q.RoleLdapGroup
+	RoleMenu = &Q.RoleMenu
+	SysCode = &Q.SysCode
+	SysMenu = &Q.SysMenu
+	SysParam = &Q.SysParam
+	TemplateEventLog = &Q.TemplateEventLog
 	UserAccount = &Q.UserAccount
+	UserRole = &Q.UserRole
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:          db,
-		UserAccount: newUserAccount(db, opts...),
+		db:                      db,
+		Attendance:              newAttendance(db, opts...),
+		AttendanceResult:        newAttendanceResult(db, opts...),
+		AuthGroup:               newAuthGroup(db, opts...),
+		AuthGroupPermissions:    newAuthGroupPermissions(db, opts...),
+		AuthPermission:          newAuthPermission(db, opts...),
+		AuthUser:                newAuthUser(db, opts...),
+		AuthUserGroups:          newAuthUserGroups(db, opts...),
+		AuthUserUserPermissions: newAuthUserUserPermissions(db, opts...),
+		CollectEvent:            newCollectEvent(db, opts...),
+		DjangoAdminLog:          newDjangoAdminLog(db, opts...),
+		DjangoContentType:       newDjangoContentType(db, opts...),
+		DjangoMigrations:        newDjangoMigrations(db, opts...),
+		DjangoSession:           newDjangoSession(db, opts...),
+		LdapGroup:               newLdapGroup(db, opts...),
+		Project:                 newProject(db, opts...),
+		ReportGitcommitinfo:     newReportGitcommitinfo(db, opts...),
+		ReportGituserFix:        newReportGituserFix(db, opts...),
+		Role:                    newRole(db, opts...),
+		RoleLdapGroup:           newRoleLdapGroup(db, opts...),
+		RoleMenu:                newRoleMenu(db, opts...),
+		SysCode:                 newSysCode(db, opts...),
+		SysMenu:                 newSysMenu(db, opts...),
+		SysParam:                newSysParam(db, opts...),
+		TemplateEventLog:        newTemplateEventLog(db, opts...),
+		UserAccount:             newUserAccount(db, opts...),
+		UserRole:                newUserRole(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	UserAccount userAccount
+	Attendance              attendance
+	AttendanceResult        attendanceResult
+	AuthGroup               authGroup
+	AuthGroupPermissions    authGroupPermissions
+	AuthPermission          authPermission
+	AuthUser                authUser
+	AuthUserGroups          authUserGroups
+	AuthUserUserPermissions authUserUserPermissions
+	CollectEvent            collectEvent
+	DjangoAdminLog          djangoAdminLog
+	DjangoContentType       djangoContentType
+	DjangoMigrations        djangoMigrations
+	DjangoSession           djangoSession
+	LdapGroup               ldapGroup
+	Project                 project
+	ReportGitcommitinfo     reportGitcommitinfo
+	ReportGituserFix        reportGituserFix
+	Role                    role
+	RoleLdapGroup           roleLdapGroup
+	RoleMenu                roleMenu
+	SysCode                 sysCode
+	SysMenu                 sysMenu
+	SysParam                sysParam
+	TemplateEventLog        templateEventLog
+	UserAccount             userAccount
+	UserRole                userRole
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:          db,
-		UserAccount: q.UserAccount.clone(db),
+		db:                      db,
+		Attendance:              q.Attendance.clone(db),
+		AttendanceResult:        q.AttendanceResult.clone(db),
+		AuthGroup:               q.AuthGroup.clone(db),
+		AuthGroupPermissions:    q.AuthGroupPermissions.clone(db),
+		AuthPermission:          q.AuthPermission.clone(db),
+		AuthUser:                q.AuthUser.clone(db),
+		AuthUserGroups:          q.AuthUserGroups.clone(db),
+		AuthUserUserPermissions: q.AuthUserUserPermissions.clone(db),
+		CollectEvent:            q.CollectEvent.clone(db),
+		DjangoAdminLog:          q.DjangoAdminLog.clone(db),
+		DjangoContentType:       q.DjangoContentType.clone(db),
+		DjangoMigrations:        q.DjangoMigrations.clone(db),
+		DjangoSession:           q.DjangoSession.clone(db),
+		LdapGroup:               q.LdapGroup.clone(db),
+		Project:                 q.Project.clone(db),
+		ReportGitcommitinfo:     q.ReportGitcommitinfo.clone(db),
+		ReportGituserFix:        q.ReportGituserFix.clone(db),
+		Role:                    q.Role.clone(db),
+		RoleLdapGroup:           q.RoleLdapGroup.clone(db),
+		RoleMenu:                q.RoleMenu.clone(db),
+		SysCode:                 q.SysCode.clone(db),
+		SysMenu:                 q.SysMenu.clone(db),
+		SysParam:                q.SysParam.clone(db),
+		TemplateEventLog:        q.TemplateEventLog.clone(db),
+		UserAccount:             q.UserAccount.clone(db),
+		UserRole:                q.UserRole.clone(db),
 	}
 }
 
@@ -57,18 +182,93 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:          db,
-		UserAccount: q.UserAccount.replaceDB(db),
+		db:                      db,
+		Attendance:              q.Attendance.replaceDB(db),
+		AttendanceResult:        q.AttendanceResult.replaceDB(db),
+		AuthGroup:               q.AuthGroup.replaceDB(db),
+		AuthGroupPermissions:    q.AuthGroupPermissions.replaceDB(db),
+		AuthPermission:          q.AuthPermission.replaceDB(db),
+		AuthUser:                q.AuthUser.replaceDB(db),
+		AuthUserGroups:          q.AuthUserGroups.replaceDB(db),
+		AuthUserUserPermissions: q.AuthUserUserPermissions.replaceDB(db),
+		CollectEvent:            q.CollectEvent.replaceDB(db),
+		DjangoAdminLog:          q.DjangoAdminLog.replaceDB(db),
+		DjangoContentType:       q.DjangoContentType.replaceDB(db),
+		DjangoMigrations:        q.DjangoMigrations.replaceDB(db),
+		DjangoSession:           q.DjangoSession.replaceDB(db),
+		LdapGroup:               q.LdapGroup.replaceDB(db),
+		Project:                 q.Project.replaceDB(db),
+		ReportGitcommitinfo:     q.ReportGitcommitinfo.replaceDB(db),
+		ReportGituserFix:        q.ReportGituserFix.replaceDB(db),
+		Role:                    q.Role.replaceDB(db),
+		RoleLdapGroup:           q.RoleLdapGroup.replaceDB(db),
+		RoleMenu:                q.RoleMenu.replaceDB(db),
+		SysCode:                 q.SysCode.replaceDB(db),
+		SysMenu:                 q.SysMenu.replaceDB(db),
+		SysParam:                q.SysParam.replaceDB(db),
+		TemplateEventLog:        q.TemplateEventLog.replaceDB(db),
+		UserAccount:             q.UserAccount.replaceDB(db),
+		UserRole:                q.UserRole.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	UserAccount IUserAccountDo
+	Attendance              IAttendanceDo
+	AttendanceResult        IAttendanceResultDo
+	AuthGroup               IAuthGroupDo
+	AuthGroupPermissions    IAuthGroupPermissionsDo
+	AuthPermission          IAuthPermissionDo
+	AuthUser                IAuthUserDo
+	AuthUserGroups          IAuthUserGroupsDo
+	AuthUserUserPermissions IAuthUserUserPermissionsDo
+	CollectEvent            ICollectEventDo
+	DjangoAdminLog          IDjangoAdminLogDo
+	DjangoContentType       IDjangoContentTypeDo
+	DjangoMigrations        IDjangoMigrationsDo
+	DjangoSession           IDjangoSessionDo
+	LdapGroup               ILdapGroupDo
+	Project                 IProjectDo
+	ReportGitcommitinfo     IReportGitcommitinfoDo
+	ReportGituserFix        IReportGituserFixDo
+	Role                    IRoleDo
+	RoleLdapGroup           IRoleLdapGroupDo
+	RoleMenu                IRoleMenuDo
+	SysCode                 ISysCodeDo
+	SysMenu                 ISysMenuDo
+	SysParam                ISysParamDo
+	TemplateEventLog        ITemplateEventLogDo
+	UserAccount             IUserAccountDo
+	UserRole                IUserRoleDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		UserAccount: q.UserAccount.WithContext(ctx),
+		Attendance:              q.Attendance.WithContext(ctx),
+		AttendanceResult:        q.AttendanceResult.WithContext(ctx),
+		AuthGroup:               q.AuthGroup.WithContext(ctx),
+		AuthGroupPermissions:    q.AuthGroupPermissions.WithContext(ctx),
+		AuthPermission:          q.AuthPermission.WithContext(ctx),
+		AuthUser:                q.AuthUser.WithContext(ctx),
+		AuthUserGroups:          q.AuthUserGroups.WithContext(ctx),
+		AuthUserUserPermissions: q.AuthUserUserPermissions.WithContext(ctx),
+		CollectEvent:            q.CollectEvent.WithContext(ctx),
+		DjangoAdminLog:          q.DjangoAdminLog.WithContext(ctx),
+		DjangoContentType:       q.DjangoContentType.WithContext(ctx),
+		DjangoMigrations:        q.DjangoMigrations.WithContext(ctx),
+		DjangoSession:           q.DjangoSession.WithContext(ctx),
+		LdapGroup:               q.LdapGroup.WithContext(ctx),
+		Project:                 q.Project.WithContext(ctx),
+		ReportGitcommitinfo:     q.ReportGitcommitinfo.WithContext(ctx),
+		ReportGituserFix:        q.ReportGituserFix.WithContext(ctx),
+		Role:                    q.Role.WithContext(ctx),
+		RoleLdapGroup:           q.RoleLdapGroup.WithContext(ctx),
+		RoleMenu:                q.RoleMenu.WithContext(ctx),
+		SysCode:                 q.SysCode.WithContext(ctx),
+		SysMenu:                 q.SysMenu.WithContext(ctx),
+		SysParam:                q.SysParam.WithContext(ctx),
+		TemplateEventLog:        q.TemplateEventLog.WithContext(ctx),
+		UserAccount:             q.UserAccount.WithContext(ctx),
+		UserRole:                q.UserRole.WithContext(ctx),
 	}
 }
 

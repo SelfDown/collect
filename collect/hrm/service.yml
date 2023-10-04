@@ -13,3 +13,5 @@ service:
     path: "login/index.yml"
   - name: user_flow
     path: "user_flow/index.yml"
+  - name: user_role
+    path: "user_role/index.yml"

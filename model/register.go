@@ -12,10 +12,7 @@ func init() {
 	//todo 如果用hashmap 效率慢，可以换二叉树，目前1、200个表很快
 	modelMap = make(map[string]interface{})
 	primaryKeyMap = make(map[string][]string)
-	// 配置主表
-	userAccount := UserAccount{}
-	modelMap["user_account"] = userAccount
-	primaryKeyMap["user_account"] = userAccount.PrimaryKey()
+	addTable()
 }
 func GetModel(tableName string) interface{} {
 	return modelMap[tableName]

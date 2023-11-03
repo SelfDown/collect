@@ -7,23 +7,91 @@ import (
 	"encoding/json"
 	"github.com/go-ldap/ldap/v3"
 	"log"
+	"strings"
 )
 
 type LdapService struct {
 	BaseHandler
 }
 type Ldap struct {
-	Connection LdapConnection
-	Method     string
-	Params     ldap.SearchRequest
+	Connection     LdapConnection
+	Method         string
+	SearchParams   ldap.SearchRequest
+	AddParams      ldap.AddRequest
+	ModifyParams   ldap.ModifyRequest
+	DeleteParams   ldap.DelRequest
+	ModifyDnParams ldap.ModifyDNRequest
+	Split          string
 }
-type LdapRequest struct {
-	ldap.SearchRequest
-}
+
+//type LdapRequest struct {
+//	ldap.SearchRequest
+//}
 type LdapConnection struct {
 	Server   string
 	User     string
 	Password string
+}
+
+func handlerAdd(l *ldap.Conn, template *config.Template, ldapConfig *Ldap) *common.Result {
+
+	tmp := ldap.AddRequest(ldapConfig.AddParams)
+	err := l.Add(&tmp)
+	if err != nil {
+		template.LogData(err)
+		return common.NotOk(err.Error())
+	}
+	return common.Ok(nil, "成功")
+}
+
+func handlerModify(l *ldap.Conn, template *config.Template, ldapConfig *Ldap) *common.Result {
+	tmp := ldap.ModifyRequest(ldapConfig.ModifyParams)
+	err := l.Modify(&tmp)
+	if err != nil {
+		template.LogData(err)
+		return common.NotOk(err.Error())
+	}
+	return common.Ok(nil, "成功")
+}
+func handlerDelete(l *ldap.Conn, template *config.Template, ldapConfig *Ldap) *common.Result {
+	tmp := ldap.DelRequest(ldapConfig.DeleteParams)
+	err := l.Del(&tmp)
+	if err != nil {
+		template.LogData(err)
+		return common.NotOk(err.Error())
+	}
+	return common.Ok(nil, "成功")
+}
+func handlerModifyDn(l *ldap.Conn, template *config.Template, ldapConfig *Ldap) *common.Result {
+	tmp := ldap.ModifyDNRequest(ldapConfig.ModifyDnParams)
+	err := l.ModifyDN(&tmp)
+	if err != nil {
+		template.LogData(err)
+		return common.NotOk(err.Error())
+	}
+	return common.Ok(nil, "成功")
+}
+func handlerSearch(l *ldap.Conn, template *config.Template, ldapConfig *Ldap) *common.Result {
+	tmp := ldap.SearchRequest(ldapConfig.SearchParams)
+	sr, err := l.Search(&tmp)
+	if err != nil {
+		template.LogData(err)
+		return common.NotOk(err.Error())
+
+	}
+	result := make([]map[string]interface{}, 0)
+	split := ldapConfig.Split
+	if utils.IsValueEmpty(split) {
+		split = ","
+	}
+	for _, item := range sr.Entries {
+		obj := make(map[string]interface{})
+		for _, attr := range item.Attributes {
+			obj[attr.Name] = strings.Join(attr.Values, split)
+		}
+		result = append(result, obj)
+	}
+	return common.Ok(result, "成功")
 }
 
 /**
@@ -32,9 +100,10 @@ type LdapConnection struct {
 func (s *LdapService) Result(template *config.Template, ts *TemplateService) *common.Result {
 
 	params := template.GetParams()
-
 	dataContent := utils.RenderTpl(template.FileDataTpl, params)
-	template.LogData(dataContent)
+	if template.Log {
+		template.LogData(dataContent)
+	}
 	ldapConfig := Ldap{}
 	json.Unmarshal([]byte(dataContent), &ldapConfig)
 	connect := ldapConfig.Connection
@@ -58,21 +127,32 @@ func (s *LdapService) Result(template *config.Template, ts *TemplateService) *co
 	if utils.IsValueEmpty(ldapConfig.Method) {
 		return common.Ok("ldap 登陆成功", "")
 	}
-
-	//search := ldapConfig.Params
-	//这里转一下，是为了ldapConfig.Params 以后可以定义更多的参数，比如controller[] 不好处理
-	tmp := ldap.SearchRequest(ldapConfig.Params)
-	sr, err := l.Search(&tmp)
-	if err != nil {
-		template.LogData(err)
+	// 处理查询
+	if ldapConfig.Method == "search" {
+		return handlerSearch(l, template, &ldapConfig)
+	} else if ldapConfig.Method == "add" {
+		return handlerAdd(l, template, &ldapConfig)
+	} else if ldapConfig.Method == "modify" {
+		return handlerModify(l, template, &ldapConfig)
+	} else if ldapConfig.Method == "delete" {
+		return handlerDelete(l, template, &ldapConfig)
+	} else if ldapConfig.Method == "modifyDn" {
+		return handlerModifyDn(l, template, &ldapConfig)
 	}
-	result := make([]map[string]string, 0)
-	for _, item := range sr.Entries {
-		obj := make(map[string]string)
-		for _, attr := range item.Attributes {
-			obj[attr.Name] = attr.Values[0]
-		}
-		result = append(result, obj)
-	}
-	return common.Ok(result, "成功")
+	////search := ldapConfig.Params
+	////这里转一下，是为了ldapConfig.Params 以后可以定义更多的参数，比如controller[] 不好处理
+	//tmp := ldap.SearchRequest(ldapConfig.SearchParams)
+	//sr, err := l.Search(&tmp)
+	//if err != nil {
+	//	template.LogData(err)
+	//}
+	//result := make([]map[string]string, 0)
+	//for _, item := range sr.Entries {
+	//	obj := make(map[string]string)
+	//	for _, attr := range item.Attributes {
+	//		obj[attr.Name] = attr.Values[0]
+	//	}
+	//	result = append(result, obj)
+	//}
+	return common.Ok(nil, "成功")
 }

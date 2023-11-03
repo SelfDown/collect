@@ -1,0 +1,8 @@
+{
+  require(login.common),
+  "method": "delete",
+  "DeleteParams": {
+    "DN": "ou={{.name}},ou=groups,dc=weigao,dc=com"
+  }
+
+}

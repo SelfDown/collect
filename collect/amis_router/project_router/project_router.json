@@ -21,6 +21,30 @@
                 },
                 "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
               }
+            },
+            {
+              "label": "角色管理",
+              "url": "role_manage",
+              "schemaApi": {
+                "method": "post",
+                "url": "/template_data/data",
+                "data": {
+                  "service": "amis_router.role_manage"
+                },
+                "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
+              }
+            } ,
+            {
+              "label": "ldap分组管理",
+              "url": "ldap_group_manage",
+              "schemaApi": {
+                "method": "post",
+                "url": "/template_data/data",
+                "data": {
+                  "service": "amis_router.ldap_group_manage"
+                },
+                "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
+              }
             }
 
           ]

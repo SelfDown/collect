@@ -13,6 +13,7 @@ func GetFilters() map[string]any {
 		"sub_str":             SubStr,
 		"get_key":             GetKey,
 		"pinyin":              Pinyin,
+		"hash_sha":            HashSha,
 	}
 
 }

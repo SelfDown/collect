@@ -146,6 +146,36 @@
                     },
                     {
                         type: "url",
+                        name: "ldap分组删除",
+                        data: '{"service":"hrm.ldap_group_delete","ldap_group_id_list":["835ced1b-637e-40ae-9fb1-ac0fc1597530","a568f7ed-14d3-401b-957e-e7cc58abf6a5"]}'
+                    },
+                    {
+                        type: "url",
+                        name: "ldap同步",
+                        data: '{"service":"hrm.ldap_group_sync"}'
+                    },
+                    {
+                        type: "url",
+                        name: "ldap分组修改",
+                        data: '{"service":"hrm.ldap_group_edit","ldap_group_id":"835ced1b-637e-40ae-9fb1-ac0fc1597530","name":"test3","order_index":1}'
+                    },
+                    {
+                        type: "url",
+                        name: "远程ldap分组修改",
+                        data: '{"service":"hrm.remote_ldap_group_name_edit","old_name":"test","new_name":"test3","order_index":1}'
+                    },
+                    {
+                        type: "url",
+                        name: "远程ldap分组删除",
+                        data: '{"service":"hrm.remote_ldap_group_delete","name":"test2"}'
+                    },
+                    {
+                        type: "url",
+                        name: "创建ldap分组",
+                        data: '{"service":"hrm.ldap_group_create","name":"test","order_index":1}'
+                    },
+                    {
+                        type: "url",
                         name: "系统+ldap登陆",
                         data: '{"service":"hrm.system_login","username":"jira","password":"zhang@888"}'
                     },
@@ -160,8 +190,23 @@
                         data: '{"service":"hrm.ldap_search","search_username":"zhangzhi","to_obj":true}'
                     },
                     {
+                        type: "url",
+                        name: "ldap创建用户",
+                        data: '{"service":"hrm.ldap_add","add_username":"zhangsan","add_password":"123456","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","phone":"18874948657"}'
+                    },
+                    {
                         type: "title",
                         name: "用户管理"
+                    },
+                    {
+                        type: "url",
+                        name: "修改用户流程",
+                        data: '{"create_ldap":"1","email":"tanjingcheng@weigaogroup.com","entry_date":"2022-05-05","nick":"谭晶城","phone":"15116423684","roles":"development","service":"hrm.edit_user_flow","user_id":"6f2b3a9f-7ccd-47f5-a5fd-f7988b760127","user_status":"trial","username":"tanjingcheng","work_code":"00119297"}'
+                    },
+                    {
+                        type: "url",
+                        name: "服务合并，用户管理+ldap服务",
+                        data: '{"service":"hrm.get_user_info","service_list":[{"tag":"hrm.user_list","user_id":"f065a00f-1dfc-4808-83f4-3d57ec9d6215","to_obj":true,"page":1,"size":20},{"tag":"hrm.ldap_search","search_username":"zhangzhi","to_obj":true}]}'
                     },
                     {
                         type: "url",
@@ -186,7 +231,17 @@
                     {
                         type: "url",
                         name: "创建用户+角色+ldap",
-                        data: '{"service":"hrm.create_user_flow","username":"zhangsan","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"188********","roles":"common","create_ldap":"0"}'
+                        data: '{"service":"hrm.create_user_flow","username":"zhangsan","password":"123456","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","phone":"18874948657","roles":"common","create_ldap":"1"}'
+                    },
+                    {
+                        type: "url",
+                        name: "编辑用户+角色+ldap",
+                        data: '{"service":"hrm.edit_user_flow","user_id":"f065a00f-1dfc-4808-83f4-3d57ec9d6215","user_status":"leave","username":"zhangsan","password":"123456","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"18874948657","roles":"common,deliver","create_ldap":"1"}'
+                    },
+                    {
+                        type: "url",
+                        name: "编辑获取用户的改变数据",
+                        data: '{"service":"hrm.get_user_modify_data","user_id":"f065a00f-1dfc-4808-83f4-3d57ec9d6215","user_status":"leave","username":"zhangsan","password":"123456","email":"1@163.com","statu":"1","nick":"张三","address":"长沙","tel":"18874948657","roles":"","create_ldap":"1"}'
                     },
                     {
                         type: "url",

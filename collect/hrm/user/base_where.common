@@ -2,6 +2,12 @@
 and a.userid != {{.exclude}}
 {{ end }}
 
+{{  if .user_id }}
+and a.user_id = {{.user_id}}
+{{ end }}
+{{  if .user_id }}
+and a.user_id = {{.user_id}}
+{{ end }}
 {{  if  .nick }}
 and a.nick = {{.nick}}
 {{ end }}

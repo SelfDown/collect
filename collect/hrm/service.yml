@@ -15,3 +15,7 @@ service:
     path: "user_flow/index.yml"
   - name: user_role
     path: "user_role/index.yml"
+  - name: ldap_group
+    path: "ldap_group/index.yml"
+  - name: role_ldap_group
+    path: "role_ldap_group/index.yml"

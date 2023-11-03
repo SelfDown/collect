@@ -89,6 +89,9 @@ func getNextNode(nodeStart *config.HandlerParam,
 		}
 	} else {
 		fail := nodeStart.NodeFailTpl
+		if fail == nil {
+			template.LogData("运行错误【" + currentName + "】但是未配置node_fail节点")
+		}
 		nextNodeName = utils.RenderTplData(fail, params).(string)
 	}
 	nextNode, ok := nodeDict[nextNodeName]

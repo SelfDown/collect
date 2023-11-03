@@ -25,6 +25,9 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &File2DataJson{})
 	l = append(l, &Field2Array{})
 	l = append(l, &Arr2arrayObj{})
+	l = append(l, &GetModifyData{})
+	l = append(l, &FilterArr{})
+	l = append(l, &PropArr{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})
@@ -36,6 +39,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &HttpService{})
 	l = append(l, &LdapService{})
 	l = append(l, &ServiceFlowService{})
+	l = append(l, &BulkService{})
 
 	return l
 }

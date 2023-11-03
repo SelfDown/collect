@@ -31,12 +31,13 @@ func main() {
 	//simple.UserUpdateBulk()
 	// 模块测试
 	// todo go profile 使用
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// 生成cookies
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session_id", store))
 	r.Static("/static", "./static")
+	template_service.RunScheduleService()
 	r.POST("/template_data/data", func(c *gin.Context) {
 		template_service.HandlerRequest(c)
 	})

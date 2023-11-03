@@ -7,12 +7,14 @@ import (
 	startup "collect.mod/src/collect/startup"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
+	"reflect"
 	"time"
 
 	utils "collect.mod/src/collect/utils"
 	"fmt"
 	"github.com/demdxx/gocast"
 	"github.com/gin-contrib/sessions"
+	"github.com/robfig/cron/v3"
 	text_template "text/template"
 )
 
@@ -48,6 +50,37 @@ func handlerAmis(result *common.Result) {
 
 	}
 }
+func RunScheduleService() []*collect.ServiceConfig {
+	services := collect.GetLocalRouter().GetRegisterServices()
+	scheduleService := make([]*collect.ServiceConfig, 0)
+	params := make(map[string]interface{})
+	c := cron.New()
+
+	i := 0
+	for _, service := range services {
+		if !utils.IsValueEmpty(service.Schedule.Enable) && !utils.IsValueEmpty(service.Schedule.ScheduleSpec) {
+
+			run := utils.RenderTplBool(service.Schedule.EnableTpl, params)
+			if run {
+				scheduleService = append(scheduleService, service)
+				i++
+				paramService := make(map[string]interface{})
+				paramService["service"] = service.Service
+				fmt.Println(utils.Strval(i) + ".添加定时任务[" + service.Service + "]" + service.Schedule.ScheduleSpec)
+				c.AddFunc(service.Schedule.ScheduleSpec, func() {
+					ts := TemplateService{OpUser: "sys"}
+					ts.ResultInner(paramService)
+				})
+			}
+		}
+
+	}
+	if len(scheduleService) > 0 {
+		c.Start()
+	}
+	return scheduleService
+}
+
 func HandlerRequest(c *gin.Context) {
 	s := sessions.Default(c)
 	//设置参数
@@ -84,7 +117,17 @@ func HandlerRequest(c *gin.Context) {
 
 	ts.SetSession(&s)
 	// 处理结果
-	data := ts.Result(params, true)
+	var data *common.Result
+	utils.Block{
+		Try: func() {
+			data = ts.Result(params, true)
+		},
+		Catch: func(e utils.Exception) {
+			dv := reflect.ValueOf(e)
+			data = common.NotOk(dv.String())
+		},
+	}.Do()
+
 	// 处理amis结果
 	//handlerAmis(data)
 	if ts.IsFileResponse {
@@ -234,7 +277,17 @@ func (t *TemplateService) after(temp *collect.Template) *common.Result {
 	return common.Ok(&temp, "成功")
 }
 func (t *TemplateService) ResultInner(params map[string]interface{}) *common.Result {
-	return t.Result(params, false)
+	var data *common.Result
+	utils.Block{
+		Try: func() {
+			copyMap := utils.Copy(params).(map[string]interface{})
+			data = t.Result(copyMap, false)
+		},
+		Catch: func(exception utils.Exception) {
+			data = common.NotOk(utils.Strval(exception))
+		},
+	}.Do()
+	return data
 }
 func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *common.Result {
 

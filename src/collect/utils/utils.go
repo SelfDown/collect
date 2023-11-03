@@ -150,19 +150,46 @@ func RenderVarOrValue(name interface{}, params map[string]interface{}) interface
 }
 func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string]interface{}, string) {
 	// 直接渲染变量
-	dataList, ok := RenderVar(name, params).([]map[string]interface{})
+	data := RenderVar(name, params)
+	dataList, ok := data.([]map[string]interface{})
 	if ok {
 		return dataList, ""
 	}
+
 	// 在深层次取，挨个转换
-	tmp := RenderVar(name, params).([]interface{})
-	if tmp == nil {
-		return nil, name + "对象非数组"
+	tmp, ok := data.([]interface{})
+	if ok {
+		dataList = make([]map[string]interface{}, 0)
+		for _, item := range tmp {
+			dataList = append(dataList, item.(map[string]interface{}))
+		}
+		return dataList, ""
 	}
-	dataList = make([]map[string]interface{}, 0)
-	for _, item := range tmp {
-		dataList = append(dataList, item.(map[string]interface{}))
+	if IsArray(data) {
+		original := reflect.ValueOf(data)
+		for i := 0; i < original.Len(); i++ {
+			dataItem := make(map[string]interface{})
+			iter := original.Index(i).MapRange()
+			for iter.Next() {
+				key := iter.Key().String()
+				value := iter.Value().Interface()
+				dataItem[key] = value
+			}
+			dataList = append(dataList, dataItem)
+		}
+	} else {
+		return dataList, "非数组对象"
 	}
+
+	//test := original.
+	//	test.Next()
+	//t := test.Value().Interface()
+	//fmt.Printf("%#v", t)
+	//fmt.Println(test)
+	//if tmp == nil {
+	//	return nil, name + "对象非数组"
+	//}
+
 	return dataList, ""
 }
 

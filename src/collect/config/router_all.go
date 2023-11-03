@@ -183,44 +183,56 @@ type ServiceList struct {
 * 服务
  */
 type ServiceConfig struct {
-	Project   string // 项目
-	Name      string
-	Key       string                 // 服务
-	Service   string                 // 服务全称
-	Params    map[string]ParamConfig // 参数配置定义
-	Module    string                 // 模块
-	Table     string                 // 表名
-	Http      bool                   //  是否支持http 访问
-	Options   string                 // 可以选择字段
-	MustLogin *bool                  `yaml:"must_login"` // 是否必须登录
-	DataFile  string                 `yaml:"data_file"`  // 文件路径
+	Project  string // 项目
+	Name     string
+	Key      string                 // 服务
+	Service  string                 // 服务全称
+	Params   map[string]ParamConfig // 参数配置定义
+	Schedule Schedule               // 定时任务
 
-	FileData           string                  // 文件内容
-	Pagination         string                  //分页字段
-	FileDataTpl        *text_template.Template // 文件内容的模板
-	CountFile          string                  `yaml:"count_file"` // count文件路径
-	CountFileData      string                  // count文件内容
-	CountFileDataTpl   *text_template.Template // count文件内容模板
-	CurrentDir         string                  // 当前路径目录
-	Path               string                  // 当前路径
-	IgnoreFields       []string                `yaml:"ignore_fields"` //忽略字段
-	UpdateFields       []string                `yaml:"update_fields"` // 更新路径
-	Log                bool                    // 是否写日志
-	HandlerParams      []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
-	ResultHandler      []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数
-	Filter             map[string]interface{}  //过滤条件
-	ModelField         string                  `yaml:"model_field"`
-	ExcelConfig        string                  `yaml:"excel_config"` // 保存路径
-	ExcelConfigContent string
-	ExcelConfigData    *ExcelConfig //
-	HttpJson           string       `yaml:"http_json"` // http路径
-	HttpJsonContent    string
-	DataJson           string `yaml:"data_json"` // data_json
-	DataJsonContent    string
-	DataJsonConfig     *DataJsonConfig // data_json 配置
-	HttpConfigData     *HttpConfig     //
-	Success            string
-	SuccessTpl         *text_template.Template // http 请求验证模板
+	Module    string // 模块
+	Table     string // 表名
+	Http      bool   //  是否支持http 访问
+	Options   string // 可以选择字段
+	MustLogin *bool  `yaml:"must_login"` // 是否必须登录
+	DataFile  string `yaml:"data_file"`  // 文件路径
+
+	FileData            string                  // 文件内容
+	Pagination          string                  //分页字段
+	FileDataTpl         *text_template.Template // 文件内容的模板
+	Count               string
+	CountFile           string                  `yaml:"count_file"` // count文件路径
+	CountFileData       string                  // count文件内容
+	CountFileDataTpl    *text_template.Template // count文件内容模板
+	CurrentDir          string                  // 当前路径目录
+	Path                string                  // 当前路径
+	IgnoreFields        []string                `yaml:"ignore_fields"` //忽略字段
+	UpdateFields        []string                `yaml:"update_fields"` // 更新路径
+	Log                 bool                    // 是否写日志
+	HandlerParams       []HandlerParam          `yaml:"handler_params"` //运行模块前处理参数
+	ResultHandler       []HandlerParam          `yaml:"result_handler"` //运行模块完成结果处理参数
+	Filter              map[string]interface{}  //过滤条件
+	ModelField          string                  `yaml:"model_field"`
+	ExcelConfig         string                  `yaml:"excel_config"` // 保存路径
+	ExcelConfigContent  string
+	ExcelConfigData     *ExcelConfig //
+	ModifyConfig        string       `yaml:"modify_config"` // 保存路径
+	ModifyConfigContent string
+	ModifyConfigData    *ModifyConfig //
+	HttpJson            string        `yaml:"http_json"` // http路径
+	HttpJsonContent     string
+	DataJson            string `yaml:"data_json"` // data_json
+	DataJsonContent     string
+	DataJsonConfig      *DataJsonConfig // data_json 配置
+	HttpConfigData      *HttpConfig     //
+	Success             string
+	SuccessTpl          *text_template.Template // http 请求验证模板
+	Batch               HandlerParam            //批量处理参数
+}
+type Schedule struct {
+	Enable       string                  // 是否启用
+	EnableTpl    *text_template.Template // 是否启用模板
+	ScheduleSpec string                  `yaml:"schedule_spec"json:"schedule_spec"`
 }
 type ParamConfig struct {
 	Name        string                  // 名称
@@ -261,43 +273,62 @@ type ThirdField struct {
 	Field string
 }
 type HandlerParam struct {
-	Key           string                  // 服务
-	Enable        string                  // 是否启用
-	EnableTpl     *text_template.Template // 是否启用模板
-	Name          string                  //名称
-	Field         string                  // 字段
-	AppendParam   bool                    `yaml:"append_param"json:"append_param"` // 是否添加参数
-	Foreach       string                  //循环数组
-	Item          string                  // for 循环里面的item
-	Fields        []SubField              // 子字段
-	Service       map[string]interface{}  // 服务
-	Template      string                  // 检查模板
-	TemplateTpl   *text_template.Template //
-	ErrMsg        string                  `yaml:"err_msg"json:"err_msg"` /// 错误校验
-	ErrMsgTpl     *text_template.Template //
-	FromList      string                  `yaml:"from_list"json:"from_list"`     // 来源数组
-	FromItem      string                  `yaml:"from_item"json:"from_item"`     // 来源数组子项
-	IfTemplate    string                  `yaml:"if_template"json:"if_template"` // 判断2个数组是否相等
-	IfTemplateTpl *text_template.Template //
-	Value         string                  // 取值
-	ValueTpl      *text_template.Template //
-	File          string                  // 文件取值字段
-	DataJson      string                  `yaml:"data_json"json:"data_json"`     // 来源json 数据地址
-	ResultName    string                  `yaml:"result_name"json:"result_name"` // 结果参数
-	SaveField     string                  `yaml:"save_field"json:"save_field"`   // 保存字段
-	Path          string                  // 保存路径
-	Params        string
-	NodeNext      string                  `yaml:"node_next"json:"node_next"` // 流程流转用户
-	NodeNextTpl   *text_template.Template //
-	NodeKey       string                  `yaml:"node_key"json:"node_key"` // 保存字段
-	IgnoreError   bool                    `yaml:"ignore_error"json:"ignore_error"`
-	NodeType      string                  `yaml:"node_type"json:"node_type"` // 保存字段
-	NodeFail      string                  `yaml:"node_fail"json:"node_fail"` // 失败流转
-	NodeFailTpl   *text_template.Template //
+	Key                 string                  // 服务
+	Enable              string                  // 是否启用
+	EnableTpl           *text_template.Template // 是否启用模板
+	Name                string                  //名称
+	Field               string                  // 字段
+	LeftField           string                  `yaml:"left_field"json:"left_field"`               // 字段
+	RightField          string                  `yaml:"right_field"json:"right_field"`             // 字段
+	LeftValueField      string                  `yaml:"left_value_field"json:"left_value_field"`   // 字段
+	RightValueField     string                  `yaml:"right_value_field"json:"right_value_field"` // 字段
+	AppendParam         bool                    `yaml:"append_param"json:"append_param"`           // 是否添加参数
+	AppendItemParam     bool                    `yaml:"append_item_param"json:"append_item_param"` // 是否添加参数
+	SaveOriginal        bool                    `yaml:"save_original"json:"save_original"`         // 是否添加参数
+	Foreach             string                  //循环数组
+	Item                string                  // for 循环里面的item
+	Fields              []SubField              // 子字段
+	Service             map[string]interface{}  // 服务
+	Template            string                  // 检查模板
+	TemplateTpl         *text_template.Template //
+	ErrMsg              string                  `yaml:"err_msg"json:"err_msg"` /// 错误校验
+	ErrMsgTpl           *text_template.Template //
+	FromList            string                  `yaml:"from_list"json:"from_list"`     // 来源数组
+	FromItem            string                  `yaml:"from_item"json:"from_item"`     // 来源数组子项
+	IfTemplate          string                  `yaml:"if_template"json:"if_template"` // 判断2个数组是否相等
+	IfTemplateTpl       *text_template.Template //
+	Value               string                  // 取值
+	ValueTpl            *text_template.Template //
+	File                string                  // 文件取值字段
+	DataJson            string                  `yaml:"data_json"json:"data_json"`     // 来源json 数据地址
+	ResultName          string                  `yaml:"result_name"json:"result_name"` // 结果参数
+	SaveField           string                  `yaml:"save_field"json:"save_field"`   // 保存字段
+	Path                string                  // 保存路径
+	Params              string
+	NodeNext            string                  `yaml:"node_next"json:"node_next"` // 流程流转用户
+	NodeNextTpl         *text_template.Template //
+	NodeKey             string                  `yaml:"node_key"json:"node_key"` // 保存字段
+	IgnoreError         bool                    `yaml:"ignore_error"json:"ignore_error"`
+	NodeType            string                  `yaml:"node_type"json:"node_type"` // 保存字段
+	NodeFail            string                  `yaml:"node_fail"json:"node_fail"` // 失败流转
+	NodeFailTpl         *text_template.Template //
+	Rule                string
+	Right               string
+	Left                string
+	Operation           string
+	TargetTransferKey   string   `yaml:"target_transfer_key"json:"target_transfer_key"`     // 失败流转
+	TargetTransferValue string   `yaml:"target_transfer_value"json:"target_transfer_value"` // 失败流转
+	ValueListField      string   `yaml:"value_list_field"json:"value_list_field"`           // 失败流转
+	AppendRightFields   []string `yaml:"append_right_fields"json:"append_right_fields"`     // 失败流转
+	WithAddRemove       bool     `yaml:"with_add_remove"json:"with_add_remove"`             // 比较修改记录的
 }
 type ExcelConfig struct {
 	Name   string   // 名称
 	Sheets []Sheets // sheet 页
+}
+type ModifyConfig struct {
+	Desc   string // 备注
+	Fields []HandlerParam
 }
 type DataJsonConfig struct {
 	Finish   HandlerParam   //结束

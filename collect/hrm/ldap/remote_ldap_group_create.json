@@ -1,0 +1,14 @@
+{
+  require(login.common),
+  "method": "add",
+  "AddParams": {
+    "DN": "ou={{.name}},ou=groups,dc=weigao,dc=com",
+    "Attributes": [
+      {"TYPE": "cn","Vals": ["{{.name}}"]},
+      {"TYPE": "ou","Vals": ["{{.name}}"]},
+      {"TYPE": "objectClass","Vals": ["top", "groupOfUniqueNames"]},
+      {"TYPE": "uniqueMember","Vals": [""]}
+    ]
+  }
+
+}

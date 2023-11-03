@@ -58,7 +58,7 @@ func fixModel() {
 	ioutil.WriteFile(directory+"/add_table.go", []byte(addTable), 0777)
 }
 
-func main() {
+func main1() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:        "model_gen",
 		FieldNullable:  true,

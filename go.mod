@@ -10,6 +10,7 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.4
 	github.com/godoes/gorm-oracle v1.3.34
 	github.com/mozillazg/go-pinyin v0.19.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/xuri/excelize/v2 v2.7.0
 	golang.org/x/text v0.6.0

@@ -106,8 +106,19 @@ service:
             template: "{{ if .item.password }}{{md5 .item.password}}{{ end }}"
     table: "user_account"
     model_field: "[user_list]"
+  - key: get_user_list_by_user_id_list
+    http: true
+    module: sql
+    log: true
+    params:
+      user_id_list:
+        check:
+          template: "{{must .user_id_list}}"
+          err_msg: 用户ID 不能为空
+    data_file: get_user_list_by_user_id_list.sql
+
   - key: delete_user_by_user_id_list
-    module: model_delete
+    module: model_update
     http: true
     log: true
     params:
@@ -115,14 +126,34 @@ service:
         check:
           template: "{{or (must .user_id_list) (must .ids)}}"
           err_msg: 用户名不能空
+      is_delete:
+        default: "1"
     table: "user_account"
+    update_fields:
+      - is_delete
     handler_params:
       - key: field2array
         field: "[ids]"
         enable: "{{must .ids}}"
         save_field: user_id_list
+      - key: service2field
+        enable: "{{must .user_id_list}}"
+        service:
+          service: hrm.get_user_list_by_user_id_list
+          user_id_list: "[user_id_list]"
+        save_field: user_info_list
+      - key: service2field
+        enable: "{{must .user_info_list}}"
+        service:
+          service: hrm.remote_user_ldap_delete_bulk
+          user_info_list: "[user_info_list]"
+        save_field: deleteResult
     filter:
       user_id__in: "[user_id_list]"
+    result_handler:
+      - key: param2result
+        enable: "{{must .user_info_list}}"
+        field: deleteResult
   - key: update_user_all
     module: model_update
     http: true
@@ -273,7 +304,7 @@ service:
           service: hrm.user_list
           username: "[username]"
         save_field: user_info
-        template: "{{lt (len .user_info) 0}}"
+        template: "{{le (len .user_info) 0}}"
         err_msg: "用户名【{{.username}}】已经存在"
     table: "user_account"
     ignore_fields:
@@ -302,24 +333,16 @@ service:
         default: true
       to_obj:
         default: false
-
-#    handler_params:
-#      - key: update_field
-#        name: 更新字段
-#        fields:
-#          - field: status
-#            template: "[status]"
-#          - field: sex
-#            template: "男"
-#          - field: age
-#            type: int
-#            template: 19
+      count:
+        default: true
     data_file: user_list.sql
     count_file: user_list_count.sql
     pagination: pagination
+    count: "[count]"
     result_handler:
       - key: arr2obj
         enable: "[to_obj]"
+
 
 
 #

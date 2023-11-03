@@ -58,6 +58,10 @@ module_handler:
     name: 空模块
     type: inner
     path: EmptyService
+  - key: bulk_service
+    name: 批量服务
+    type: inner
+    path: BulkService
   - key: http
     name: 发送http请求
     type: inner
@@ -77,6 +81,10 @@ data_handler:
     name: 添加参数
     type: inner
     path: UpdateField
+  - key: prop_arr
+    name: 数组对象转数组
+    type: inner
+    path: PropArr
   - key: check_field
     name: 检查参数
     type: inner
@@ -93,6 +101,10 @@ data_handler:
     name: 数组转对象
     type: inner
     path: Arr2Obj
+  - key: filter_arr
+    name: 数组转对象
+    type: inner
+    path: FilterArr
   - key: param2result
     name: 参数转结果
     type: inner
@@ -154,6 +166,10 @@ data_handler:
     name: 字段转数组
     type: inner
     path: Arr2arrayObj
+  - key: get_modify_data
+    name: 获取修改的数据
+    type: inner
+    path: GetModifyData
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:
@@ -170,6 +186,9 @@ load_startup_plugin:
       - name: 将excel配置地址转文件内容
         from: ExcelConfig
         to: ExcelConfigContent
+      - name: 将修改内容转内容
+        from: ModifyConfig
+        to: ModifyConfigContent
       - name: 将http配置地址转文件内容
         from: HttpJson
         to: HttpJsonContent
@@ -179,12 +198,18 @@ load_startup_plugin:
   - key: load_excel_config
     method: LoadExcelConfig
     name: 转换excel配置
+  - key: load_modify_config
+    method: LoadModifyConfig
+    name: 将修改内容转配置
   - key: load_http_config
     method: LoadHttpJson
     name: 转换http配置
   - key: load_data_json_config
     method: LoadDataJson
     name: 转换http配置
+  - key: load_schedule
+    method: LoadSchedule
+    name: 加载定时模板是否启动
   - key: load_router_all_enable
     method: LoadRouterAllEnable
     name: 加载模板能用,处理handler_req_param 是否能用
@@ -204,6 +229,7 @@ load_startup_plugin:
     name: 将文件转换成模板
     method: LoadDataFileTpl
     fields:
+
       - from: FileData
         to: FileDataTpl
         name: 将file_data 转换成模板

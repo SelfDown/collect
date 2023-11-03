@@ -1,0 +1,18 @@
+{
+  require(login.common),
+  "method": "search",
+  "scope_desc": "ScopeBaseObject   = 0\n\tScopeSingleLevel  = 1\n\tScopeWholeSubtree = 2",
+  "Split": "|",
+  "SearchParams": {
+    "BaseDN": "ou=groups,dc=weigao,dc=com",
+    "Scope":2,
+    "DerefAliases": 0,
+    "filter": "(objectClass=groupOfUniqueNames)",
+    "attributes": [
+      "ou",
+      "cn",
+      "objectClass"
+    ]
+  }
+
+}

@@ -1,0 +1,9 @@
+{
+  require(login.common),
+  "method": "modifyDn",
+  "ModifyDnParams": {
+    "DN": "ou={{.old_name}},ou=groups,dc=weigao,dc=com",
+    "NewRDN": "ou={{.new_name}}",
+    "DeleteOldRDN": true
+  }
+}

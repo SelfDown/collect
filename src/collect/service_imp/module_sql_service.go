@@ -50,7 +50,13 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 		return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
 	}
 	var count int64
-	if template.CountFileDataTpl != nil {
+	// 判断是否运行总数sql
+	runCountStr := template.Count
+	runCount := true
+	if !utils.IsValueEmpty(runCountStr) {
+		runCount = gocast.ToBool(utils.RenderVar(runCountStr, params))
+	}
+	if template.CountFileDataTpl != nil && runCount {
 		// count 设置不分页
 		params[template.Pagination] = false
 		// 生成执行SQL和参数

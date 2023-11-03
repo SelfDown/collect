@@ -1,0 +1,8 @@
+{
+  require(login.common),
+  "method": "delete",
+  "DeleteParams": {
+    "DN": "cn={{.remove_username}},ou=users,dc=weigao,dc=com"
+  }
+
+}

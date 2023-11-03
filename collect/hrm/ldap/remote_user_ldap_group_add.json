@@ -1,0 +1,20 @@
+{
+  require(login.common),
+  "method": "modify",
+  "ModifyParams": {
+    "DN": "ou={{.name}},ou=groups,dc=weigao,dc=com",
+    "Changes": [
+      {
+        "Desc": "AddAttribute       = 0\n\tDeleteAttribute    = 1\n\tReplaceAttribute   = 2\n\tIncrementAttribute = 3",
+        "Operation": 0,
+        "Modification": {
+          "TYPE": "uniqueMember",
+          "Vals": [
+            "cn={{.add_username}},ou=users,dc=weigao,dc=com"
+          ]
+        }
+      }
+
+    ]
+  }
+}

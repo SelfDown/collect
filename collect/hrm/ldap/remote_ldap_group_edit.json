@@ -1,0 +1,20 @@
+{
+  require(login.common),
+  "method": "modify",
+  "ModifyParams": {
+    "DN": "ou={{.old_name}},ou=groups,dc=weigao,dc=com",
+    "Changes": [
+      {
+        "Desc": "AddAttribute       = 0\n\tDeleteAttribute    = 1\n\tReplaceAttribute   = 2\n\tIncrementAttribute = 3",
+        "Operation": 2,
+        "Modification": {
+          "TYPE": "cn",
+          "Vals": [
+            "{{.new_name}}"
+          ]
+        }
+      }
+
+    ]
+  }
+}

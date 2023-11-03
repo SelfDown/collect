@@ -35,7 +35,7 @@ func (uf *Arr2arrayObj) HandlerData(template *config.Template, handlerParam *con
 		dataItem := make(map[string]interface{})
 		// 挨个字段进行赋值
 		for _, field := range fields {
-			dataItem[field.Field] = utils.RenderTpl(field.TemplateTpl, params)
+			dataItem[field.Field] = utils.RenderTplData(field.TemplateTpl, params)
 		}
 		dataList[i] = dataItem
 	}

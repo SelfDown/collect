@@ -16,7 +16,7 @@ select a.user_name as username,
 from user_account a
 left join sys_code j on a.user_status = j.sys_code and j.sys_code_type='user_job_status'
 where
-1=1
+a.is_delete='0'
 require('./base_where.common')
 
 

@@ -8,28 +8,6 @@ import (
 )
 
 func main() {
-
-	//req, err := http.NewRequest("GET", "http://www.baidu.com", nil)
-	//fmt.Println(err)
-	//
-	//req.Header.Set("xx", "x")
-	//resp, err := http.DefaultClient.Do(req)
-	//fmt.Println(resp)
-	//根据用户名更新 1个条件的
-	//simple.UserUpdate()
-	// 根据用户名和昵称更新，2个条件的
-	//simple.UserUpdateByUsernameNick()
-	// 根据用户ID更新
-	//simple.UserUpdateByUseridList()
-	// 更新所有数据
-	//simple.UserUpdateAll()
-	// 删除用户
-	//simple.UserDeleteByUseridList()
-	// 批量创建用户
-	//simple.UserCreateBulk()
-	//批量更新用户
-	//simple.UserUpdateBulk()
-	// 模块测试
 	// todo go profile 使用
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -37,7 +15,10 @@ func main() {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session_id", store))
 	r.Static("/static", "./static")
+	// 添加定时任务
 	template_service.RunScheduleService()
+	// 添加启动服务
+	template_service.RunStartupService()
 	r.POST("/template_data/data", func(c *gin.Context) {
 		template_service.HandlerRequest(c)
 	})

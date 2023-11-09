@@ -2,7 +2,7 @@
   require(login.common),
   "method": "modify",
   "ModifyParams": {
-    "DN": "ou={{.name}},ou=groups,dc=weigao,dc=com",
+    "DN": "ou={{.name}},{{.ldap_config.ldap_groups}},{{.ldap_config.ldap_base_dn}}",
     "Changes": [
       {
         "Desc": "AddAttribute       = 0\n\tDeleteAttribute    = 1\n\tReplaceAttribute   = 2\n\tIncrementAttribute = 3",
@@ -10,7 +10,7 @@
         "Modification": {
           "TYPE": "uniqueMember",
           "Vals": [
-            "cn={{.add_username}},ou=users,dc=weigao,dc=com"
+            "cn={{.add_username}},{{.ldap_config.ldap_groups}},{{.ldap_config.ldap_base_dn}}"
           ]
         }
       }

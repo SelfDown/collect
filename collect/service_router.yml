@@ -21,6 +21,9 @@ services:
   - key: 'partner'
     name: 'partner'
     path: 'partner/service.yml'
+  - key: 'config'
+    name: 'config'
+    path: 'config/service.yml'
 
 # 模块处理器
 module_handler:
@@ -98,9 +101,13 @@ data_handler:
     type: inner
     path: Service2Field
   - key: arr2obj
-    name: 数组转对象
+    name: 数组结果转对象
     type: inner
     path: Arr2Obj
+  - key: arr2dict
+    name: 参数数组转key/value对象
+    type: inner
+    path: Arr2Dict
   - key: filter_arr
     name: 数组转对象
     type: inner
@@ -163,13 +170,22 @@ data_handler:
     type: inner
     path: Field2Array
   - key: arr2arrayObj
-    name: 字段转数组
+    name: 字段转数组,简单数组，转数组对象
     type: inner
     path: Arr2arrayObj
   - key: get_modify_data
     name: 获取修改的数据
     type: inner
     path: GetModifyData
+  - key: group_by
+    name: 分组
+    type: inner
+    path: GroupBy
+  # 处理缓存
+  - key: handler_cache
+    name: 处理缓存
+    type: inner
+    path: HandlerCache
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:
@@ -209,6 +225,9 @@ load_startup_plugin:
     name: 转换http配置
   - key: load_schedule
     method: LoadSchedule
+    name: 加载定时模板是否启动
+  - key: load_cache_config
+    method: LoadCacheConfig
     name: 加载定时模板是否启动
   - key: load_router_all_enable
     method: LoadRouterAllEnable
@@ -367,6 +386,10 @@ before_plugin:
     method: HandlerReqParam
     enable: "true"
 
+  # 处理缓存
+  - key: handler_cache
+    method: HandlerCache
+    enable: "true"
   # 处理请求参数
   - key: handler_params
     method: HandlerParams
@@ -375,4 +398,8 @@ after_plugin:
   # 结果处理
   - key: result_handler
     method: ResultHandler
+    enable: "true"
+  # 处理缓存
+  - key: handler_cache
+    method: HandlerCache
     enable: "true"

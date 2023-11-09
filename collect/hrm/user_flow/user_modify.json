@@ -14,6 +14,16 @@
       ]
     },
     {
+      "rule": "compare_field_value",
+      "field": "[create_ldap]",
+      "name": "创建ldap",
+      "right": "[user_info]",
+      "operation": "modify",
+      "append_right_fields": [
+        "[user_id]"
+      ]
+    },
+    {
       "belong": "设置belong 将fields 二层层级去掉，或者在field支持点，xx.xx",
       "rule": "compare_field_value",
       "field": "[user_status]",
@@ -51,6 +61,25 @@
         "role_code_list": "[current_value_list]"
       }
 
+    },
+    {
+      "enable": "{{ eq .create_ldap \"1\"}}",
+      "rule": "array_obj_value",
+      "left_field": "[name]",
+      "right_field": "[name]",
+      "field": "[ldap_group]",
+      "desc": "field匹配规则,value field取值",
+      "name": "ldap分组",
+      "right": "[right_ldap_group]",
+      "left": "[left_ldap_group]",
+      "left_value_field": "[name]",
+      "right_value_field": "[name]",
+      "operation": "modify",
+      "with_add_remove": true,
+      "save_original": true,
+      "append_right_fields": [
+        "[user_id]"
+      ]
     }
   ]
 }

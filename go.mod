@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/demdxx/gocast v1.2.0
 	github.com/dengsgo/math-engine v0.0.0-20220911070221-a5a560a8684b
+	github.com/dgraph-io/ristretto v0.1.1
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-ldap/ldap/v3 v3.4.4
@@ -23,6 +24,8 @@ require (
 
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
@@ -31,6 +34,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect

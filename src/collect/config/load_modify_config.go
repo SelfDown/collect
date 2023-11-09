@@ -16,6 +16,18 @@ func (t *PluginLoader) LoadModifyConfig(config Plugin, template *Template, route
 		if !utils.IsValueEmpty(service.ModifyConfig) {
 			var config ModifyConfig
 			json.Unmarshal([]byte(service.ModifyConfigContent), &config)
+
+			for index, item := range config.Fields {
+				// 转换enable
+				if !utils.IsValueEmpty(item.Enable) {
+					tpl, err := _load_template(item.Enable)
+					if err != nil {
+						template.LogData(err)
+						continue
+					}
+					config.Fields[index].EnableTpl = tpl
+				}
+			}
 			service.ModifyConfigData = &config
 
 		}

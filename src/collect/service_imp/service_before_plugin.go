@@ -3,6 +3,7 @@ package collect
 import (
 	common "collect.mod/src/collect/common"
 	"collect.mod/src/collect/config"
+	cacheHandler "collect.mod/src/collect/service_imp/cache_handler"
 	utils "collect.mod/src/collect/utils"
 )
 
@@ -108,6 +109,35 @@ func (t *BeforeLoader) HandlerReqParam(config collect.Plugin, template *collect.
 
 }
 
+/**
+* 处理参数
+ */
 func (t *BeforeLoader) HandlerParams(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
 	return handlerParams(template, template.HandlerParams, ts)
+}
+
+func (t *BeforeLoader) HandlerCache(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	handlerParam := template.Cache
+	if handlerParam.EnableTpl == nil {
+		return common.Ok(nil, "无缓存，无需处理")
+	}
+	// 获取缓存
+	handlerParam.Method = cacheHandler.CacheGetName
+	ret := HandlerOneParams(&handlerParam, template, ts)
+	if ret.Success {
+		ret.SetFinish(true)
+	}
+
+	return ret
+}
+
+func (t *AfterLoader) HandlerCache(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	handlerParam := template.Cache
+	if handlerParam.EnableTpl == nil {
+		return common.Ok(nil, "无缓存，无需处理")
+	}
+	// 设置缓存
+	handlerParam.Method = cacheHandler.CacheSetName
+	ret := HandlerOneParams(&handlerParam, template, ts)
+	return ret
 }

@@ -107,6 +107,9 @@ func (s *LdapService) Result(template *config.Template, ts *TemplateService) *co
 	ldapConfig := Ldap{}
 	json.Unmarshal([]byte(dataContent), &ldapConfig)
 	connect := ldapConfig.Connection
+	if utils.IsValueEmpty(connect.Server) {
+		return common.NotOk("ldap登陆失败！ ldap 服务器地址不能为空")
+	}
 	l, err := ldap.DialURL(connect.Server)
 	if err != nil {
 		log.Fatal(err)

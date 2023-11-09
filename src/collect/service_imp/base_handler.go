@@ -22,6 +22,11 @@ var gormDb *gorm.DB
 type BaseHandler struct {
 }
 
+func init() {
+	base := BaseHandler{}
+	base.GetDatasource()
+}
+
 func (s *BaseHandler) RunFuncName() string {
 
 	pc := make([]uintptr, 1)
@@ -226,4 +231,12 @@ func (s *BaseHandler) CheckFilter(template *config.Template, model interface{}) 
 
 	}
 	return common.Ok(nil, "检查成功")
+}
+
+func (s *BaseHandler) GetFieldNames(handlerParam *config.HandlerParam) []string {
+	fieldList := make([]string, 0)
+	for _, field := range handlerParam.Fields {
+		fieldList = append(fieldList, field.Field)
+	}
+	return fieldList
 }

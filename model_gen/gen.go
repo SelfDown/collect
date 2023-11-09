@@ -42,6 +42,7 @@ var (
 	SysParam                *sysParam
 	TemplateEventLog        *templateEventLog
 	UserAccount             *userAccount
+	UserChangeHistory       *userChangeHistory
 	UserRole                *userRole
 )
 
@@ -72,6 +73,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	SysParam = &Q.SysParam
 	TemplateEventLog = &Q.TemplateEventLog
 	UserAccount = &Q.UserAccount
+	UserChangeHistory = &Q.UserChangeHistory
 	UserRole = &Q.UserRole
 }
 
@@ -103,6 +105,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		SysParam:                newSysParam(db, opts...),
 		TemplateEventLog:        newTemplateEventLog(db, opts...),
 		UserAccount:             newUserAccount(db, opts...),
+		UserChangeHistory:       newUserChangeHistory(db, opts...),
 		UserRole:                newUserRole(db, opts...),
 	}
 }
@@ -135,6 +138,7 @@ type Query struct {
 	SysParam                sysParam
 	TemplateEventLog        templateEventLog
 	UserAccount             userAccount
+	UserChangeHistory       userChangeHistory
 	UserRole                userRole
 }
 
@@ -168,6 +172,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		SysParam:                q.SysParam.clone(db),
 		TemplateEventLog:        q.TemplateEventLog.clone(db),
 		UserAccount:             q.UserAccount.clone(db),
+		UserChangeHistory:       q.UserChangeHistory.clone(db),
 		UserRole:                q.UserRole.clone(db),
 	}
 }
@@ -208,6 +213,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		SysParam:                q.SysParam.replaceDB(db),
 		TemplateEventLog:        q.TemplateEventLog.replaceDB(db),
 		UserAccount:             q.UserAccount.replaceDB(db),
+		UserChangeHistory:       q.UserChangeHistory.replaceDB(db),
 		UserRole:                q.UserRole.replaceDB(db),
 	}
 }
@@ -238,6 +244,7 @@ type queryCtx struct {
 	SysParam                ISysParamDo
 	TemplateEventLog        ITemplateEventLogDo
 	UserAccount             IUserAccountDo
+	UserChangeHistory       IUserChangeHistoryDo
 	UserRole                IUserRoleDo
 }
 
@@ -268,6 +275,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		SysParam:                q.SysParam.WithContext(ctx),
 		TemplateEventLog:        q.TemplateEventLog.WithContext(ctx),
 		UserAccount:             q.UserAccount.WithContext(ctx),
+		UserChangeHistory:       q.UserChangeHistory.WithContext(ctx),
 		UserRole:                q.UserRole.WithContext(ctx),
 	}
 }

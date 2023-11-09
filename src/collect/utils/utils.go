@@ -161,7 +161,15 @@ func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string
 	if ok {
 		dataList = make([]map[string]interface{}, 0)
 		for _, item := range tmp {
-			dataList = append(dataList, item.(map[string]interface{}))
+			itemData, itemOk := item.(map[string]interface{})
+			if itemOk { //如果能直接转，就直接转，转不了包一层
+				dataList = append(dataList, itemData)
+			} else {
+				itemTmp := make(map[string]interface{})
+				itemTmp["item"] = item
+				dataList = append(dataList, itemTmp)
+			}
+
 		}
 		return dataList, ""
 	}
@@ -198,6 +206,14 @@ func GetRenderVarName(name string) string {
 	// 替换右边括号
 	varName = strings.Replace(varName, "]", "", -1)
 	return varName
+}
+func GetFieldValueList(fields []string, params map[string]interface{}) []string {
+	valueList := make([]string, 0)
+	for _, item := range fields {
+		value := gocast.ToString(RenderVarOrValue(item, params))
+		valueList = append(valueList, value)
+	}
+	return valueList
 }
 func RenderVar(name string, params map[string]interface{}) interface{} {
 

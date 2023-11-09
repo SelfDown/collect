@@ -28,6 +28,9 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &GetModifyData{})
 	l = append(l, &FilterArr{})
 	l = append(l, &PropArr{})
+	l = append(l, &Arr2Dict{})
+	l = append(l, &HandlerCache{})
+	l = append(l, &GroupBy{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

@@ -128,6 +128,20 @@
                 urls: [
                     {
                         type:"title",
+                        name: '缓存'
+                    },
+                    {
+                        type:"url",
+                        name:"批量缓存参数",
+                        data:'{"service":"config.config_detail_cache_all"}'
+                    },
+                    {
+                        type:"url",
+                        name:"单个获取缓存参数",
+                        data:'{"service":"config.config_detail_query","group_name":"ldap_config"}'
+                    },
+                    {
+                        type:"title",
                         name: 'amis 路由'
                     },
                     {

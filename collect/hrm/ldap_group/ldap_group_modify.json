@@ -18,7 +18,6 @@
         "[name]",
         "[has_group]"
       ]
-
     },
     {
       "rule": "array_obj_value",
@@ -36,7 +35,6 @@
         "[name]",
         "[has_group]"
       ]
-
     }
   ]
 }

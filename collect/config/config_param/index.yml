@@ -1,0 +1,72 @@
+service:
+  - key: config_detail_cache_all
+    module: sql
+    http: true
+    run_startup: true
+    data_file: config_detail_query_all.sql
+    result_handler:
+      - key: result2params
+        fields:
+          - to: "[config_params]"
+      - key: group_by
+        enable: "{{must .config_params}}"
+        foreach: "[config_params]"
+        children: "children"
+        fields:
+          - field: "[group_id]"
+        save_field: config
+      - key: arr2dict
+        name: 如果有children 表示有个二级数组
+        enable: "{{must .config}}"
+        foreach: "[config]"
+        children: "children"
+        result_name: "children_config"
+        field: "[name]"
+        value: "[value]"
+        save_field: config
+      - key: handler_cache
+        name: 批量设置缓存
+        method: BULK_SET_CACHE
+        foreach: "[config]"
+        item: item
+        field: "[item.children_config]"
+        enable: "{{eq (get_key \"can_cache\") \"true\"}}"
+        room: config
+        second: 0
+        fields:
+          - field: "config.config_detail_query"
+          - field: "[item.group_id]"
+      - key: param2result
+        field: "[config]"
+
+  - key: config_detail_query
+    http: true
+    module: sql
+    cache:
+      key: "handler_cache"
+      enable: "{{eq (get_key \"can_cache\") \"true\"}}"
+      room: config
+      second: 0
+      fields:
+        - field: "[service]"
+        - field: "[group_name]"
+    params:
+      group_name:
+        check:
+          template: "{{must .group_name}}"
+          err_msg: 分组名称不能空
+      config:
+        default: {}
+    data_file: config_detail_query.sql
+    result_handler:
+      - key: result2params
+        fields:
+          - to: "[config_params]"
+      - key: arr2dict
+        enable: "{{must .config_params}}"
+        foreach: "[config_params]"
+        field: "[name]"
+        value: "[value]"
+        save_field: config
+      - key: param2result
+        field: "[config]"

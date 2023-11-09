@@ -1,6 +1,8 @@
 {
   "type": "page",
   "title": "ldap分组管理",
+  "remark": "ldap分组管理，会在目标ldap服务器创建ou=groups的数据，并且也定时同步于ldap的groups",
+
   "cssVars": {
     "--TableCell-height": "1.4rem"
   },

@@ -151,8 +151,17 @@ service:
     http: true
     module: sql
     params:
+      role_id_list:
+        default: []
+      roles:
+        default: ""
       to_obj:
         default: false
+    handler_params:
+      - key: field2array
+        enable: "{{must .roles}}"
+        field: "[roles]"
+        save_field: role_id_list
     data_file: ldap_group_query.sql
     result_handler:
       - key: arr2obj

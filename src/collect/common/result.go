@@ -14,9 +14,16 @@ type Result struct {
 	Code    string `json:"code"`    //编码
 	Msg     string `json:"msg"`     // 消息
 	Data    any    `json:"data"`    //请求参数
-
+	finish  bool   //是否接收
 }
 
+func (r *Result) SetFinish(value bool) {
+	r.finish = value
+}
+
+func (r *Result) IsFinish() bool {
+	return !r.Success || r.finish
+}
 func (r *Result) GetSuccess() bool {
 
 	return r.Success

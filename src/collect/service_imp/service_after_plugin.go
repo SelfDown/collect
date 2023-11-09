@@ -52,7 +52,7 @@ func HandlerOneParams(handlerParam *collect.HandlerParam,
 			}
 		}
 	}
-	return common.Ok(nil, "执行成功")
+	return common.Ok(r.GetData(), "执行成功")
 }
 
 //todo template 存储结果，针对结果进行处理

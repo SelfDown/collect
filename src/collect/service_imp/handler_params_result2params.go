@@ -21,11 +21,13 @@ func (pr *Result2Params) HandlerData(template *config.Template, handlerParam *co
 		}
 	} else { //如果是map形式则取map中对应值
 		for _, field := range handlerParam.Fields {
-			if utils.IsValueEmpty(field.From) {
-				return common.NotOk("结果转参数处理器中，未配置from 字段")
+			if utils.IsValueEmpty(field.From) { //如果没有from字段，结果直接转参数
+				template.AddParam(utils.GetRenderVarName(field.To), result)
+			} else {
+				fromValue := utils.RenderTplDataWithType(field.FromTpl, result, field.Type)
+				template.AddParam(utils.GetRenderVarName(field.To), fromValue)
 			}
-			fromValue := utils.RenderTplDataWithType(field.FromTpl, result, field.Type)
-			template.AddParam(utils.GetRenderVarName(field.To), fromValue)
+
 		}
 	}
 

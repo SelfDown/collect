@@ -62,10 +62,13 @@ func (s *BaseRule) getChangeData(change *ChangeData) map[string]interface{} {
 	if len(rightFields) == 1 && rightFields[0] == "*" {
 
 	}
+	afterMap := change.AfterDataMap
+	//params := utils.Copy(s.Template.GetParams())
+	//afterMap["params"] = params
 	if rightFields != nil && len(rightFields) > 0 {
 		for _, rightField := range rightFields {
 			fieldName := utils.GetRenderVarName(rightField)
-			value := utils.RenderVar(rightField, change.AfterDataMap)
+			value := utils.RenderVar(rightField, afterMap)
 			data[fieldName] = value
 		}
 
@@ -215,8 +218,16 @@ func transferValue(original string, transDict map[string]string) string {
 
 func (uf *GetModifyData) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	changData := make([]map[string]interface{}, 0)
+	params := template.GetParams()
 	for _, field := range template.ModifyConfigData.Fields {
 		rule := field.Rule
+		if field.EnableTpl != nil { // 判断是否启用
+			enable := utils.RenderTplBool(field.EnableTpl, params)
+			if !enable {
+				continue
+			}
+		}
+
 		baseRule := BaseRule{
 			Field:    field,
 			Template: template,

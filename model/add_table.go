@@ -102,7 +102,11 @@ func addTable() {
 	tableUserAccount := UserAccount{}
 	modelMap["user_account"] = tableUserAccount
 	primaryKeyMap["user_account"] = tableUserAccount.PrimaryKey()
-	//26 user_role
+	//26 user_change_history
+	tableUserChangeHistory := UserChangeHistory{}
+	modelMap["user_change_history"] = tableUserChangeHistory
+	primaryKeyMap["user_change_history"] = tableUserChangeHistory.PrimaryKey()
+	//27 user_role
 	tableUserRole := UserRole{}
 	modelMap["user_role"] = tableUserRole
 	primaryKeyMap["user_role"] = tableUserRole.PrimaryKey()

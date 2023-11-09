@@ -19,5 +19,8 @@ func LoadSystemServices() config.RouterAll {
 	var loader config.PluginLoader
 	//加载启动插件
 	config.LoadTemplatePlugins(&loader, routerALL.LoadStartupPlugin, &t, &routerALL)
+	// 初始化数据连接
+	//base := collect.BaseHandler{}
+	//base.GetDatasource()
 	return routerALL
 }

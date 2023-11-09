@@ -1,0 +1,4 @@
+# 项目点路由
+service:
+  - name: "参数管理"
+    path: "config_param/index.yml"

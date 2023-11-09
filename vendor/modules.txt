@@ -1,12 +1,23 @@
 # github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e
 ## explicit
 github.com/Azure/go-ntlmssp
+# github.com/cespare/xxhash/v2 v2.1.1
+## explicit; go 1.11
+github.com/cespare/xxhash/v2
 # github.com/demdxx/gocast v1.2.0
 ## explicit; go 1.16
 github.com/demdxx/gocast
 # github.com/dengsgo/math-engine v0.0.0-20220911070221-a5a560a8684b
 ## explicit; go 1.14
 github.com/dengsgo/math-engine/engine
+# github.com/dgraph-io/ristretto v0.1.1
+## explicit; go 1.12
+github.com/dgraph-io/ristretto
+github.com/dgraph-io/ristretto/z
+github.com/dgraph-io/ristretto/z/simd
+# github.com/dustin/go-humanize v1.0.0
+## explicit
+github.com/dustin/go-humanize
 # github.com/emirpasic/gods v1.18.1
 ## explicit; go 1.2
 github.com/emirpasic/gods/containers
@@ -61,6 +72,9 @@ github.com/goccy/go-json/internal/runtime
 ## explicit; go 1.16
 github.com/godoes/gorm-oracle
 github.com/godoes/gorm-oracle/clauses
+# github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
+## explicit
+github.com/golang/glog
 # github.com/gorilla/context v1.1.1
 ## explicit
 github.com/gorilla/context

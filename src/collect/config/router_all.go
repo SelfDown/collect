@@ -183,20 +183,20 @@ type ServiceList struct {
 * 服务
  */
 type ServiceConfig struct {
-	Project  string // 项目
-	Name     string
-	Key      string                 // 服务
-	Service  string                 // 服务全称
-	Params   map[string]ParamConfig // 参数配置定义
-	Schedule Schedule               // 定时任务
-
-	Module    string // 模块
-	Table     string // 表名
-	Http      bool   //  是否支持http 访问
-	Options   string // 可以选择字段
-	MustLogin *bool  `yaml:"must_login"` // 是否必须登录
-	DataFile  string `yaml:"data_file"`  // 文件路径
-
+	Project             string // 项目
+	Name                string
+	Key                 string                  // 服务
+	Service             string                  // 服务全称
+	Params              map[string]ParamConfig  // 参数配置定义
+	Schedule            Schedule                // 定时任务
+	Cache               HandlerParam            // 缓存设置
+	Module              string                  // 模块
+	Table               string                  // 表名
+	Http                bool                    //  是否支持http 访问
+	Options             string                  // 可以选择字段
+	MustLogin           *bool                   `yaml:"must_login"`  // 是否必须登录
+	DataFile            string                  `yaml:"data_file"`   // 文件路径
+	RunStartup          bool                    `yaml:"run_startup"` // 启动是否运行
 	FileData            string                  // 文件内容
 	Pagination          string                  //分页字段
 	FileDataTpl         *text_template.Template // 文件内容的模板
@@ -321,6 +321,10 @@ type HandlerParam struct {
 	ValueListField      string   `yaml:"value_list_field"json:"value_list_field"`           // 失败流转
 	AppendRightFields   []string `yaml:"append_right_fields"json:"append_right_fields"`     // 失败流转
 	WithAddRemove       bool     `yaml:"with_add_remove"json:"with_add_remove"`             // 比较修改记录的
+	Method              string
+	Room                string
+	Second              int64
+	Children            string //children
 }
 type ExcelConfig struct {
 	Name   string   // 名称

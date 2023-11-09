@@ -2,7 +2,7 @@
   require(login.common),
   "method": "modifyDn",
   "ModifyDnParams": {
-    "DN": "ou={{.old_name}},ou=groups,dc=weigao,dc=com",
+    "DN": "ou={{.old_name}},{{.ldap_config.ldap_groups}},{{.ldap_config.ldap_base_dn}}",
     "NewRDN": "ou={{.new_name}}",
     "DeleteOldRDN": true
   }

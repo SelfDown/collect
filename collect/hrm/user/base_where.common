@@ -1,5 +1,5 @@
 {{ if .exclude }}
-and a.userid != {{.exclude}}
+and a.user_id != {{.exclude}}
 {{ end }}
 
 {{  if .user_id }}

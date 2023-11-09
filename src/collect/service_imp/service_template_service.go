@@ -50,16 +50,16 @@ func handlerAmis(result *common.Result) {
 
 	}
 }
+
+// RunScheduleService 添加定时任务
 func RunScheduleService() []*collect.ServiceConfig {
 	services := collect.GetLocalRouter().GetRegisterServices()
 	scheduleService := make([]*collect.ServiceConfig, 0)
 	params := make(map[string]interface{})
 	c := cron.New()
-
 	i := 0
 	for _, service := range services {
 		if !utils.IsValueEmpty(service.Schedule.Enable) && !utils.IsValueEmpty(service.Schedule.ScheduleSpec) {
-
 			run := utils.RenderTplBool(service.Schedule.EnableTpl, params)
 			if run {
 				scheduleService = append(scheduleService, service)
@@ -68,7 +68,7 @@ func RunScheduleService() []*collect.ServiceConfig {
 				paramService["service"] = service.Service
 				fmt.Println(utils.Strval(i) + ".添加定时任务[" + service.Service + "]" + service.Schedule.ScheduleSpec)
 				c.AddFunc(service.Schedule.ScheduleSpec, func() {
-					ts := TemplateService{OpUser: "sys"}
+					ts := TemplateService{OpUser: "schedule"}
 					ts.ResultInner(paramService)
 				})
 			}
@@ -79,6 +79,27 @@ func RunScheduleService() []*collect.ServiceConfig {
 		c.Start()
 	}
 	return scheduleService
+}
+
+// RunStartupService 添加启动服务
+func RunStartupService() []*collect.ServiceConfig {
+	services := collect.GetLocalRouter().GetRegisterServices()
+	startupService := make([]*collect.ServiceConfig, 0)
+	i := 0
+	for _, service := range services {
+		if service.RunStartup {
+			startupService = append(startupService, service)
+			i++
+			paramService := make(map[string]interface{})
+			paramService["service"] = service.Service
+			fmt.Println(utils.Strval(i) + ".执行启动服务[" + service.Service + "]" + service.Schedule.ScheduleSpec)
+			ts := TemplateService{OpUser: "startup"}
+			ts.ResultInner(paramService)
+		}
+
+	}
+
+	return startupService
 }
 
 func HandlerRequest(c *gin.Context) {
@@ -229,8 +250,8 @@ func (t *TemplateService) before(params map[string]interface{}, isHttp bool) (*c
 			continue
 		}
 		pluginResult := collect.CallPluginFunc(&loader, plugin, &temp, t)
-		if !pluginResult.Success {
-			return nil, pluginResult
+		if pluginResult.IsFinish() {
+			return &temp, pluginResult
 		}
 
 	}
@@ -294,7 +315,8 @@ func (t *TemplateService) Result(params map[string]interface{}, isHttp bool) *co
 	// 执行处理前
 
 	temp, beforeResult := t.before(params, isHttp)
-	if !beforeResult.Success {
+	//如果失败了，或则结束直接返回
+	if beforeResult.IsFinish() {
 		return beforeResult
 	}
 	// 处理中

@@ -2,7 +2,7 @@
   require(login.common),
   "method": "delete",
   "DeleteParams": {
-    "DN": "ou={{.name}},ou=groups,dc=weigao,dc=com"
+    "DN": "ou={{.name}},{{.ldap_config.ldap_groups}},{{.ldap_config.ldap_base_dn}}"
   }
 
 }

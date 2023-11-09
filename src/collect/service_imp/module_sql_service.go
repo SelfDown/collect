@@ -18,8 +18,6 @@ type SqlService struct {
 	BaseHandler
 }
 
-//var db0 *sql.DB
-
 func (s *SqlService) Result(template *config.Template, ts *TemplateService) *common.Result {
 	r := common.Result{}
 	var err error

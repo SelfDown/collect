@@ -19,3 +19,6 @@ service:
     path: "ldap_group/index.yml"
   - name: role_ldap_group
     path: "role_ldap_group/index.yml"
+
+  - name: user_change_history
+    path: "user_change_history/index.yml"

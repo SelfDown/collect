@@ -4,7 +4,7 @@
   "scope_desc": "ScopeBaseObject   = 0\n\tScopeSingleLevel  = 1\n\tScopeWholeSubtree = 2",
   "Split": "|",
   "SearchParams": {
-    "BaseDN": "ou=groups,dc=weigao,dc=com",
+    "BaseDN": "{{.ldap_config.ldap_groups}},{{.ldap_config.ldap_base_dn}}",
     "Scope":2,
     "DerefAliases": 0,
     "filter": "(&(objectClass=groupOfUniqueNames)(ou={{.name}}))",

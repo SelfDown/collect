@@ -13,6 +13,11 @@ type Properties struct {
 	Data     map[string]interface{} // 数据
 }
 
+func init() {
+	// 由于启动有要连接数据库，直接先进行导入配置了
+	LoadAppProperties("./conf/application.properties")
+}
+
 var p Properties
 
 func LoadAppProperties(path string) {

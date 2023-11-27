@@ -7,104 +7,1063 @@
             background-color: #fcfcfc;
         }
 
+        .header {
+            display: flex;
+            height: 40px;
+            color: white;
+            background: linear-gradient(270deg, #1fb4ef, #16a7e1);
+            position: relative;
+        }
 
+        .logo {
+            padding-left: 10px;
+            line-height: 170%;
+            font-size: 24px;
+            font-weight: 800;
+            width: 250px;
+        }
+
+        .all-search {
+            width: 300px;
+            padding: 1px;
+        }
+
+        .el-input__inner {
+            height: 38px;
+            line-height: 38px;
+            border-radius: 2px;
+
+        }
+
+        .container {
+
+            background: #FAFAFA;
+            display: flex;
+        }
+
+        .el-input-group--append .el-input__inner, .el-input-group__prepend {
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 0px;
+        }
+
+        #app {
+            height: 100%;
+            display: grid;
+            overflow: auto;
+            grid-template-columns: 100%;
+            grid-template-rows: 40px calc(100% - 40px);
+        }
+
+        .aside {
+            width: 250px;
+            border-right: 1px solid #d7d7d7;
+            overflow: auto;
+        }
+
+        .header-right {
+            display: flex;
+            line-height: 250%;
+            position: absolute;
+            right: 10px;
+        }
+
+        .row-btn {
+            display: flex;
+            align-items: center;
+            padding: 0px 10px;
+            cursor: pointer;
+        }
+
+        .row-btn:hover {
+            background: rgb(255, 255, 255, 0.2);
+        }
+
+        .row-btn i {
+            padding-right: 2px;
+        }
+
+        .el-tabs__item {
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .aside .el-tabs__nav-scroll {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content {
+            width: 100%;
+            overflow: auto;
+        }
+
+        .doc-search {
+            padding: 0px 10px;
+            display: flex;
+        }
+
+        .doc-container {
+            /*position: relative;*/
+            display: flex;
+            height: calc(100% - 40px);
+
+            overflow: auto;
+        }
+
+        .add {
+            margin-left: 4px;
+        }
+
+        .el-button--mini {
+            border-radius: 2px;
+            padding: 7px 6px;
+        }
+
+        .doc-menu {
+            position: fixed;
+            right: 20px;
+            border: 1px solid #eeebf5;
+            width: 250px;
+            padding: 10px;
+            background: #fffe;
+            box-shadow: 0 0 8px rgba(0, 0, 0, .2)
+        }
+
+        .menu-item-parent {
+            padding: 4px 10px;
+            cursor: pointer;
+        }
+
+        .menu-item {
+            padding: 4px 10px;
+            cursor: pointer;
+        }
+
+        .item-sub {
+            padding-left: 26px;
+        }
+
+        .menu-item:hover {
+            text-decoration: underline;
+        }
+
+        .menu-item-parent:hover {
+            text-decoration: underline;
+        }
+
+
+        .doc-content {
+            padding-top: 4px;
+        }
+
+        .el-tabs__header {
+            margin: 0px 0px 10px;
+        }
+
+        .el-collapse-item__header {
+            height: 36px;
+            padding: 0px 0px 0px 10px;
+        }
+
+        .el-tabs__nav-wrap::after {
+            height: 1px;
+        }
+
+        .el-collapse {
+            border-bottom: none;
+        }
+
+        .el-collapse-item__header.is-active {
+            border-bottom-color: #eeebf5;
+            background: #f8f8f8;
+        }
+
+        .el-collapse-item__header {
+            font-weight: 600;
+        }
+
+        .el-collapse-item__content {
+            padding-bottom: 0px;
+            max-height: 250px;
+            overflow: auto;
+        }
+
+        .doc-item {
+            padding: 0px 14px;
+            border-bottom: 1px solid #eeebf5;
+            line-height: 200%;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .doc-item-right {
+            position: absolute;
+            right: 10px;
+            color: #0008;
+
+        }
+
+        .doc-item:hover {
+            background: rgb(0, 0, 0, 0.02);
+        }
+
+        .el-collapse-item__content .doc-item:last-child {
+            border-bottom: none;
+        }
+
+        .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+            background: #fff;
+        }
+
+        .el-tabs--card > .el-tabs__header .el-tabs__nav {
+            border-top: none;
+            border-radius: 0px;
+            border-left: none;
+        }
+
+        .doc-title {
+            font-weight: 600;
+            font-size: 22px;
+            padding-left: 10px;
+            width: 100%;
+            border-bottom: 1px solid #eeebf5;
+            padding-bottom: 12px;
+            margin-top: -4px;
+        }
+
+        .doc-content {
+            width: 100%;
+        }
+
+        .doc-sub-title {
+            font-weight: 600;
+            font-size: 18px;
+            padding: 4px 10px;
+        }
+
+        .doc-block {
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 4px;
+        }
+
+        ul {
+            margin-block-start: 0.2em;
+            margin-block-end: 0.2em;
+        }
+
+        code {
+            font-family: ui-monospace;
+        }
+
+        .el-table td, .el-table th {
+            padding: 4px 0px;
+        }
+
+        .has-gutter th, .has-gutter tr {
+            background: #eee;
+        }
+
+        .el-textarea__inner {
+            border-radius: 2px;
+        }
+
+        .el-button + .el-button {
+            margin-left: 5px;
+        }
+
+        .edit {
+            margin-left: 5px;
+        }
+
+        .menu-header {
+            cursor: pointer;
+        }
+
+        .menu-folder {
+            font-size: 16px;
+            padding: 2px;
+        }
+
+        .el-dialog__body {
+            padding: 0px 10px;
+        }
+
+        .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+            margin-bottom: 4px;
+        }
+
+        .el-form-item__error {
+            color: #f12727;
+            background-color: #ffe1e1;
+            border-color: #ffe1e1;
+            top: 70%;
+            left: 5px;
+            border: 1px solid #eee;
+            line-height: 20px;
+            padding: 0 5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .row-op {
+            display: flex;
+        }
+
+        .saveForm .el-table__empty-block {
+            height: 60px !important;
+        }
+
+        .el-dialog {
+            margin: 0 auto 0px;
+        }
+
+        .el-table .cell {
+            padding-right: 0px;
+            padding-left: 4px;
+        }
+
+        .el-table .el-input__inner {
+
+            padding: 0px 4px;
+        }
+
+        .form-select {
+            width: 100%;
+        }
+
+        .tab .el-tabs__content {
+            height: calc(100% - 70px);
+        }
+
+        .bottom-tool {
+            border-top: 1px solid #eeebf5;
+            padding-top: 2px;
+            padding-left: 10px;
+        }
+        .no-data{
+            padding: 10px 40px;
+            color: #0008;
+        }
     </style>
 
+    <script>
+        //数组删除
+        Array.prototype.remove = function (val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+    </script>
 </header>
 <body style="padding: 0;margin: 0px">
 <div id="app">
-    <el-row style="padding: 10px;background: #f0fff0;height: 100%">
-
-        <el-row style="margin-bottom: 15px">
-            <div style="margin-top: 10px">
-                <a href="javascript:void (0)" @click="sys('result35_search')" style="margin-right: 50px">
-                    登录
-                </a>
-                <a href="javascript:void (0)" @click="sys('result37_search')" style="margin-right: 50px">
-                    登出
-                </a>
-                <a href="javascript:void (0)" @click="sys('result36_search')">
-                    获取当前用户信息
-                </a>
-            </div>
+    <el-row class="header">
+        <el-row class="logo">
+            collect
         </el-row>
-
-
         <el-row>
-            <el-col :span="16">
-                <el-input v-model="url" placeholder="访问地址" size="mini"></el-input>
-            </el-col>
-            <el-col :span="8">
-                <el-button-group style="display: flex;">
 
-                    <el-button size="mini" type="primary"
-                               v-if="!show_download_file && !show_upload_file"
-                               @click="post"> 发送请求
-                    </el-button>
-                    <el-button size="mini" type="danger"
-                               v-if="show_download_file"
-                               @click="download"> 下载文件
-                    </el-button>
-                    <el-button size="mini" type="danger"
-                               v-if="show_upload_file"
-                               @click="upload"> 上传文件
-                    </el-button>
-                    <el-button size="mini" type="warning" @click="toJSON"> 格式化</el-button>
-                </el-button-group>
-
-            </el-col>
 
         </el-row>
-        <el-col :span="4">
-            <el-row v-for="(item,index) in urls" :key="index">
-
-
-                <h3 v-if="item.type=='title'">{{item.name}}</h3>
-                <div v-else>
-
-                   <i v-if="item.show_download_file || item.show_upload_file" style="color: red" class="el-icon-tickets"></i>
-                    <a href="javascript:void (0)" @click="change(item)">
-                        {{item.name}}
-                    </a>
-                </div>
-
-            </el-row>
-
-
-        </el-col>
-
-        <el-col :span="8">
-
-            <el-row style="display: flex">
-                <form id="form" v-if="show_upload_file">
-                    <input type="file" name="file">
-                </form>
-            </el-row>
-
+        <el-row class="header-right">
             <el-input
-                    type="textarea"
-                    class="input"
-                    :rows="30"
-                    placeholder="请输入请求内容"
-                    v-model="params">
+                    v-model="allSearch"
+                    class="all-search"
+
+                    placeholder="请输入服务名称、key关键字">
+                <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
-
-        </el-col>
-        <el-col :span="12">
-
-            <el-input
-                    class="input"
-                    type="textarea"
-                    :rows="2"
-                    placeholder="返回内容"
-                    v-model="result"
-                    rows="30"
-            >
-            </el-input>
-
-        </el-col>
+            <el-row class="row-btn">
+                <i class="el-icon-s-platform"></i>控制台
+            </el-row>
+        </el-row>
 
     </el-row>
+    <el-row class="container">
+        <el-row class="aside">
+            <el-tabs
+                    class="tab"
+                    v-model="activeName">
+                <el-tab-pane label="服务文档" name="first">
+                    <el-row class="doc-search">
+                        <el-input
+                                size="mini"
+                                v-model="docSearch"
+                                placeholder="请输入关键字">
+                        </el-input>
+                        <el-button
+                                size="mini"
+                                @click="addDoc('doc')"
+                                class="add"
+                                type="primary" size="mini" icon="el-icon-plus"></el-button>
+                    </el-row>
+                    <el-row class="doc-content">
+                        <el-collapse v-model="activeNames">
+                            <el-collapse-item :name="item.doc_group_id"
+                                              :key="item.doc_group_id"
+                                              v-for="item in group_list_show('doc')">
+                                <template #title>
+                                    <i :class="activeNames.indexOf(item.doc_group_id)>=0?'el-icon-folder-opened':'el-icon-folder'"
+                                       class=" menu-folder"/>
+                                    {{item.name}}
+                                </template>
+                                <div v-if="item.children.length>0">
+                                    <div
+                                            @click="handlerDoc(subItem)"
+                                            class="doc-item" v-for="(subItem,index) in item.children">
+                                        {{index+1}}.{{subItem.title}}
+                                        <div class="doc-item-right">
+                                            {{subItem.sub_title}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="no-data" v-else>
+                                    暂无数据
+                                </div>
+
+                            </el-collapse-item>
+
+                        </el-collapse>
+                    </el-row>
+
+                </el-tab-pane>
+                <el-tab-pane label="本地服务" name="second">
+                    <el-row class="doc-search">
+                        <el-input
+                                size="mini"
+                                v-model="serviceSearch"
+                                placeholder="请输入关键字">
+                        </el-input>
+                        <el-button
+                                size="mini"
+                                @click="addDoc('service')"
+                                class="add"
+                                type="primary" size="mini" icon="el-icon-plus"></el-button>
+                    </el-row>
+                    <el-row class="doc-content">
+                        <el-collapse v-model="serviceNames">
+                            <el-collapse-item
+                                    :name="item.doc_group_id"
+                                    :key="item.doc_group_id"
+                                    v-for="item in group_list_show('service')"
+                            >
+                                <template #title>
+                                    <i :class="serviceNames.indexOf(item.doc_group_id)>=0?'el-icon-folder-opened':'el-icon-folder'"
+                                       class=" menu-folder"/>
+                                    {{item.name}}
+                                </template>
+                                <div class="doc-item">1.人员列表
+
+                                    <div class="doc-item-right">
+                                        hrm.user_list
+                                    </div>
+                                </div>
+                                <div class="doc-item">2.角色列表</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                                <div class="doc-item">3.角色用户</div>
+                            </el-collapse-item>
+
+
+                        </el-collapse>
+                    </el-row>
+
+                </el-tab-pane>
+            </el-tabs>
+            <el-row class="bottom-tool">
+                <el-button
+                        @click="groupDialogShow"
+                        icon="el-icon-folder-checked" size="mini">分组维护
+                </el-button>
+            </el-row>
+
+        </el-row>
+        <el-row class="content">
+            <el-tabs
+                    closable
+                    @tab-remove="tabRemove"
+                    v-model="contentActiveName" type="card">
+                <el-tab-pane :label="item.title"
+                             :key="item.collect_doc_id"
+                             v-for="(item,index) in tab_list"
+                             :name="item.collect_doc_id">
+                    <el-row class="doc-container">
+                        <el-row class="doc-content">
+                            <el-row class="doc-title">
+                                sql(sql查询)
+                                <el-button class="edit" type="text" icon="el-icon-edit"></el-button>
+                                <el-button type="text" icon="el-icon-delete"></el-button>
+                            </el-row>
+                            <el-row class="doc-sub-title">
+                                说明
+                            </el-row>
+                            <el-row class="doc-block">
+                                <code>module: sql</code>
+
+                            </el-row>
+                            <el-row class="doc-block">
+
+                                用于数据库表查询,将sql查询出来作为结果。修改删除，尽量用模型修改model_update,模型删除model_delete
+                                <ul>
+                                    <li>支持golang的模板参数渲染；支持3种数据类型
+                                        ，简单类型key/value;数组类型,字符串、数字数组;数组对象类型
+                                    </li>
+                                    <li>可以单独控制查询数据+统计count</li>
+                                    <li>sql文件支持require引入公共文件</li>
+                                </ul>
+                            </el-row>
+
+                            <div class="doc-sub-title">
+                                参数
+                            </div>
+                            <el-row class="doc-block">
+                                <el-table
+                                        :data="paramData"
+                                        stripe
+                                        border
+                                >
+                                    <el-table-column
+                                            prop="field"
+                                            label="参数"
+                                            width="180">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="type"
+                                            label="类型"
+                                            width="60">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="must"
+                                            label="必须"
+                                            width="60">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="desc"
+                                            label="说明">
+                                    </el-table-column>
+                                </el-table>
+                            </el-row>
+                            <div class="doc-sub-title">
+                                示例
+                            </div>
+                            <div class="doc-block">
+                                1. 配置文件示例
+                                <el-input
+                                        autosize
+                                        type="textarea" v-model="demo">
+
+                                </el-input>
+                                2.sql文件示例,注意require(base.sql) 表示是引入当前目录的base.sql文件
+                                <el-input autosize
+                                          type="textarea"
+                                          v-model="demo2"
+                                >
+
+                                </el-input>
+                                3.count 文件示例
+                                <el-input autosize
+
+                                          type="textarea"
+                                          v-model="demo3"
+                                >
+
+                                </el-input>
+                                4.base.sql 文件示例,包含简单key、value示例，分页示例
+                                <el-input autosize
+                                          type="textarea"
+                                          v-model="demo4"
+                                >
+
+                                </el-input>
+                                5.简单数组 文件示例
+                                <el-input autosize
+                                          type="textarea"
+                                          v-model="demo5"
+                                >
+
+                                </el-input>
+                                6.数组对象 文件示例
+                                <el-input autosize
+                                          type="textarea"
+                                          v-model="demo6"
+                                >
+
+                                </el-input>
+
+                            </div>
+                        </el-row>
+                        <el-row class="doc-menu">
+                            <div
+                                    :title="menuShow?'点击收起菜单':'点击展开菜单'"
+                                    class="menu-header"
+                                    @click="menuShow=!menuShow"><i
+                                    :class="menuShow?'el-icon-arrow-up':'el-icon-arrow-down'"></i>菜单导航
+                            </div>
+                            <div v-show="menuShow">
+                                <div class="menu-item">
+                                    说明
+                                </div>
+                                <div class="menu-item">
+                                    参数
+                                </div>
+                                <div>
+                                    <div class="menu-item">示例</div>
+                                    <div class="menu-item item-sub">1.配置文件示例</div>
+                                    <div class="menu-item item-sub">2.sql文件示例</div>
+                                </div>
+                            </div>
+                        </el-row>
+                    </el-row>
+                </el-tab-pane>
+
+            </el-tabs>
+        </el-row>
+        <el-dialog
+                append-to-body
+                top="1vh"
+                width="98%"
+
+                :close-on-click-modal="false"
+                :visible.sync="opShow"
+                :title="op==='add'?'新增文档':'编辑文档'">
+            <el-form
+                    :style="formStyle"
+                    :rules="rules"
+                    ref="saveForm"
+                    :model="form"
+                    class="saveForm"
+                    size="mini" label-width="80px">
+                <el-row>
+
+                    <el-col :span="10">
+
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item
+                                        prop="title"
+                                        required label="标题:">
+                                    <el-input v-model="form.title"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="子标题:">
+                                    <el-input v-model="form.sub_title"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+
+                                <el-form-item label="示例代码:">
+                                    <el-input type="textarea" v-model="form.code"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="示例描述:">
+                                    <el-input type="textarea" v-model="form.code_desc"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+
+                                <el-form-item
+                                        prop="type"
+                                        required
+                                        label="类型:">
+                                    <el-select class="form-select" v-model="form.type">
+                                        <el-option label="文档" value="doc">文档</el-option>
+                                        <el-option label="服务" value="service">服务</el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item
+                                        required
+                                        prop="parent_dir"
+                                        label="上级目录">
+                                    <el-select class="form-select" v-model="form.parent_dir">
+                                        <el-option
+                                                :key="item.doc_group_id"
+                                                v-for="(item) in parent_dir"
+                                                :label="item.name"
+                                                :value="item.doc_group_id"></el-option>
+
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="排序号">
+                                    <el-input
+                                            placeholder="越小越靠前"
+                                            v-model="form.order_index">
+
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="要点">
+                                <el-button
+                                        @click="addTableData('important_list',{'name':''})"
+                                        type="text" icon="el-icon-plus">
+                                </el-button>
+                                <el-button
+                                        @click="removeSelection('importantSelection','important_list')"
+                                        type="text" icon="el-icon-delete"></el-button>
+                                <el-table
+                                        @selection-change="(val)=>selectionChange('importantSelection',val)"
+                                        :data="form.important_list"
+                                        max-height="180">
+                                    <el-table-column type="selection"></el-table-column>
+                                    <el-table-column label="描述">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.name"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="操作" width="80">
+                                        <template slot-scope="scope">
+                                            <el-row class="row-op">
+                                                <el-button
+                                                        title="上移"
+                                                        @click="moveUp('important_list',scope.row)"
+                                                        type="text" icon="el-icon-top"></el-button>
+                                                <el-button
+                                                        title="下移"
+                                                        @click="moveDown('important_list',scope.row)"
+                                                        type="text" icon="el-icon-bottom">
+                                                </el-button>
+
+                                            </el-row>
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                            </el-form-item>
+
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="参数">
+                                <el-button
+                                        @click="addTableData('params',{'name':'','type':'','must':'','desc':''})"
+                                        type="text" icon="el-icon-plus"></el-button>
+                                <el-button
+                                        @click="removeSelection('paramsSelection','params')"
+                                        type="text" icon="el-icon-delete"></el-button>
+                                <el-table
+                                        @selection-change="(val)=>selectionChange('paramsSelection',val)"
+                                        :data="form.params"
+                                        max-height="180">
+                                    <el-table-column type="selection"></el-table-column>
+
+                                    <el-table-column
+                                            prop="name"
+                                            width="100"
+                                            label="参数">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.name"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            width="100"
+                                            label="类型">
+                                        <template slot-scope="scope">
+                                            <el-select size="mini" v-model="scope.row.type">
+                                                <el-option label="string" value="string"></el-option>
+                                                <el-option label="number" value="number"></el-option>
+                                                <el-option label="json" value="json"></el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            width="80"
+                                            label="必须">
+                                        <template slot-scope="scope">
+                                            <el-select size="mini" v-model="scope.row.must">
+                                                <el-option label="是" value="是"></el-option>
+                                                <el-option label="否" value=""></el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="说明">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.desc"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="操作" width="80">
+                                        <template slot-scope="scope">
+                                            <el-row class="row-op">
+                                                <el-button
+                                                        title="上移"
+                                                        @click="moveUp('params',scope.row)"
+                                                        type="text" icon="el-icon-top"></el-button>
+                                                <el-button
+                                                        title="下移"
+                                                        @click="moveDown('params',scope.row)"
+                                                        type="text" icon="el-icon-bottom">
+                                                </el-button>
+
+                                            </el-row>
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                            </el-form-item>
+
+                        </el-row>
+
+                    </el-col>
+                    <el-col :span="14">
+
+                        <el-row>
+                            <el-form-item label="代码示例">
+                                <el-button
+                                        @click="addTableData('demo',{'name':'','code':''})"
+                                        type="text" icon="el-icon-plus"></el-button>
+                                <el-button
+                                        @click="removeSelection('demoSelection','demo')"
+                                        type="text" icon="el-icon-delete"></el-button>
+                                <el-table
+                                        @selection-change="(val)=>selectionChange('demoSelection',val)"
+                                        :data="form.demo"
+                                >
+                                    <el-table-column type="selection"></el-table-column>
+
+                                    <el-table-column
+                                            prop="name"
+                                            width="150"
+                                            label="名称">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.name"></el-input>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="代码">
+                                        <template slot-scope="scope">
+                                            <el-input
+                                                    :autosize="{ minRows: 1, maxRows: 6 }"
+                                                    :rows="1"
+                                                    size="mini" type="textarea" v-model="scope.row.code"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="操作" width="80">
+                                        <template slot-scope="scope">
+                                            <el-row class="row-op">
+                                                <el-button
+                                                        title="上移"
+                                                        @click="moveUp('demo',scope.row)"
+                                                        type="text" icon="el-icon-top"></el-button>
+                                                <el-button
+                                                        title="下移"
+                                                        @click="moveDown('demo',scope.row)"
+                                                        type="text" icon="el-icon-bottom">
+                                                </el-button>
+
+                                            </el-row>
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                            </el-form-item>
+
+                        </el-row>
+                    </el-col>
+                </el-row>
+
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="mini" @click="opShow = false">取消</el-button>
+                <el-button size="mini" type="primary" @click="saveDoc">确定</el-button>
+            </div>
+
+        </el-dialog>
+        <el-dialog
+                append-to-body
+
+                top="6vh"
+                width="70%"
+
+                :close-on-click-modal="false"
+                :visible.sync="groupShow"
+                title="分组维护">
+            <el-form
+                    :style="form2Style"
+                    ref="saveForm"
+                    class="saveForm"
+                    size="mini" label-width="80px">
+                <el-form-item label="分组维护">
+                    <el-button
+                            @click="addTableData('group_list',{'name':''},'groupForm')"
+                            type="text" icon="el-icon-plus">
+                    </el-button>
+                    <el-button
+                            @click="removeSelection('groupSelection','group_list','groupForm')"
+                            type="text" icon="el-icon-delete"></el-button>
+                    <el-table
+                            @selection-change="(val)=>selectionChange('groupSelection',val)"
+                            :data="groupForm.group_list"
+                    >
+                        <el-table-column type="selection"></el-table-column>
+                        <el-table-column label="分组名称">
+                            <template slot-scope="scope">
+                                <el-input size="mini" v-model="scope.row.name"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="类型">
+                            <template slot-scope="scope">
+                                <el-select class="form-select" v-model="scope.row.type">
+                                    <el-option label="文档" value="doc">文档</el-option>
+                                    <el-option label="服务" value="service">服务</el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="描述">
+                            <template slot-scope="scope">
+                                <el-input size="mini" v-model="scope.row.desc"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="80">
+                            <template slot-scope="scope">
+                                <el-row class="row-op">
+                                    <el-button
+                                            title="上移"
+                                            @click="moveUp('group_list',scope.row,'groupForm')"
+                                            type="text" icon="el-icon-top"></el-button>
+                                    <el-button
+                                            title="下移"
+                                            @click="moveDown('group_list',scope.row,'groupForm')"
+                                            type="text" icon="el-icon-bottom">
+                                    </el-button>
+
+                                </el-row>
+                            </template>
+
+                        </el-table-column>
+                    </el-table>
+
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="mini" @click="groupShow = false">取消</el-button>
+                <el-button size="mini" type="primary" @click="saveGroup">确定</el-button>
+            </div>
+
+        </el-dialog>
+
+    </el-row>
+<!--        <el-row style="padding: 10px;background: #f0fff0;height: 100%">-->
+
+
+<!--            <el-row style="margin-bottom: 15px">-->
+<!--                <div style="margin-top: 10px">-->
+<!--                    <a href="javascript:void (0)" @click="sys('result35_search')" style="margin-right: 50px">-->
+<!--                        登录-->
+<!--                    </a>-->
+<!--                    <a href="javascript:void (0)" @click="sys('result37_search')" style="margin-right: 50px">-->
+<!--                        登出-->
+<!--                    </a>-->
+<!--                    <a href="javascript:void (0)" @click="sys('result36_search')">-->
+<!--                        获取当前用户信息-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </el-row>-->
+
+
+<!--            <el-row>-->
+<!--                <el-col :span="16">-->
+<!--                    <el-input v-model="url" placeholder="访问地址" size="mini"></el-input>-->
+<!--                </el-col>-->
+<!--                <el-col :span="8">-->
+<!--                    <el-button-group style="display: flex;">-->
+
+<!--                        <el-button size="mini" type="primary"-->
+<!--                                   v-if="!show_download_file && !show_upload_file"-->
+<!--                                   @click="post"> 发送请求-->
+<!--                        </el-button>-->
+<!--                        <el-button size="mini" type="danger"-->
+<!--                                   v-if="show_download_file"-->
+<!--                                   @click="download"> 下载文件-->
+<!--                        </el-button>-->
+<!--                        <el-button size="mini" type="danger"-->
+<!--                                   v-if="show_upload_file"-->
+<!--                                   @click="upload"> 上传文件-->
+<!--                        </el-button>-->
+<!--                        <el-button size="mini" type="warning" @click="toJSON"> 格式化</el-button>-->
+<!--                    </el-button-group>-->
+
+<!--                </el-col>-->
+
+<!--            </el-row>-->
+<!--            <el-col :span="4">-->
+<!--                <el-row v-for="(item,index) in urls" :key="index">-->
+
+
+<!--                    <h3 v-if="item.type=='title'">{{item.name}}</h3>-->
+<!--                    <div v-else>-->
+
+<!--                        <i v-if="item.show_download_file || item.show_upload_file" style="color: red"-->
+<!--                           class="el-icon-tickets"></i>-->
+<!--                        <a href="javascript:void (0)" @click="change(item)">-->
+<!--                            {{item.name}}-->
+<!--                        </a>-->
+<!--                    </div>-->
+
+<!--                </el-row>-->
+
+
+<!--            </el-col>-->
+
+<!--            <el-col :span="8">-->
+
+<!--                <el-row style="display: flex">-->
+<!--                    <form id="form" v-if="show_upload_file">-->
+<!--                        <input type="file" name="file">-->
+<!--                    </form>-->
+<!--                </el-row>-->
+
+<!--                <el-input-->
+<!--                        type="textarea"-->
+<!--                        class="input"-->
+<!--                        :rows="30"-->
+<!--                        placeholder="请输入请求内容"-->
+<!--                        v-model="params">-->
+<!--                </el-input>-->
+
+<!--            </el-col>-->
+<!--            <el-col :span="12">-->
+
+<!--                <el-input-->
+<!--                        class="input"-->
+<!--                        type="textarea"-->
+<!--                        :rows="2"-->
+<!--                        placeholder="返回内容"-->
+<!--                        v-model="result"-->
+<!--                        rows="30"-->
+<!--                >-->
+<!--                </el-input>-->
+
+<!--            </el-col>-->
+
+<!--        </el-row>-->
 </div>
 
 
@@ -116,10 +1075,136 @@
 <script src="./index.js"></script>
 <script src="./jquery.min.js"></script>
 <script>
+
     new Vue({
         el: '#app',
         data() {
             return {
+                tab_list:[],
+                groupListAll: [],
+                groupSelection: [],
+                groupShow: false,
+                group_loading: false,
+                op: "add",
+                serviceSearch: "",
+                importantSelection: [],
+                paramsSelection: [],
+                demoSelection: [],
+                rules: {
+                    title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
+                    type: [{required: true, message: '类型不能为空', trigger: 'blur'}],
+                    parent_dir: [{required: true, message: '上级不能为空', trigger: 'blur'}],
+                },
+                groupForm: {
+                    group_list: [],
+                },
+                form: {
+                    title: "",
+                    sub_title: "",
+                    code: "",
+                    type: "",
+                    parent_dir: "",
+                    code_desc: "",
+                    important_list: [{"name": "支持golang的模板参数渲染；支持3种数据类型 ，简单类型key/value;数组类型,字符串、数字数组;数组对象类型"}],
+                    params: [{"name": "module", "type": "string", "must": "是", "desc": ""}],
+                    demo: [{"name": "配置文件示例", "code": ""}],
+                },
+
+                opShow: false,
+                menuShow: true,
+                demo6:
+                    "{{ if .config_detail_list}}\n" +
+                    "and (g.group_id,g.name) in({{ range $index,$item := .config_detail_list }} {{if $index}},{{end}} ({{$item.group_id}},{{$item.name_copy}}){{ end}})\n" +
+                    "{{end}}",
+                demo5: "{{ if .ldap_group_id_list }}\n" +
+                    "and ldap_group_id in ({{.ldap_group_id_list}})\n" +
+                    "{{ end }}",
+                demo4: "select a.*\n" +
+                    "from role a\n" +
+                    "where 1=1\n" +
+                    "{{ if .search }}\n" +
+                    "and (\n" +
+                    "a.role_name like {{.search}}\n" +
+                    "or a.role_code like {{.search}}\n" +
+                    ")\n" +
+                    "{{ end }}\n" +
+                    "order by a.order_index desc\n" +
+                    "{{ if  .pagination  }}\n" +
+                    "limit {{.start}} , {{.size}}\n" +
+                    "{{ end }}",
+                demo3: "select count(1) as count\n" +
+                    "from (require('./base.sql')) a",
+                demo2: "select a.*,\n" +
+                    "(\n" +
+                    "   select GROUP_CONCAT(name )\n" +
+                    "   from ldap_group lg\n" +
+                    "   join role_ldap_group rlg on rlg.ldap_group_id =lg.ldap_group_id\n" +
+                    "   where rlg.role_id =a.role_id\n" +
+                    ") as ldap_names,\n" +
+                    "(\n" +
+                    "    select GROUP_CONCAT(lg.ldap_group_id)\n" +
+                    "    from ldap_group lg\n" +
+                    "    join role_ldap_group rlg   on rlg.ldap_group_id =lg.ldap_group_id\n" +
+                    "    where rlg.role_id =a.role_id\n" +
+                    ") as ldap_group_ids\n" +
+                    "from (require(base.sql)) as a",
+                demo: '' +
+                    '  - key: user_list\n' +
+                    '    module: sql\n' +
+                    '    http: true\n' +
+                    '    params:\n' +
+                    '      search:\n' +
+                    '        template: "{{ if .search }}%{{.search}}%{{ end }}"\n' +
+                    '      page:\n' +
+                    '        type: int\n' +
+                    '        default: 1\n' +
+                    '      size:\n' +
+                    '        default: 20\n' +
+                    '        type: int\n' +
+                    '      start:\n' +
+                    '        template: " ({{.page}}-1) * {{.size}}"\n' +
+                    '        exec: true\n' +
+                    '        type: int\n' +
+                    '      pagination:\n' +
+                    '        default: true\n' +
+                    '      count:\n' +
+                    '        default: true\n' +
+                    '    data_file: user_list.sql\n' +
+                    '    count_file: user_list_count.sql\n' +
+                    '    pagination: "[pagination]"\n' +
+                    '    count: "[count]"\n',
+
+                paramData: [{
+                    field: 'module',
+                    type: 'string',
+                    must: "是",
+                    desc: 'sql,conf/application.conf 中配置数据连接，启动程序则连接'
+                }, {
+                    field: 'file_data',
+                    type: 'string',
+                    must: "是",
+                    desc: 'sql 文件的相对路径地址'
+                }, {
+                    field: 'count_file',
+                    type: 'string',
+                    desc: 'count sql文件的相对路径地址，没有就不运行，用于统计列表行数'
+                }, {
+                    field: 'pagination',
+                    type: 'string',
+                    desc: '是否运行分页,一般[pagination]。[]包起的部分是参数字段，在count_sql 中pagination为false'
+                }, {
+                    field: 'count',
+                    type: 'string',
+                    desc: '是否运行分页,一般[count]。一般count_file 有值默认运行,[]包起的部分是参数字段'
+                },
+
+                ],
+                contentActiveName: "first",
+                docSearch: "",
+                activeName: "first",
+                activeNames: ['1'],
+                serviceNames: ['1'],
+                allSearch: "",
                 url: "/template_data/data",
                 params: '{"service":"hrm.user_list"}',
                 result: "",
@@ -127,32 +1212,32 @@
                 show_upload_file: false,
                 urls: [
                     {
-                        type:"title",
+                        type: "title",
                         name: '缓存'
                     },
                     {
-                        type:"url",
-                        name:"批量缓存参数",
-                        data:'{"service":"config.config_detail_cache_all"}'
+                        type: "url",
+                        name: "批量缓存参数",
+                        data: '{"service":"config.config_detail_cache_all"}'
                     },
                     {
-                        type:"url",
-                        name:"单个获取缓存参数",
-                        data:'{"service":"config.config_detail_query","group_name":"ldap_config"}'
+                        type: "url",
+                        name: "单个获取缓存参数",
+                        data: '{"service":"config.config_detail_query","group_name":"ldap_config"}'
                     },
                     {
-                        type:"title",
+                        type: "title",
                         name: 'amis 路由'
                     },
                     {
-                        type:"url",
-                        name:"用户管理",
-                        data:'{"service": "amis_router.user_manage"}'
+                        type: "url",
+                        name: "用户管理",
+                        data: '{"service": "amis_router.user_manage"}'
                     },
                     {
-                        type:"url",
-                        name:"项目总路由",
-                        data:'{"service": "amis_router.project_router"}'
+                        type: "url",
+                        name: "项目总路由",
+                        data: '{"service": "amis_router.project_router"}'
                     },
                     {
                         type: "title",
@@ -355,10 +1440,209 @@
                 }
             }
         },
-        mounted() {
+         mounted() {
+            this.loadGroup()
+        },
+        computed: {
+            formStyle() {
+                let height = window.innerHeight - 150;
+                return {
+                    height: height + 'px',
+                    overflow: 'auto'
+                }
+            },
+            form2Style() {
+                let height = window.innerHeight - 200;
+                return {
+                    height: height + 'px',
+                    overflow: 'auto'
+                }
+            },
+            group_list_show(){
+                return this.groupListShow
+            },
+            parent_dir(){
+                return this.groupListShow(this.form.type)
+            }
 
         },
         methods: {
+            tabRemove(collect_doc_id){
+                let tab = this.getTab(collect_doc_id)
+                this.tab_list.remove(tab)
+                if(this.tab_list.length>0){
+                    let item=this.tab_list[0]
+                    this.contentActiveName = item.collect_doc_id
+                }
+            },
+            getTab(collect_doc_id){
+                for(let i=0;i<this.tab_list.length;i++){
+                    let tab = this.tab_list[i]
+                    if(tab.collect_doc_id ===collect_doc_id){
+                        return tab
+                    }
+                }
+            },
+            hasTab(collect_doc_id){
+              return this.getTab(collect_doc_id) !== undefined
+
+            },
+            async handlerDoc(item){
+              let has_tab = this.hasTab(item.collect_doc_id)
+                if(!has_tab){
+                    let params = {
+                        service: "config.doc_detail",
+                        collect_doc_id: item.collect_doc_id
+                    }
+                    const res = await this.post(params)
+                    console.log(res)
+                    item.doc_content=res.data
+                    this.tab_list.push(item)
+                }
+                this.contentActiveName = item.collect_doc_id
+
+
+            },
+            async loadGroup(){
+                let res = await this.groupList()
+                this.groupListAll = res.data
+                let docList = this.groupListShow("doc")
+                if(docList.length>0){
+                    this.activeNames=[docList[0].doc_group_id]
+                }
+                let serviceList = this.groupListShow("service")
+                if(serviceList.length>0){
+                    this.serviceNames=[serviceList[0].doc_group_id]
+                }
+            },
+            groupListShow(type) {
+                let l = [];
+                for (let i = 0; i < this.groupListAll.length; i++) {
+                    let item = this.groupListAll[i]
+                    if (item.type == type) {
+                        l.push(item)
+                    }
+                }
+                return l;
+            },
+            async saveGroup() {
+                let group_list = this.groupForm.group_list
+                for (let i = 0; i < group_list.length; i++) {
+                    group_list[i].order_index = (i + 1) * 10
+                }
+                let params = {
+                    service: "config.doc_group_bulk_save",
+                    doc_group_list: group_list
+                }
+                this.group_loading = true
+                const res = await this.post(params)
+
+                if(res.code =='0'){
+                    this.groupShow = false
+                    this.group_loading = false
+                    this.loadGroup()
+                }
+
+            },
+            async groupList() {
+                let params = {
+                    "service": "config.doc_group_query",
+                    "width_doc":true
+                }
+                let res = await this.post(params)
+                return res
+            },
+            groupDialogShow() {
+                this.groupShow = true
+                let _this = this
+                this.groupList().then(res => {
+                    _this.groupForm.group_list = res.data
+                })
+            },
+            moveDown(name, item, formName = "form") {
+                let nums = this[formName][name]
+                var index = nums.indexOf(item)
+                if (index >= nums.length - 1) {
+                    return
+                }
+                var temp = nums[index]
+                nums[index] = nums[index + 1]
+                nums[index + 1] = temp
+                this[formName][name] = [...nums]
+            },
+            moveUp(name, item, formName = "form") {
+                let nums = this[formName][name]
+                var index = nums.indexOf(item)
+                if (index <= 0) {
+                    return
+                }
+                var temp = nums[index]
+                nums[index] = nums[index - 1]
+                nums[index - 1] = temp
+                this[formName][name] = [...nums]
+
+            },
+            // importantSelectionChange(val){
+            selectionChange(name, val) {
+                this[name] = val
+            },
+            removeSelection(selection_name, target_name, formName = "form") {
+                let selectionList = this[selection_name]
+                for (var i = 0; i < selectionList.length; i++) {
+                    this[formName][target_name].remove(selectionList[i])
+                }
+            },
+            addTableData(name, item, formName = "form") {
+
+                this[formName][name].push(item)
+                console.log(this[formName])
+                this.$forceUpdate()
+                // this.form.important_list.push({"name":""})
+            },
+            saveDoc() {
+                this.$refs.saveForm.validate(async (vali) => {
+                    if (vali) {
+                        let list = this.form.demo
+                        for (let i = 0; i < list.length; i++) {
+                            let item = list[i]
+                            item.order_index = (i + 1) * 10
+                        }
+                        list = this.form.important_list
+                        for (let i = 0; i < list.length; i++) {
+                            let item = list[i]
+                            item.order_index = (i + 1) * 10
+                        }
+                        list = this.form.params
+                        for (let i = 0; i < list.length; i++) {
+                            let item = list[i]
+                            item.order_index = (i + 1) * 10
+                        }
+                        const res = await this.post(this.form)
+                        if (res.code === '0') {
+                            this.loadGroup()
+                            this.opShow=false
+                        }
+                    }
+                })
+            },
+            addDoc(type) {
+                this.opShow = true
+                this.op = "add"
+                //todo 获取当前文档数据+1
+                this.form = {
+                    service: "config.doc_save",
+                    title: "",
+                    subTitle: "",
+                    code: "",
+                    order_index:"",
+                    type: type,
+                    parent_dir: "",
+                    code_desc: "",
+                    important_list: [],
+                    params: [],
+                    demo: [],
+                }
+            },
             upload() {
                 let formData = new FormData($("#form")[0])
                 formData.append()
@@ -383,7 +1667,7 @@
             upload() {
                 let formData = new FormData($("#form")[0])
                 let params = JSON.parse(this.params)
-                for (let key in params){
+                for (let key in params) {
                     formData.append(key, params[key])
                 }
                 let _this = this
@@ -488,8 +1772,6 @@
                 } catch (e) {
 
                 }
-
-
                 const response = await API.GET(this.url, data)
                 if (response && response.data) {
                     this.result = JSON.stringify(response.data, null, "\t")
@@ -498,30 +1780,49 @@
                 }
 
             },
-            async post() {
+            async post(params) {
                 var data = {}
-                try {
-                    data = JSON.parse(this.params)
-                } catch (e) {
-
-                }
-                let _this = this
-                $.ajax({
-                    url: _this.url,
-                    headers: {
-                        'token': 'weigao'
-                    },
-                    type: "post",
-                    data: _this.params,
-                    contentType: "application/json",
-                    success: function (res) {
-                        _this.result = JSON.stringify(res, null, "\t")
-                    },
-                    error: function (res) {
-                        _this.result = res.responseText
+                if (!params) {
+                    try {
+                        data = JSON.parse(this.params)
+                    } catch (e) {
 
                     }
-                })
+                } else {
+                    data = params
+                }
+                const res = await axios.post(this.url, data)
+                return res.data
+                // debugger
+                //
+                // let _this = this
+                // $.ajax({
+                //     url: _this.url,
+                //     type: "post",
+                //     data: JSON.stringify(data),
+                //     headers:{
+                //         "content-type":"application/json"
+                //     },
+                //     contentType: "application/json",
+                //     success: function (res) {
+                //         _this.result = JSON.stringify(res, null, "\t")
+                //         _this.groupShow = false
+                //     },
+                //     error: function (res) {
+                //
+                //         _this.result = res.responseText
+                //         _this.$alert(_this.result,'运行错误' , {
+                //             confirmButtonText: '确定',
+                //             callback: action => {
+                //                 // this.$message({
+                //                 //     type: 'info',
+                //                 //     message: `action: ${ action }`
+                //                 // });
+                //             }
+                //         });
+                //
+                //     }
+                // })
 
 
             },

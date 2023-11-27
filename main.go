@@ -1,13 +1,18 @@
 package main
 
 import (
+	collect "collect.mod/gen"
 	template_service "collect.mod/src/collect/service_imp"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
+func main1() {
+	collect.GenModel()
+}
 func main() {
+
 	// todo go profile 使用
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()

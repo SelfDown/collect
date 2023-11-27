@@ -2,10 +2,12 @@ package collect
 
 import (
 	"bytes"
+	common "collect.mod/src/collect/common"
 	"encoding/json"
 	"fmt"
 	"github.com/demdxx/gocast"
 	engine "github.com/dengsgo/math-engine/engine"
+	"github.com/emirpasic/gods/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"log"
@@ -218,6 +220,15 @@ func GetFieldValueList(fields []string, params map[string]interface{}) []string 
 func RenderVar(name string, params map[string]interface{}) interface{} {
 
 	varName := GetRenderVarName(name)
+	// 如何是组合字段
+	if strings.Contains(varName, "&") {
+		varArr := strings.Split(varName, "&")
+		valueList := make([]string, len(varArr))
+		for index, pname := range varArr {
+			valueList[index] = utils.ToString(params[pname])
+		}
+		return strings.Join(valueList, "[^☉★\x01∨★^]")
+	}
 	// 取一级变量
 	tmpArr := strings.Split(varName, ".")
 	first := tmpArr[0]
@@ -238,6 +249,12 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		if ok {
 			v3, _ := param3[second]
 			return v3
+		}
+		// 处理bulk_service 中的result.data
+		param4, ok := v.(*common.Result)
+		if second == "data" {
+			v4 := param4.GetData()
+			return v4
 		}
 	}
 
@@ -653,9 +670,11 @@ func GetSafeData(name string, data map[string]interface{}) interface{} {
 	}
 }
 func GetMapKeys(data map[string]interface{}) []string {
-	keys := make([]string, 0, len(data))
+	keys := make([]string, len(data))
+	j := 0
 	for k := range data {
-		keys = append(keys, k)
+		keys[j] = k
+		j++
 	}
 	return keys
 }

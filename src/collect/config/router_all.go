@@ -283,6 +283,7 @@ type HandlerParam struct {
 	LeftValueField      string                  `yaml:"left_value_field"json:"left_value_field"`   // 字段
 	RightValueField     string                  `yaml:"right_value_field"json:"right_value_field"` // 字段
 	AppendParam         bool                    `yaml:"append_param"json:"append_param"`           // 是否添加参数
+	NoneFillRight       bool                    `yaml:"none_fill_right"json:"none_fill_right"`     // 是否添加右边参数
 	AppendItemParam     bool                    `yaml:"append_item_param"json:"append_item_param"` // 是否添加参数
 	SaveOriginal        bool                    `yaml:"save_original"json:"save_original"`         // 是否添加参数
 	Foreach             string                  //循环数组
@@ -320,6 +321,7 @@ type HandlerParam struct {
 	TargetTransferValue string   `yaml:"target_transfer_value"json:"target_transfer_value"` // 失败流转
 	ValueListField      string   `yaml:"value_list_field"json:"value_list_field"`           // 失败流转
 	AppendRightFields   []string `yaml:"append_right_fields"json:"append_right_fields"`     // 失败流转
+	AppendLeftFields    []string `yaml:"append_left_fields"json:"append_left_fields"`       // 失败流转
 	WithAddRemove       bool     `yaml:"with_add_remove"json:"with_add_remove"`             // 比较修改记录的
 	Method              string
 	Room                string
@@ -331,8 +333,9 @@ type ExcelConfig struct {
 	Sheets []Sheets // sheet 页
 }
 type ModifyConfig struct {
-	Desc   string // 备注
-	Fields []HandlerParam
+	Desc            string            // 备注
+	OpFieldTransfer map[string]string `yaml:"op_field_transfer"json:"op_field_transfer"` // 字段冲突转换一下
+	Fields          []HandlerParam
 }
 type DataJsonConfig struct {
 	Finish   HandlerParam   //结束

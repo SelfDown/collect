@@ -10,7 +10,7 @@ type NormalArray struct {
 	NormalParam
 }
 
-const ArrSplit = "________________COLLECT_SQL_ARR_PARAM_SPLIT________________"
+const ArrSplit = "_______________COLLECT_SQL_ARR_PARAM_SPLIT________________"
 
 func (t *NormalArray) oriArrKey(index int) string {
 	return t.ParamKey + ArrSplit + strconv.Itoa(index) + ArrSplit

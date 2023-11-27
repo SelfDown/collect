@@ -31,7 +31,7 @@ func (t *NormalArrayObj) GetSqlParamKeyValue(to_param_key bool) interface{} {
 	for i, item := range sv {
 		item_copy := utils.CopyMap(item)
 		for _, field := range t.ChildKeys {
-			item_copy[field] = t._ori_arr_key(i, field)
+			item_copy[field] = t.get_arr_key(i, field)
 		}
 		l = append(l, item_copy)
 	}
@@ -69,7 +69,7 @@ func (t *NormalArrayObj) GetSqlParamParamKeyList() []AttrParam {
 	for i := 0; i < sv.Len(); i++ {
 		item := sv.Index(i).Interface().(map[string]interface{})
 		for _, field := range t.ChildKeys {
-			arr_key := t.get_arr_key(i, field)
+			arr_key := t._ori_arr_key(i, field)
 			var value interface{}
 			if !utils.IsEmpty(field, item) {
 				value = item[field]

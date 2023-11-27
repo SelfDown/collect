@@ -16,6 +16,11 @@ func (uf *File2DataJson) HandlerData(template *config.Template, handlerParam *co
 	dataJsonValue := utils.RenderTpl(template.FileDataTpl, template.GetParams())
 	var data map[string]interface{}
 	json.Unmarshal([]byte(dataJsonValue), &data)
+	if data == nil {
+		var dataArr []map[string]interface{}
+		json.Unmarshal([]byte(dataJsonValue), &dataArr)
+		return common.Ok(dataArr, "参数处理成功")
+	}
 	r := common.Ok(data, "处理参数成功")
 	return r
 }

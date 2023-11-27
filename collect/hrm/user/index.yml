@@ -311,6 +311,7 @@ service:
       - avatar
 #    update_fields:
 #      - role_id
+
   - key: user_list
     module: sql
     http: true

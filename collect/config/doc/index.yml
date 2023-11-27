@@ -1,0 +1,186 @@
+service:
+  - key: demo_query
+    log: true
+    module: sql
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    data_file: demo_query.sql
+  - key: import_list_query
+    module: sql
+    log: true
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    data_file: import_list_query.sql
+  - key: params_query
+    module: sql
+    log: true
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    data_file: params_query.sql
+  - key: get_detail_service
+    module: empty
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    data_file: doc_detail.json
+    handler_params:
+      - key: file2datajson
+        save_field: service_list
+      - key: param2result
+        field: service_list
+  - key: doc_detail
+    http: true
+    log: true
+    module: bulk_service
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    data_file: service_transfer.json
+    handler_params:
+      - key: service2field
+        service:
+          service: config.get_detail_service
+          collect_doc_id: "[collect_doc_id]"
+        save_field: service_list
+    batch:
+      foreach: "[service_list]"
+      service:
+        service: "[service]"
+      append_item_param: true
+      save_field: 'result'
+    result_handler:
+      - key: result2params
+        fields:
+          - to: "[result_list]"
+      - key: arr2dict
+        foreach: "[result_list]"
+        field: "[target_field]"
+        value: "[result.data]"
+        save_field: result_data
+      - key: param2result
+        field: result_data
+  - key: doc_query
+    log: true
+    http: true
+    module: sql
+    data_file: doc_query.sql
+
+  - key: collect_doc_params_save
+    module: bulk_create
+    table: collect_doc_params
+    params:
+      params:
+        check:
+          template: "{{must .params}}"
+          err_msg: 参数不能为空
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    model_field: params
+    handler_params:
+      - key: update_array
+        foreach: "[params]"
+        item: item
+        fields:
+          - field: doc_params_id
+            template: "{{uuid}}"
+          - field: collect_doc_id
+            template: "[collect_doc_id]"
+  - key: collect_doc_important_save
+    module: bulk_create
+    table: collect_doc_important
+    params:
+      important_list:
+        check:
+          template: "{{must .important_list}}"
+          err_msg: 要点不能为空
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    model_field: important_list
+    handler_params:
+      - key: update_array
+        foreach: "[important_list]"
+        item: item
+        fields:
+          - field: doc_important_id
+            template: "{{uuid}}"
+          - field: collect_doc_id
+            template: "[collect_doc_id]"
+  - key: collect_doc_demo_save
+    module: bulk_create
+    table: collect_doc_demo
+    params:
+      demo_list:
+        check:
+          template: "{{must .demo_list}}"
+          err_msg: demo 不能为空
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    model_field: demo_list
+    handler_params:
+      - key: update_array
+        foreach: "[demo_list]"
+        item: item
+        fields:
+          - field: doc_demo_id
+            template: "{{uuid}}"
+          - field: collect_doc_id
+            template: "[collect_doc_id]"
+  - key: collect_doc_save
+    module: model_save
+    table: collect_doc
+    params:
+      create_time:
+        template: "{{current_date_time}}"
+      create_user:
+        template: "{{.session_user_id}}"
+      is_delete:
+        default: "0"
+  - key: doc_save
+    http: true
+    module: empty
+    log: true
+    params:
+      collect_doc_id:
+        template: "{{uuid}}"
+    handler_params:
+      - key: service2field
+        service:
+          service: config.collect_doc_save
+        append_param: true
+      - key: service2field
+        must: "{{must .demo}}"
+        service:
+          service: config.collect_doc_demo_save
+          demo_list: "[demo]"
+          collect_doc_id: "[collect_doc_id]"
+      - key: service2field
+        must: "{{must .important_list}}"
+        service:
+          service: config.collect_doc_important_save
+          important_list: "[important_list]"
+          collect_doc_id: "[collect_doc_id]"
+      - key: service2field
+        must: "{{must .params}}"
+        service:
+          service: config.collect_doc_params_save
+          params: "[params]"
+          collect_doc_id: "[collect_doc_id]"

@@ -1,4 +1,4 @@
-package main
+package collect
 
 import (
 	serviceImp "collect.mod/src/collect/service_imp"
@@ -58,7 +58,7 @@ func fixModel() {
 	ioutil.WriteFile(directory+"/add_table.go", []byte(addTable), 0777)
 }
 
-func main1() {
+func GenModel() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:        "model_gen",
 		FieldNullable:  true,

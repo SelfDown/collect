@@ -12,9 +12,10 @@ type GetModifyData struct {
 	BaseHandler
 }
 type BaseRule struct {
-	Field    config.HandlerParam
-	Template *config.Template
-	Ts       *TemplateService
+	Field           config.HandlerParam
+	OpFieldTransfer map[string]string
+	Template        *config.Template
+	Ts              *TemplateService
 	HandlerData
 }
 type ChangeData struct {
@@ -35,15 +36,15 @@ func (s *BaseRule) Handler() {
 func (s *BaseRule) getChangeData(change *ChangeData) map[string]interface{} {
 	data := make(map[string]interface{})
 	// 设置改变前的值
-	data[s.GetBeforeName()] = change.Before
+	data[s.GetTransferName(s.GetBeforeName())] = change.Before
 	// 设置改变后的值
-	data[s.GetAfterName()] = change.After
+	data[s.GetTransferName(s.GetAfterName())] = change.After
 	// 设置操作
 	op := s.Field.Operation
 	if !utils.IsValueEmpty(change.Operation) {
 		op = change.Operation
 	}
-	data[s.GetOperationName()] = op
+	data[s.GetTransferName(s.GetOperationName())] = op
 	if s.Field.SaveOriginal {
 		if op == removeOperation {
 			data[s.GetValueName()] = change.Before
@@ -52,22 +53,44 @@ func (s *BaseRule) getChangeData(change *ChangeData) map[string]interface{} {
 		}
 
 	}
-
 	// 设置名称
-	data[s.GetName()] = s.Field.Name
+	data[s.GetTransferName(s.GetName())] = s.Field.Name
 	// 设置字段名称
-	data[s.GetFieldName()] = s.Field.Field
-	// 拼接右边对象的值
-	rightFields := s.Field.AppendRightFields
-	if len(rightFields) == 1 && rightFields[0] == "*" {
+	data[s.GetTransferName(s.GetFieldName())] = s.Field.Field
+	afterMap := change.AfterDataMap
+	beforeMap := change.BeforeDataMap
+	// 拼接左边边对象的值
+	leftFields := s.Field.AppendLeftFields
+	if len(leftFields) == 1 && (leftFields[0] == "*" || leftFields[0] == "[*]") {
+		leftFields = utils.GetMapKeys(beforeMap)
+	}
+
+	if leftFields != nil && len(leftFields) > 0 {
+		for _, leftField := range leftFields {
+			fieldName := utils.GetRenderVarName(leftField)
+			value := utils.RenderVar(leftField, beforeMap)
+			data[fieldName] = value
+		}
 
 	}
-	afterMap := change.AfterDataMap
-	//params := utils.Copy(s.Template.GetParams())
-	//afterMap["params"] = params
+	// 拼接右边对象的值
+	rightFields := s.Field.AppendRightFields
+	if len(rightFields) == 1 && (rightFields[0] == "*" || rightFields[0] == "[*]") {
+		rightFields = utils.GetMapKeys(afterMap)
+	}
+
+	notHasTransfer := utils.IsValueEmpty(s.OpFieldTransfer)
 	if rightFields != nil && len(rightFields) > 0 {
 		for _, rightField := range rightFields {
 			fieldName := utils.GetRenderVarName(rightField)
+			//如果字段存在则跳过
+			_, ok := data[fieldName]
+			if ok && !notHasTransfer {
+				continue
+			}
+			if ok {
+				fieldName = fieldName + "_copy"
+			}
 			value := utils.RenderVar(rightField, afterMap)
 			data[fieldName] = value
 		}
@@ -103,6 +126,14 @@ func (s *BaseRule) GetBeforeName() string {
 }
 func (s *BaseRule) GetName() string {
 	return "name"
+}
+
+// GetTransferName 转换字段名称
+func (s *BaseRule) GetTransferName(original string) string {
+	if target, ok := s.OpFieldTransfer[original]; ok {
+		return target
+	}
+	return original
 }
 func (s *BaseRule) GetFieldName() string {
 	return "field"
@@ -216,7 +247,7 @@ func transferValue(original string, transDict map[string]string) string {
 	return value
 }
 
-func (uf *GetModifyData) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
+func (uf *GetModifyData) HandlerData(template *config.Template, _ *config.HandlerParam, ts *TemplateService) *common.Result {
 	changData := make([]map[string]interface{}, 0)
 	params := template.GetParams()
 	for _, field := range template.ModifyConfigData.Fields {
@@ -229,9 +260,10 @@ func (uf *GetModifyData) HandlerData(template *config.Template, handlerParam *co
 		}
 
 		baseRule := BaseRule{
-			Field:    field,
-			Template: template,
-			Ts:       ts,
+			Field:           field,
+			Template:        template,
+			Ts:              ts,
+			OpFieldTransfer: template.ModifyConfigData.OpFieldTransfer,
 		}
 		var fieldRule HandlerData
 		// 如果是简单字段对比
@@ -409,7 +441,7 @@ func (s *ArrayObjRule) handlerAddRemove(leftArr []map[string]interface{}, rightA
 		after := utils.RenderVar(s.GetLeftField(), item)
 		change := ChangeData{
 			AfterDataMap:  item,
-			BeforeDataMap: none,
+			BeforeDataMap: item,
 			After:         after,
 			Before:        "",
 			Operation:     AddOperation,
@@ -463,8 +495,18 @@ func (s *ArrayObjRule) handlerModify(leftArr []map[string]interface{}, rightArr 
 		rightObj := rightCommonDict[key]
 		leftValue := utils.RenderVar(s.GetLeftValueField(), leftObj)
 		rightValue := utils.RenderVar(s.GetRightValueField(), rightObj)
-		if leftValue == rightValue {
+		if leftValue == rightValue || utils.Strval(leftValue) == utils.Strval(rightValue) {
 			continue
+		}
+		//判断行是否进行比较
+		if !utils.IsValueEmpty(s.Field.IfTemplate) {
+			p := make(map[string]interface{})
+			p["left"] = leftObj
+			p["right"] = rightObj
+			compare := utils.RenderTplBool(s.Field.IfTemplateTpl, p)
+			if !compare {
+				continue
+			}
 		}
 		//before := utils.RenderVar(s.GetRightField(), item)
 		change := ChangeData{

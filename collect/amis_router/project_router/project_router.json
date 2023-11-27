@@ -45,6 +45,18 @@
                 },
                 "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
               }
+            },
+            {
+              "label": "系统参数管理",
+              "url": "config_manage",
+              "schemaApi": {
+                "method": "post",
+                "url": "/template_data/data",
+                "data": {
+                  "service": "amis_router.config_manage"
+                },
+                "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
+              }
             }
 
           ]

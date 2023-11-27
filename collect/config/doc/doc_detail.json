@@ -1,0 +1,22 @@
+[
+  {
+    "service": "config.doc_query",
+    "collect_doc_id": "{{.collect_doc_id}}",
+    "target_field": "doc"
+  },
+  {
+    "service": "config.import_list_query",
+    "collect_doc_id": "{{.collect_doc_id}}",
+    "target_field": "import_list"
+  },
+  {
+    "service": "config.params_query",
+    "collect_doc_id": "{{.collect_doc_id}}",
+    "target_field": "params"
+  },
+  {
+    "service": "config.demo_query",
+    "collect_doc_id": "{{.collect_doc_id}}",
+    "target_field": "demo"
+  }
+]

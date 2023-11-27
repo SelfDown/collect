@@ -27,6 +27,15 @@ func (t *PluginLoader) LoadModifyConfig(config Plugin, template *Template, route
 					}
 					config.Fields[index].EnableTpl = tpl
 				}
+				if !utils.IsValueEmpty(item.IfTemplate) {
+					tpl, err := _load_template(item.IfTemplate)
+					if err != nil {
+						template.LogData(err)
+						continue
+					}
+					config.Fields[index].IfTemplateTpl = tpl
+				}
+
 			}
 			service.ModifyConfigData = &config
 

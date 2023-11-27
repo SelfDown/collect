@@ -33,6 +33,10 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 		template.LogData("服务请求参数:")
 		template.LogData(params)
 	}
+	if template.FileDataTpl == nil {
+		template.LogData("data_file 不存在，请检查sql 文件路径")
+	}
+
 	// 生成执行SQL和参数
 	sql, realValues := getSQLByTpl(template.FileDataTpl, params)
 	// 执行SQL

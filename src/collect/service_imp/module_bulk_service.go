@@ -36,7 +36,7 @@ func runServiceList(foreach []map[string]interface{}, params map[string]interfac
 			serviceName := "service"
 			// 获取原有的旧服务
 			oldName := serviceParam[serviceName].(string)
-			oldService := utils.RenderVar(oldName, serviceParam).(string)
+			oldService := utils.RenderVar(oldName, item).(string)
 			// 将原有的服务转
 			targetService := serviceMap[oldService]
 			serviceParam[serviceName] = targetService
@@ -86,19 +86,6 @@ func (s *BulkService) Result(template *config.Template, ts *TemplateService) *co
 		itemResultList := runServiceList(forItem, params, batch, ts, serviceMap)
 		resultList = append(resultList, itemResultList...)
 	}
-	//// 生成参数
-	//for index, item := range foreach {
-	//	serviceParam := utils.GetServiceParam(batch.Service, item, batch.AppendItemParam)
-	//	ch := make(chan *common.Result)
-	//	resultChanList[index] = ch
-	//	go runService(serviceParam, ts, resultChanList[index])
-	//	resultList[index] = serviceParam
-	//}
-	//// 获取结果对象
-	//for index, result := range resultChanList {
-	//	resultData := <-result
-	//	resultList[index][batch.SaveField] = resultData
-	//}
 
 	return common.Ok(resultList, "成功")
 }

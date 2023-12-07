@@ -470,28 +470,24 @@
                                     v-for="item in group_list_show('service')"
                             >
                                 <template #title>
-                                    <i :class="serviceNames.indexOf(item.doc_group_id)>=0?'el-icon-folder-opened':'el-icon-folder'"
+                                    <i :class="activeNames.indexOf(item.doc_group_id)>=0?'el-icon-folder-opened':'el-icon-folder'"
                                        class=" menu-folder"/>
                                     {{item.name}}
                                 </template>
-                                <div class="doc-item">1.人员列表
-
-                                    <div class="doc-item-right">
-                                        hrm.user_list
+                                <div v-if="item.children.length>0">
+                                    <div
+                                            @click="handlerDoc(subItem)"
+                                            class="doc-item" v-for="(subItem,index) in item.children">
+                                        {{index+1}}.{{subItem.title}}
+                                        <div class="doc-item-right">
+                                            {{subItem.sub_title}}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="doc-item">2.角色列表</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
-                                <div class="doc-item">3.角色用户</div>
+                                <div class="no-data" v-else>
+                                    暂无数据
+                                </div>
+
                             </el-collapse-item>
 
 
@@ -517,7 +513,10 @@
                              :key="item.collect_doc_id"
                              v-for="(item,index) in tab_list"
                              :name="item.collect_doc_id">
-                    <el-row class="doc-container">
+                    <el-row v-if="item.type=='console'">
+                        控制台
+                    </el-row>
+                    <el-row class="doc-container" v-else>
                         <el-row class="doc-content">
                             <el-row class="doc-title">
                                 {{doc(item).title}}({{doc(item).sub_title}})
@@ -531,11 +530,24 @@
                                         @click="docDelete(item)"
                                         type="text" icon="el-icon-delete"></el-button>
                             </el-row>
-                            <el-row class="doc-sub-title">
-                                说明
-                            </el-row>
-                            <el-row class="doc-block">
-                                <el-input autosize type="textarea" v-model="doc(item).code"> </el-input>
+                            <el-row>
+                                <el-col :span="is_doc(item)?24:12">
+                                    <el-row class="doc-sub-title">
+                                        示例
+                                    </el-row>
+                                    <el-row class="doc-block">
+                                        <el-input autosize type="textarea" v-model="doc(item).code"> </el-input>
+                                    </el-row>
+                                </el-col>
+                                <el-col :span="12" v-if="!is_doc(item)">
+                                    <el-row class="doc-sub-title">
+                                      结果示例
+                                    </el-row>
+                                    <el-row class="doc-block">
+                                        <el-input :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" v-model="doc(item).code"> </el-input>
+                                    </el-row>
+                                </el-col>
+
                             </el-row>
                             <el-row class="doc-block">
 
@@ -550,36 +562,70 @@
                                 </ul>
                             </el-row>
                             <div v-if="doc_params(item).length>0">
-                            <div class="doc-sub-title">
-                                参数
+                                <div class="doc-sub-title">
+                                    参数
+                                </div>
+                                <el-row class="doc-block">
+                                    <el-table
+                                            :data="doc_params(item)"
+                                            stripe
+                                            border
+
+                                    >
+                                        <el-table-column
+                                                prop="name"
+                                                label="参数"
+                                                width="300">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="type"
+                                                label="类型"
+                                                width="80">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="must"
+                                                label="必须"
+                                                width="60">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="desc"
+                                                label="说明">
+                                        </el-table-column>
+                                    </el-table>
+                                </el-row>
                             </div>
-                            <el-row class="doc-block">
-                                <el-table
-                                        :data="doc_params(item)"
-                                        stripe
-                                        border
-                                >
-                                    <el-table-column
-                                            prop="name"
-                                            label="参数"
-                                            width="300">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="type"
-                                            label="类型"
-                                            width="80">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="must"
-                                            label="必须"
-                                            width="60">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="desc"
-                                            label="说明">
-                                    </el-table-column>
-                                </el-table>
-                            </el-row>
+                            <div v-if="doc_params(item).length>0 && !is_doc(item)">
+                                <div class="doc-sub-title">
+                                    结果说明
+                                </div>
+                                <el-row class="doc-block">
+                                    <el-table
+                                            :data="doc_params(item)"
+                                            stripe
+                                            border
+
+                                    >
+                                        <el-table-column
+                                                prop="name"
+                                                label="参数"
+                                                width="300">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="type"
+                                                label="类型"
+                                                width="80">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="must"
+                                                label="必须"
+                                                width="60">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="desc"
+                                                label="说明">
+                                        </el-table-column>
+                                    </el-table>
+                                </el-row>
                             </div>
                             <div v-if="demo_list(item).length>0">
                             <div class="doc-sub-title">
@@ -587,11 +633,24 @@
                             </div>
                             <div class="doc-block">
                                 <div v-for="(demo_item,index) in demo_list(item)" :key="index" >
-                                    {{index+1}}. {{demo_item.name}}
-                                    <el-input
-                                            autosize
-                                            type="textarea" v-model="demo_item.code">
-                                    </el-input>
+                                    <el-row>
+                                        <el-col :span="is_doc(item)?24:12">
+                                            <el-row>{{index+1}}. {{demo_item.name}}</el-row>
+
+                                            <el-input
+                                                    autosize
+                                                    type="textarea" v-model="demo_item.code">
+                                            </el-input>
+                                        </el-col>
+                                        <el-col :span="12" v-if="!is_doc(item)">
+                                            <el-row>结果示例</el-row>
+
+                                            <el-input
+                                                    :autosize="{ minRows: 2, maxRows: 6 }"
+                                                    type="textarea" v-model="demo_item.code">
+                                            </el-input>
+                                        </el-col>
+                                    </el-row>
                                 </div>
 
 
@@ -608,7 +667,7 @@
                             </div>
                             <div v-show="menuShow">
                                 <div class="menu-item">
-                                    说明
+                                    示例
                                 </div>
                                 <div class="menu-item">
                                     参数
@@ -1100,7 +1159,6 @@
 <script src="./axios.min.js"></script>
 <!-- import JavaScript -->
 <script src="./index.js"></script>
-<script src="./jquery.min.js"></script>
 <script>
 
     new Vue({
@@ -1109,7 +1167,13 @@
             return {
                 leftFull:false,
                 rightFull:false,
-                tab_list:[],
+                tab_list:[
+                    {
+                        "collect_doc_id":"console",
+                        "title":"控制台",
+                        "type":"console"
+                    }
+                ],
                 groupListAll: [],
                 groupSelection: [],
                 groupShow: false,
@@ -1172,9 +1236,9 @@
                 },
 
                 ],
-                contentActiveName: "first",
+                contentActiveName: "console",
                 docSearch: "",
-                activeName: "first",
+                activeName: "second",
                 activeNames: ['1'],
                 serviceNames: ['1'],
                 allSearch: "",
@@ -1456,6 +1520,9 @@
             },
             doc(item){
               return item.doc_content.doc
+            },
+            is_doc(item){
+                return item.type=='doc'
             },
             important_list(item){
               return item.doc_content.important_list

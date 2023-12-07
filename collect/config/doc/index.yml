@@ -8,7 +8,7 @@ service:
       name: 后台防止重复请求，second 表示毫秒
       key: prevent_duplication
       enable: "{{eq (get_key \"prevent_duplication\") \"true\"}}"
-      second: 300000
+      second: 300
       room: doc_dpl
       fields:
         - field: "[service]"

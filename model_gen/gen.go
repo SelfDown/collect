@@ -29,6 +29,7 @@ var (
 	CollectDocDemo            *collectDocDemo
 	CollectDocImportant       *collectDocImportant
 	CollectDocParams          *collectDocParams
+	CollectDocResult          *collectDocResult
 	CollectEvent              *collectEvent
 	ConfigDetail              *configDetail
 	ConfigDetailChangeHistory *configDetailChangeHistory
@@ -68,6 +69,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	CollectDocDemo = &Q.CollectDocDemo
 	CollectDocImportant = &Q.CollectDocImportant
 	CollectDocParams = &Q.CollectDocParams
+	CollectDocResult = &Q.CollectDocResult
 	CollectEvent = &Q.CollectEvent
 	ConfigDetail = &Q.ConfigDetail
 	ConfigDetailChangeHistory = &Q.ConfigDetailChangeHistory
@@ -108,6 +110,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		CollectDocDemo:            newCollectDocDemo(db, opts...),
 		CollectDocImportant:       newCollectDocImportant(db, opts...),
 		CollectDocParams:          newCollectDocParams(db, opts...),
+		CollectDocResult:          newCollectDocResult(db, opts...),
 		CollectEvent:              newCollectEvent(db, opts...),
 		ConfigDetail:              newConfigDetail(db, opts...),
 		ConfigDetailChangeHistory: newConfigDetailChangeHistory(db, opts...),
@@ -149,6 +152,7 @@ type Query struct {
 	CollectDocDemo            collectDocDemo
 	CollectDocImportant       collectDocImportant
 	CollectDocParams          collectDocParams
+	CollectDocResult          collectDocResult
 	CollectEvent              collectEvent
 	ConfigDetail              configDetail
 	ConfigDetailChangeHistory configDetailChangeHistory
@@ -191,6 +195,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		CollectDocDemo:            q.CollectDocDemo.clone(db),
 		CollectDocImportant:       q.CollectDocImportant.clone(db),
 		CollectDocParams:          q.CollectDocParams.clone(db),
+		CollectDocResult:          q.CollectDocResult.clone(db),
 		CollectEvent:              q.CollectEvent.clone(db),
 		ConfigDetail:              q.ConfigDetail.clone(db),
 		ConfigDetailChangeHistory: q.ConfigDetailChangeHistory.clone(db),
@@ -240,6 +245,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		CollectDocDemo:            q.CollectDocDemo.replaceDB(db),
 		CollectDocImportant:       q.CollectDocImportant.replaceDB(db),
 		CollectDocParams:          q.CollectDocParams.replaceDB(db),
+		CollectDocResult:          q.CollectDocResult.replaceDB(db),
 		CollectEvent:              q.CollectEvent.replaceDB(db),
 		ConfigDetail:              q.ConfigDetail.replaceDB(db),
 		ConfigDetailChangeHistory: q.ConfigDetailChangeHistory.replaceDB(db),
@@ -279,6 +285,7 @@ type queryCtx struct {
 	CollectDocDemo            ICollectDocDemoDo
 	CollectDocImportant       ICollectDocImportantDo
 	CollectDocParams          ICollectDocParamsDo
+	CollectDocResult          ICollectDocResultDo
 	CollectEvent              ICollectEventDo
 	ConfigDetail              IConfigDetailDo
 	ConfigDetailChangeHistory IConfigDetailChangeHistoryDo
@@ -318,6 +325,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		CollectDocDemo:            q.CollectDocDemo.WithContext(ctx),
 		CollectDocImportant:       q.CollectDocImportant.WithContext(ctx),
 		CollectDocParams:          q.CollectDocParams.WithContext(ctx),
+		CollectDocResult:          q.CollectDocResult.WithContext(ctx),
 		CollectEvent:              q.CollectEvent.WithContext(ctx),
 		ConfigDetail:              q.ConfigDetail.WithContext(ctx),
 		ConfigDetailChangeHistory: q.ConfigDetailChangeHistory.WithContext(ctx),

@@ -19,5 +19,10 @@
     "service": "config.demo_query",
     "collect_doc_id": "{{.collect_doc_id}}",
     "target_field": "demo"
+  },
+  {
+    "service": "config.result_query",
+    "collect_doc_id": "{{.collect_doc_id}}",
+    "target_field": "result"
   }
 ]

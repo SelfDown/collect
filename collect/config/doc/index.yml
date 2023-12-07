@@ -137,6 +137,8 @@ service:
           service: config.collect_doc_params_update
           params: "[params_modify_list]"
 
+
+
       - key: filter_arr
         name: 过滤示例添加列表
         foreach: "[change_list]"
@@ -182,8 +184,60 @@ service:
         service:
           service: config.collect_doc_demo_update
           demo_list: "[demo_modify_list]"
+
+      - key: filter_arr
+        name: 过滤结果示例添加列表
+        foreach: "[change_list]"
+        item: item
+        if_template: "{{and (eq .item.operation \"add\") (eq .item.field \"[result]\")}}"
+        save_field: result_add_list
+      - key: service2field
+        enable: "{{must .result_add_list}}"
+        name: 保存结果示例添加列表
+        service:
+          service: config.collect_doc_result_save
+          result: "[result_add_list]"
+          collect_doc_id: "[collect_doc_id]"
+
+      - key: filter_arr
+        name: 过滤结果示例删除列表
+        foreach: "[change_list]"
+        item: item
+        if_template: "{{and (eq .item.operation \"remove\") (eq .item.field \"[result]\")}}"
+        save_field: result_remove_list
+      - key: service2field
+        name: 删除示例
+        enable: "{{must .result_remove_list}}"
+        service:
+          service: config.collect_doc_result_remove
+          result: "[result_remove_list]"
+
+      - key: filter_arr
+        name: 过滤示例修改列表
+        foreach: "[change_list]"
+        item: item
+        if_template: "{{and (eq .item.operation \"modify\") (eq .item.field \"[result]\")}}"
+        save_field: result_modify_list
+      - key: group_by
+        enable: "{{must .result_modify_list}}"
+        foreach: "[result_modify_list]"
+        children: "children"
+        fields:
+          - field: "[doc_result_id]"
+        save_field: result_modify_list
+      - key: service2field
+        enable: "{{must .result_modify_list}}"
+        service:
+          service: config.collect_doc_result_update
+          result: "[result_modify_list]"
       - key: params2result
         fields:
+          - from: "[result_remove_list]"
+            to: result_remove_list
+          - from: "[result_modify_list]"
+            to: result_modify_list
+          - from: "[result_add_list]"
+            to:  result_add_list
           - from: "[demo_remove_list]"
             to: demo_remove_list
           - from: "[demo_modify_list]"
@@ -228,6 +282,17 @@ service:
           err_msg: 文档不能为空
 
     data_file: demo_query.sql
+  - key: result_query
+    log: true
+    module: sql
+    http: true
+    params:
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+
+    data_file: result_query.sql
   - key: import_list_query
     module: sql
     log: true
@@ -354,6 +419,28 @@ service:
             template: "{{uuid}}"
           - field: collect_doc_id
             template: "[collect_doc_id]"
+  - key: collect_doc_result_save
+    module: bulk_create
+    table: collect_doc_result
+    params:
+      result:
+        check:
+          template: "{{must .result}}"
+          err_msg: 示例不能为空
+      collect_doc_id:
+        check:
+          template: "{{must .collect_doc_id}}"
+          err_msg: 文档不能为空
+    model_field: result
+    handler_params:
+      - key: update_array
+        foreach: "[result]"
+        item: item
+        fields:
+          - field: doc_result_id
+            template: "{{uuid}}"
+          - field: collect_doc_id
+            template: "[collect_doc_id]"
   - key: collect_doc_important_modify
     table: collect_doc_important
     module: bulk_upsert
@@ -410,6 +497,16 @@ service:
           template: "{{must .demo_list}}"
           err_msg: 示例不能为空
     model_field: demo_list
+  - key: collect_doc_result_update
+    module: bulk_upsert
+    table: collect_doc_result
+    log: true
+    params:
+      result:
+        check:
+          template: "{{must .result}}"
+          err_msg: 示例不能为空
+    model_field: result
   - key: collect_doc_demo_remove
     module: model_delete
     table: collect_doc_demo
@@ -425,6 +522,21 @@ service:
         save_field: doc_demo_id_list
     filter:
       doc_demo_id__in: "[doc_demo_id_list]"
+  - key: collect_doc_result_remove
+    module: model_delete
+    table: collect_doc_result
+    params:
+      result:
+        check:
+          template: "{{must .result}}"
+          err_msg: 示例代码不能为空
+    handler_params:
+      - key: prop_arr
+        foreach: "[result]"
+        value: "[doc_result_id]"
+        save_field: doc_result_id_list
+    filter:
+      doc_result_id__in: "[doc_result_id_list]"
   - key: collect_doc_demo_save
     module: bulk_create
     table: collect_doc_demo
@@ -504,4 +616,10 @@ service:
         service:
           service: config.collect_doc_params_save
           params: "[params]"
+          collect_doc_id: "[collect_doc_id]"
+      - key: service2field
+        enable: "{{must .result}}"
+        service:
+          service: config.collect_doc_result_save
+          result: "[result]"
           collect_doc_id: "[collect_doc_id]"

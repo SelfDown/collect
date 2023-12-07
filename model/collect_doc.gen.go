@@ -19,6 +19,7 @@ type CollectDoc struct {
 	CreateTime   *string `gorm:"column:create_time" json:"create_time"`
 	CreateUser   *string `gorm:"column:create_user" json:"create_user"`
 	IsDelete     *string `gorm:"column:is_delete" json:"is_delete"`
+	CodeResult   *string `gorm:"column:code_result" json:"code_result"`
 }
 
 // TableName CollectDoc's table name

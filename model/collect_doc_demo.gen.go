@@ -13,6 +13,7 @@ type CollectDocDemo struct {
 	Name         *string `gorm:"column:name" json:"name"`
 	Code         *string `gorm:"column:code" json:"code"`
 	OrderIndex   *int32  `gorm:"column:order_index" json:"order_index"`
+	CodeResult   *string `gorm:"column:code_result" json:"code_result"`
 }
 
 // TableName CollectDocDemo's table name

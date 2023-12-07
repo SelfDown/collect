@@ -63,6 +63,7 @@
         .header-right {
             display: flex;
             line-height: 250%;
+            height: 100%;
             position: absolute;
             right: 10px;
         }
@@ -72,6 +73,7 @@
             align-items: center;
             padding: 0px 10px;
             cursor: pointer;
+            height: 100%;
         }
 
         .row-btn:hover {
@@ -362,6 +364,30 @@
 
             padding-top: 8px;
         }
+        .console-container{
+            height: calc(100% - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+        .code-area{
+            width:100%;
+            height: 100%;
+            border-top: 1px solid #eeebf5;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #eeebf5;
+            outline: none;
+        }
+
+        .box-controller{
+            background: #FAFAFA;
+            padding: 4px 2px;
+            cursor: move;
+        }
+        .bottom-console{
+            flex: 1;
+        }
+
     </style>
 
     <script>
@@ -385,15 +411,9 @@
 
         </el-row>
         <el-row class="header-right">
-            <el-input
-                    v-model="allSearch"
-                    class="all-search"
 
-                    placeholder="请输入服务名称、key关键字">
-                <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
             <el-row class="row-btn">
-                <i class="el-icon-s-platform">控制台</i>
+                <i @click="changeReq(params)" class="el-icon-s-platform">控制台</i>
             </el-row>
             <el-row class="row-btn">
                 <i class="el-icon-user" @click="login">登陆</i>
@@ -513,8 +533,24 @@
                              :key="item.collect_doc_id"
                              v-for="(item,index) in tab_list"
                              :name="item.collect_doc_id">
-                    <el-row v-if="item.type=='console'">
-                        控制台
+                    <el-row v-if="item.type=='console'" class="console-container" >
+                        <div :style="{ 'height':boxCodeHeight+'px'}">
+                            <textarea v-model="params" class="code-area" ></textarea>
+                        </div>
+                        <div class="box-controller">
+                            <el-button
+                                    v-loading="send_loading"
+                                    @click="sendData"
+                                    size="mini" primary
+                                    icon="el-icon-s-promotion">
+                                发送请求
+                            </el-button>
+                            <el-button @click="toJSON" size="mini" primary icon="el-icon-s-opportunity">请求格式化</el-button>
+                            <el-button @click="addDoc('service',params,result)" size="mini" icon="el-icon-document-add">新建文档</el-button>
+                        </div>
+                        <div class="bottom-console">
+                            <textarea v-model="result" class="code-area" ></textarea>
+                        </div>
                     </el-row>
                     <el-row class="doc-container" v-else>
                         <el-row class="doc-content">
@@ -534,17 +570,18 @@
                                 <el-col :span="is_doc(item)?24:12">
                                     <el-row class="doc-sub-title">
                                         示例
+                                        <el-button @click="changeReq(doc(item).code)" size="mini" primary icon="el-icon-thumb">发送此请求</el-button>
                                     </el-row>
-                                    <el-row class="doc-block">
+                                    <el-row class="doc-block" >
                                         <el-input autosize type="textarea" v-model="doc(item).code"> </el-input>
                                     </el-row>
                                 </el-col>
                                 <el-col :span="12" v-if="!is_doc(item)">
-                                    <el-row class="doc-sub-title">
+                                    <el-row class="doc-sub-title" style="margin-bottom: 4px;">
                                       结果示例
                                     </el-row>
                                     <el-row class="doc-block">
-                                        <el-input :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" v-model="doc(item).code"> </el-input>
+                                        <el-input :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" v-model="doc(item).code_result"> </el-input>
                                     </el-row>
                                 </el-col>
 
@@ -594,13 +631,13 @@
                                     </el-table>
                                 </el-row>
                             </div>
-                            <div v-if="doc_params(item).length>0 && !is_doc(item)">
+                            <div v-if="doc_result(item).length>0 && !is_doc(item)">
                                 <div class="doc-sub-title">
                                     结果说明
                                 </div>
                                 <el-row class="doc-block">
                                     <el-table
-                                            :data="doc_params(item)"
+                                            :data="doc_result(item)"
                                             stripe
                                             border
 
@@ -647,7 +684,7 @@
 
                                             <el-input
                                                     :autosize="{ minRows: 2, maxRows: 6 }"
-                                                    type="textarea" v-model="demo_item.code">
+                                                    type="textarea" v-model="demo_item.code_result">
                                             </el-input>
                                         </el-col>
                                     </el-row>
@@ -690,7 +727,7 @@
         <el-dialog
                 append-to-body
                 top="1vh"
-                width="98%"
+                width="90%"
 
                 :close-on-click-modal="false"
                 :visible.sync="opShow"
@@ -790,6 +827,16 @@
                                     </el-input>
                                 </el-form-item>
                             </el-col>
+                            <el-col :span="12" v-if="form.doc.type=='service'">
+                                <el-form-item label="结果示例">
+                                    <el-input
+                                            type="textarea"
+                                            placeholder=""
+                                            v-model="form.doc.code_result">
+
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         <el-row>
                             <el-form-item label="要点">
@@ -861,12 +908,11 @@
                                             label="类型">
                                         <template slot-scope="scope">
                                             <el-select size="mini" v-model="scope.row.type">
-                                                <el-option label="string" value="string"></el-option>
-                                                <el-option label="number" value="number"></el-option>
-                                                <el-option label="json" value="json"></el-option>
-                                                <el-option label="array" value="array"></el-option>
-                                                <el-option label="boolean" value="boolean"></el-option>
-                                                <el-option label="template" value="template"></el-option>
+                                                <el-option v-for="item in typeOption"
+                                                           :key="item.label"
+                                                           :label="item.label"
+                                                           :value="item.value">
+                                                </el-option>
                                             </el-select>
                                         </template>
                                     </el-table-column>
@@ -916,10 +962,85 @@
                                 type="text" icon="el-icon-c-scale-to-original" >还原</el-button>
 
 
+
+                        <el-row>
+                            <el-form-item label="结果描述">
+                                <el-button
+                                        @click="addTableData('result',{'name':'','type':'','must':'','desc':''})"
+                                        type="text" icon="el-icon-plus"></el-button>
+                                <el-button
+                                        @click="removeSelection('resultSelection','result')"
+                                        type="text" icon="el-icon-delete"></el-button>
+                                <el-table
+                                        :height="tableHeight"
+                                        @selection-change="(val)=>selectionChange('resultSelection',val)"
+                                        :data="form.result"
+                                >
+                                    <el-table-column type="selection"></el-table-column>
+                                    <el-table-column type="index"></el-table-column>
+
+                                    <el-table-column
+                                            prop="name"
+                                            :width="leftFull?300:100"
+                                            label="参数">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.name"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            width="100"
+                                            label="类型">
+                                        <template slot-scope="scope">
+                                            <el-select size="mini" v-model="scope.row.type">
+                                                <el-option v-for="item in typeOption"
+                                                           :key="item.label"
+                                                           :label="item.label"
+                                                           :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            width="80"
+                                            label="必须">
+                                        <template slot-scope="scope">
+                                            <el-select size="mini" v-model="scope.row.must">
+                                                <el-option label="是" value="是"></el-option>
+                                                <el-option label="否" value=""></el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="说明">
+                                        <template slot-scope="scope">
+                                            <el-input size="mini" v-model="scope.row.desc"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="操作" width="80">
+                                        <template slot-scope="scope">
+                                            <el-row class="row-op">
+                                                <el-button
+                                                        title="上移"
+                                                        @click="moveUp('result',scope.row)"
+                                                        type="text" icon="el-icon-top"></el-button>
+                                                <el-button
+                                                        title="下移"
+                                                        @click="moveDown('result',scope.row)"
+                                                        type="text" icon="el-icon-bottom">
+                                                </el-button>
+
+                                            </el-row>
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                            </el-form-item>
+
+                        </el-row>
                         <el-row>
                             <el-form-item label="代码示例">
                                 <el-button
-                                        @click="addTableData('demo',{'name':'','code':''})"
+                                        @click="addTableData('demo',{'name':'','code':'','code_result':''})"
                                         type="text" icon="el-icon-plus"></el-button>
                                 <el-button
                                         @click="removeSelection('demoSelection','demo')"
@@ -947,6 +1068,14 @@
                                                     :autosize="{ minRows: 1, maxRows: 6 }"
                                                     :rows="1"
                                                     size="mini" type="textarea" v-model="scope.row.code"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column v-if="form.doc.type==='service'" label="结果示例">
+                                        <template slot-scope="scope">
+                                            <el-input
+                                                    :autosize="{ minRows: 1, maxRows: 6 }"
+                                                    :rows="1"
+                                                    size="mini" type="textarea" v-model="scope.row.code_result"></el-input>
                                         </template>
                                     </el-table-column>
                                     <el-table-column label="操作" width="80">
@@ -1165,6 +1294,19 @@
         el: '#app',
         data() {
             return {
+
+                typeOption:[
+                    {label:"string", value:"string"},
+                    {label:"number",value:"number"},
+                    {label:"json",value:"json"},
+                    {label:"array", value:"array"},
+                    {label:"boolean", value:"boolean"},
+                    {label:"template", value:"template"},
+                    {label:"any",value:"any"},
+                ],
+                preY:0,
+                send_loading:false,
+                boxCodeHeight:250,
                 leftFull:false,
                 rightFull:false,
                 tab_list:[
@@ -1181,6 +1323,7 @@
                 op: "add",
                 editItem:null,
                 serviceSearch: "",
+                resultSelection: [],
                 importantSelection: [],
                 paramsSelection: [],
                 demoSelection: [],
@@ -1203,10 +1346,12 @@
                         type: "",
                         parent_dir: "",
                         code_desc: "",
+                        code_result:"",
                     },
-                    important_list: [{"name": "支持golang的模板参数渲染；支持3种数据类型 ，简单类型key/value;数组类型,字符串、数字数组;数组对象类型"}],
-                    params: [{"name": "module", "type": "string", "must": "是", "desc": ""}],
-                    demo: [{"name": "配置文件示例", "code": ""}],
+                    important_list: [],
+                    params: [],
+                    result: [],
+                    demo: [],
                 },
                 loading:false,
                 opShow: false,
@@ -1479,10 +1624,17 @@
         },
          mounted() {
             this.loadGroup()
+             this.toJSON()
+
+
+             window.onmousedown = this.ctrlMouseDown
+             window.onmousemove = this.ctrlMouseMove
+             window.onmouseup = this.ctrlMouseUp
+             document.addEventListener('mouseleave', this.mouseLeaveWindow)
         },
         computed: {
             tableHeight(){
-                return (window.innerHeight-200)+'px'
+                return (window.innerHeight-220)/2+'px'
             },
             formStyle() {
                 let height = window.innerHeight - 150;
@@ -1510,6 +1662,47 @@
 
         },
         methods: {
+            changeReq(code){
+              this.params = code
+              this.result = ""
+              this.handlerDoc({
+                  "collect_doc_id":"console",
+                  "title":"控制台",
+                  "type":"console"
+              })
+
+            },
+            mouseLeaveWindow: function (e) {
+                this.preY = 0
+            },
+            ctrlMouseDown: function (e) {
+                let el = e.target || e.srcElement
+                while (el) {
+                    if (el.className && el.className.indexOf('box-controller') >= 0) {
+                        this.preY = e.clientY
+                    }
+                    el = el.parentNode
+                }
+            },
+            ctrlMouseMove: function (e) {
+
+                const nowY = e.clientY
+                if (this.preY <= 0) {
+                    return
+                }
+                e.preventDefault()
+                this.boxCodeHeight += nowY - this.preY
+                if (this.boxCodeHeight < 50) {
+                    this.boxCodeHeight = 50
+                } else if (this.boxCodeHeight > document.body.clientHeight - 100) {
+                    this.boxCodeHeight = document.body.clientHeight - 100
+                } else {
+                    this.preY = nowY
+                }
+            },
+            ctrlMouseUp: function (e) {
+                this.preY = 0
+            },
             async login(){
                 let loginForm={"service":"system.login","username":"zhangzhi","password":"zhangzhi@888"}
                 await this.post(loginForm)
@@ -1529,6 +1722,10 @@
             },
             doc_params(item){
               return item.doc_content.params
+            },
+            doc_result(item){
+
+              return item.doc_content.result??[]
             },
             tabRemove(collect_doc_id){
                 let tab = this.getTab(collect_doc_id)
@@ -1585,6 +1782,34 @@
                     if (item.type == type) {
                         l.push(item)
                     }
+                }
+
+                function getData(search){
+                    let tmp = []
+                    for(let i=0;i<l.length;i++){
+                        let item = {...l[i]}
+                        let children = []
+                        for(let j=0;j<item.children.length;j++){
+                            let child = item.children[j]
+                            if((child.title && child.title.indexOf(search)>=0)
+                                ||(child.sub_title && child.sub_title.indexOf(search)>=0)){
+                                children.push(child)
+                            }
+                        }
+                        if(children.length>0){
+                            item.children = children
+                            tmp.push(item)
+                        }
+                    }
+                    return tmp
+                }
+                if(type==='doc' && this.docSearch){
+                    let search = this.docSearch
+                    l = getData(search)
+                }
+                else if(type==='service' && this.serviceSearch){
+                    let search = this.serviceSearch
+                    l = getData(search)
                 }
                 return l;
             },
@@ -1691,6 +1916,11 @@
                             let item = list[i]
                             item.order_index = (i + 1) * 10
                         }
+                        list = this.form.result
+                        for (let i = 0; i < list.length; i++) {
+                            let item = list[i]
+                            item.order_index = (i + 1) * 10
+                        }
                         this.loading = true
                         const res = await this.post(this.form)
                         this.loading = false
@@ -1737,17 +1967,20 @@
                 this.demo_list(item).forEach(item=>{demo_list.push({...item})})
                 let params = []
                 this.doc_params(item).forEach(item=>{params.push({...item})})
+                let result = []
+                this.doc_result(item).forEach(item=>{result.push({...item})})
                 this.form={
                     service: "config.doc_edit",
                     demo:demo_list,
                     params:params,
                     important_list: important_list,
-                    doc: Object.assign({},this.doc(item))
+                    result: result,
+                    doc: Object.assign({},this.doc(item)),
 
 
                 }
             },
-            addDoc(type) {
+            addDoc(type,code="",result="") {
                 this.opShow = true
                 this.op = "add"
                 //todo 获取当前文档数据+1
@@ -1756,15 +1989,17 @@
                     doc:{
                         title: "",
                         sub_title: "",
-                        code: "",
+                        code: code,
                         order_index:"",
                         type: type,
                         parent_dir: "",
                         code_desc: "",
+                        code_result: result,
                     },
                     important_list: [],
                     params: [],
                     demo: [],
+                    result: [],
                 }
             },
             upload() {
@@ -1903,6 +2138,17 @@
                     this.result = response
                 }
 
+            },
+            async sendData(){
+                this.result = ""
+                this.send_loading=true
+                let response = await this.post()
+                this.send_loading=false
+                if (response ) {
+                    this.result = JSON.stringify(response, null, "\t")
+                } else {
+                    this.result = response
+                }
             },
             async post(params) {
                 var data = {}

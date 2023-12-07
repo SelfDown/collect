@@ -38,6 +38,7 @@ func newCollectDoc(db *gorm.DB, opts ...gen.DOOption) collectDoc {
 	_collectDoc.CreateTime = field.NewString(tableName, "create_time")
 	_collectDoc.CreateUser = field.NewString(tableName, "create_user")
 	_collectDoc.IsDelete = field.NewString(tableName, "is_delete")
+	_collectDoc.CodeResult = field.NewString(tableName, "code_result")
 
 	_collectDoc.fillFieldMap()
 
@@ -59,6 +60,7 @@ type collectDoc struct {
 	CreateTime   field.String
 	CreateUser   field.String
 	IsDelete     field.String
+	CodeResult   field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -86,6 +88,7 @@ func (c *collectDoc) updateTableName(table string) *collectDoc {
 	c.CreateTime = field.NewString(table, "create_time")
 	c.CreateUser = field.NewString(table, "create_user")
 	c.IsDelete = field.NewString(table, "is_delete")
+	c.CodeResult = field.NewString(table, "code_result")
 
 	c.fillFieldMap()
 
@@ -102,7 +105,7 @@ func (c *collectDoc) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *collectDoc) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 11)
+	c.fieldMap = make(map[string]field.Expr, 12)
 	c.fieldMap["collect_doc_id"] = c.CollectDocID
 	c.fieldMap["title"] = c.Title
 	c.fieldMap["sub_title"] = c.SubTitle
@@ -114,6 +117,7 @@ func (c *collectDoc) fillFieldMap() {
 	c.fieldMap["create_time"] = c.CreateTime
 	c.fieldMap["create_user"] = c.CreateUser
 	c.fieldMap["is_delete"] = c.IsDelete
+	c.fieldMap["code_result"] = c.CodeResult
 }
 
 func (c collectDoc) clone(db *gorm.DB) collectDoc {

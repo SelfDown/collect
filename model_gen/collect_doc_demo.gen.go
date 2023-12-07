@@ -32,6 +32,7 @@ func newCollectDocDemo(db *gorm.DB, opts ...gen.DOOption) collectDocDemo {
 	_collectDocDemo.Name = field.NewString(tableName, "name")
 	_collectDocDemo.Code = field.NewString(tableName, "code")
 	_collectDocDemo.OrderIndex = field.NewInt32(tableName, "order_index")
+	_collectDocDemo.CodeResult = field.NewString(tableName, "code_result")
 
 	_collectDocDemo.fillFieldMap()
 
@@ -47,6 +48,7 @@ type collectDocDemo struct {
 	Name         field.String
 	Code         field.String
 	OrderIndex   field.Int32
+	CodeResult   field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -68,6 +70,7 @@ func (c *collectDocDemo) updateTableName(table string) *collectDocDemo {
 	c.Name = field.NewString(table, "name")
 	c.Code = field.NewString(table, "code")
 	c.OrderIndex = field.NewInt32(table, "order_index")
+	c.CodeResult = field.NewString(table, "code_result")
 
 	c.fillFieldMap()
 
@@ -84,12 +87,13 @@ func (c *collectDocDemo) GetFieldByName(fieldName string) (field.OrderExpr, bool
 }
 
 func (c *collectDocDemo) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 5)
+	c.fieldMap = make(map[string]field.Expr, 6)
 	c.fieldMap["doc_demo_id"] = c.DocDemoID
 	c.fieldMap["collect_doc_id"] = c.CollectDocID
 	c.fieldMap["name"] = c.Name
 	c.fieldMap["code"] = c.Code
 	c.fieldMap["order_index"] = c.OrderIndex
+	c.fieldMap["code_result"] = c.CodeResult
 }
 
 func (c collectDocDemo) clone(db *gorm.DB) collectDocDemo {

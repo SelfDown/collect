@@ -124,7 +124,7 @@
             position: fixed;
             right: 20px;
             border: 1px solid #eeebf5;
-            width: 250px;
+            width: 350px;
             padding: 10px;
             background: #fffe;
             box-shadow: 0 0 8px rgba(0, 0, 0, .2)
@@ -188,7 +188,6 @@
             max-height: 250px;
             overflow: auto;
         }
-
         .doc-item {
             padding: 0px 14px;
             border-bottom: 1px solid #eeebf5;
@@ -313,8 +312,9 @@
             display: flex;
         }
 
-        .saveForm .el-table__empty-block {
+         .el-table__empty-block {
             height: 60px !important;
+             max-height: 60px;
         }
 
         .el-dialog {
@@ -348,6 +348,20 @@
             padding: 10px 40px;
             color: #0008;
         }
+        .fullscreen{
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+            z-index: 999;
+            background: #fff;
+            width: 100%;
+        }
+        .el-tabs__nav-next, .el-tabs__nav-prev {
+
+            padding-top: 8px;
+        }
     </style>
 
     <script>
@@ -379,7 +393,10 @@
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
             <el-row class="row-btn">
-                <i class="el-icon-s-platform"></i>控制台
+                <i class="el-icon-s-platform">控制台</i>
+            </el-row>
+            <el-row class="row-btn">
+                <i class="el-icon-user" @click="login">登陆</i>
             </el-row>
         </el-row>
 
@@ -503,47 +520,54 @@
                     <el-row class="doc-container">
                         <el-row class="doc-content">
                             <el-row class="doc-title">
-                                sql(sql查询)
-                                <el-button class="edit" type="text" icon="el-icon-edit"></el-button>
-                                <el-button type="text" icon="el-icon-delete"></el-button>
+                                {{doc(item).title}}({{doc(item).sub_title}})
+                                <el-button
+                                        @click="showDocEdit(item)"
+                                        class="edit"
+                                        type="text"
+                                        icon="el-icon-edit">
+                                </el-button>
+                                <el-button
+                                        @click="docDelete(item)"
+                                        type="text" icon="el-icon-delete"></el-button>
                             </el-row>
                             <el-row class="doc-sub-title">
                                 说明
                             </el-row>
                             <el-row class="doc-block">
-                                <code>module: sql</code>
-
+                                <el-input autosize type="textarea" v-model="doc(item).code"> </el-input>
                             </el-row>
                             <el-row class="doc-block">
 
-                                用于数据库表查询,将sql查询出来作为结果。修改删除，尽量用模型修改model_update,模型删除model_delete
-                                <ul>
-                                    <li>支持golang的模板参数渲染；支持3种数据类型
-                                        ，简单类型key/value;数组类型,字符串、数字数组;数组对象类型
+                                <el-input
+                                        autosize
+                                        type="textarea"
+                                        v-model="doc(item).code_desc"></el-input>
+                                <ul v-if="important_list(item).length>0">
+                                    <li :key="index" v-for="(important_item,index) in important_list(item)" >
+                                        {{important_item.name}}
                                     </li>
-                                    <li>可以单独控制查询数据+统计count</li>
-                                    <li>sql文件支持require引入公共文件</li>
                                 </ul>
                             </el-row>
-
+                            <div v-if="doc_params(item).length>0">
                             <div class="doc-sub-title">
                                 参数
                             </div>
                             <el-row class="doc-block">
                                 <el-table
-                                        :data="paramData"
+                                        :data="doc_params(item)"
                                         stripe
                                         border
                                 >
                                     <el-table-column
-                                            prop="field"
+                                            prop="name"
                                             label="参数"
-                                            width="180">
+                                            width="300">
                                     </el-table-column>
                                     <el-table-column
                                             prop="type"
                                             label="类型"
-                                            width="60">
+                                            width="80">
                                     </el-table-column>
                                     <el-table-column
                                             prop="must"
@@ -556,53 +580,23 @@
                                     </el-table-column>
                                 </el-table>
                             </el-row>
+                            </div>
+                            <div v-if="demo_list(item).length>0">
                             <div class="doc-sub-title">
                                 示例
                             </div>
                             <div class="doc-block">
-                                1. 配置文件示例
-                                <el-input
-                                        autosize
-                                        type="textarea" v-model="demo">
+                                <div v-for="(demo_item,index) in demo_list(item)" :key="index" >
+                                    {{index+1}}. {{demo_item.name}}
+                                    <el-input
+                                            autosize
+                                            type="textarea" v-model="demo_item.code">
+                                    </el-input>
+                                </div>
 
-                                </el-input>
-                                2.sql文件示例,注意require(base.sql) 表示是引入当前目录的base.sql文件
-                                <el-input autosize
-                                          type="textarea"
-                                          v-model="demo2"
-                                >
 
-                                </el-input>
-                                3.count 文件示例
-                                <el-input autosize
 
-                                          type="textarea"
-                                          v-model="demo3"
-                                >
-
-                                </el-input>
-                                4.base.sql 文件示例,包含简单key、value示例，分页示例
-                                <el-input autosize
-                                          type="textarea"
-                                          v-model="demo4"
-                                >
-
-                                </el-input>
-                                5.简单数组 文件示例
-                                <el-input autosize
-                                          type="textarea"
-                                          v-model="demo5"
-                                >
-
-                                </el-input>
-                                6.数组对象 文件示例
-                                <el-input autosize
-                                          type="textarea"
-                                          v-model="demo6"
-                                >
-
-                                </el-input>
-
+                            </div>
                             </div>
                         </el-row>
                         <el-row class="doc-menu">
@@ -621,8 +615,11 @@
                                 </div>
                                 <div>
                                     <div class="menu-item">示例</div>
-                                    <div class="menu-item item-sub">1.配置文件示例</div>
-                                    <div class="menu-item item-sub">2.sql文件示例</div>
+                                    <div v-for="(demo_item,index) in demo_list(item)" :key="index"  class="menu-item item-sub">
+                                        {{index+1}}.{{demo_item.name}}
+                                    </div>
+<!--                                    <div class="menu-item item-sub">1.配置文件示例</div>-->
+<!--                                    <div class="menu-item item-sub">2.sql文件示例</div>-->
                                 </div>
                             </div>
                         </el-row>
@@ -638,7 +635,16 @@
 
                 :close-on-click-modal="false"
                 :visible.sync="opShow"
-                :title="op==='add'?'新增文档':'编辑文档'">
+            >
+            <template #title>
+                {{op==='add'?'新增文档':'编辑文档'}}
+                <el-button
+                        @click="leftFull=true"
+                        type="text" icon="el-icon-full-screen" >左边表单放大</el-button>
+                <el-button
+                        @click="rightFull=true"
+                        type="text" icon="el-icon-full-screen" >右边表单放大</el-button>
+            </template>
             <el-form
                     :style="formStyle"
                     :rules="rules"
@@ -648,19 +654,28 @@
                     size="mini" label-width="80px">
                 <el-row>
 
-                    <el-col :span="10">
+
+                    <el-col
+                            style="height:100%"
+                            :span="12" :class="{'fullscreen':leftFull}">
+                        <el-button
+                                v-if="leftFull"
+                                @click="leftFull=false"
+                                type="text" icon="el-icon-c-scale-to-original" >还原</el-button>
+
+
 
                         <el-row>
                             <el-col :span="12">
                                 <el-form-item
-                                        prop="title"
+                                        prop="doc.title"
                                         required label="标题:">
-                                    <el-input v-model="form.title"></el-input>
+                                    <el-input v-model="form.doc.title"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="子标题:">
-                                    <el-input v-model="form.sub_title"></el-input>
+                                    <el-input v-model="form.doc.sub_title"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -668,12 +683,12 @@
                             <el-col :span="12">
 
                                 <el-form-item label="示例代码:">
-                                    <el-input type="textarea" v-model="form.code"></el-input>
+                                    <el-input type="textarea" v-model="form.doc.code"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="示例描述:">
-                                    <el-input type="textarea" v-model="form.code_desc"></el-input>
+                                    <el-input type="textarea" v-model="form.doc.code_desc"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -681,10 +696,10 @@
                             <el-col :span="12">
 
                                 <el-form-item
-                                        prop="type"
+                                        prop="doc.type"
                                         required
                                         label="类型:">
-                                    <el-select class="form-select" v-model="form.type">
+                                    <el-select class="form-select" v-model="form.doc.type">
                                         <el-option label="文档" value="doc">文档</el-option>
                                         <el-option label="服务" value="service">服务</el-option>
                                     </el-select>
@@ -693,9 +708,9 @@
                             <el-col :span="12">
                                 <el-form-item
                                         required
-                                        prop="parent_dir"
+                                        prop="doc.parent_dir"
                                         label="上级目录">
-                                    <el-select class="form-select" v-model="form.parent_dir">
+                                    <el-select class="form-select" v-model="form.doc.parent_dir">
                                         <el-option
                                                 :key="item.doc_group_id"
                                                 v-for="(item) in parent_dir"
@@ -711,7 +726,7 @@
                                 <el-form-item label="排序号">
                                     <el-input
                                             placeholder="越小越靠前"
-                                            v-model="form.order_index">
+                                            v-model="form.doc.order_index">
 
                                     </el-input>
                                 </el-form-item>
@@ -731,6 +746,7 @@
                                         :data="form.important_list"
                                         max-height="180">
                                     <el-table-column type="selection"></el-table-column>
+                                    <el-table-column type="index"></el-table-column>
                                     <el-table-column label="描述">
                                         <template slot-scope="scope">
                                             <el-input size="mini" v-model="scope.row.name"></el-input>
@@ -771,10 +787,11 @@
                                         :data="form.params"
                                         max-height="180">
                                     <el-table-column type="selection"></el-table-column>
+                                    <el-table-column type="index"></el-table-column>
 
                                     <el-table-column
                                             prop="name"
-                                            width="100"
+                                            :width="leftFull?300:100"
                                             label="参数">
                                         <template slot-scope="scope">
                                             <el-input size="mini" v-model="scope.row.name"></el-input>
@@ -788,6 +805,9 @@
                                                 <el-option label="string" value="string"></el-option>
                                                 <el-option label="number" value="number"></el-option>
                                                 <el-option label="json" value="json"></el-option>
+                                                <el-option label="array" value="array"></el-option>
+                                                <el-option label="boolean" value="boolean"></el-option>
+                                                <el-option label="template" value="template"></el-option>
                                             </el-select>
                                         </template>
                                     </el-table-column>
@@ -830,7 +850,12 @@
                         </el-row>
 
                     </el-col>
-                    <el-col :span="14">
+                    <el-col :span="12"  :class="{'fullscreen':rightFull}">
+                        <el-button
+                                v-if="rightFull"
+                                @click="rightFull=false"
+                                type="text" icon="el-icon-c-scale-to-original" >还原</el-button>
+
 
                         <el-row>
                             <el-form-item label="代码示例">
@@ -841,14 +866,16 @@
                                         @click="removeSelection('demoSelection','demo')"
                                         type="text" icon="el-icon-delete"></el-button>
                                 <el-table
+                                        :height="tableHeight"
                                         @selection-change="(val)=>selectionChange('demoSelection',val)"
                                         :data="form.demo"
                                 >
                                     <el-table-column type="selection"></el-table-column>
+                                    <el-table-column type="index"></el-table-column>
 
                                     <el-table-column
                                             prop="name"
-                                            width="150"
+
                                             label="名称">
                                         <template slot-scope="scope">
                                             <el-input size="mini" v-model="scope.row.name"></el-input>
@@ -892,7 +919,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button size="mini" @click="opShow = false">取消</el-button>
-                <el-button size="mini" type="primary" @click="saveDoc">确定</el-button>
+                <el-button v-loading="loading" size="mini" type="primary" @click="saveDoc">确定</el-button>
             </div>
 
         </el-dialog>
@@ -1080,100 +1107,46 @@
         el: '#app',
         data() {
             return {
+                leftFull:false,
+                rightFull:false,
                 tab_list:[],
                 groupListAll: [],
                 groupSelection: [],
                 groupShow: false,
                 group_loading: false,
                 op: "add",
+                editItem:null,
                 serviceSearch: "",
                 importantSelection: [],
                 paramsSelection: [],
                 demoSelection: [],
                 rules: {
-                    title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
-                    type: [{required: true, message: '类型不能为空', trigger: 'blur'}],
-                    parent_dir: [{required: true, message: '上级不能为空', trigger: 'blur'}],
+                    doc:{
+                        title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
+                        type: [{required: true, message: '类型不能为空', trigger: 'blur'}],
+                        parent_dir: [{required: true, message: '上级不能为空', trigger: 'blur'}],
+                    },
+
                 },
                 groupForm: {
                     group_list: [],
                 },
                 form: {
-                    title: "",
-                    sub_title: "",
-                    code: "",
-                    type: "",
-                    parent_dir: "",
-                    code_desc: "",
+                    doc:{
+                        title: "",
+                        sub_title: "",
+                        code: "",
+                        type: "",
+                        parent_dir: "",
+                        code_desc: "",
+                    },
                     important_list: [{"name": "支持golang的模板参数渲染；支持3种数据类型 ，简单类型key/value;数组类型,字符串、数字数组;数组对象类型"}],
                     params: [{"name": "module", "type": "string", "must": "是", "desc": ""}],
                     demo: [{"name": "配置文件示例", "code": ""}],
                 },
-
+                loading:false,
                 opShow: false,
                 menuShow: true,
-                demo6:
-                    "{{ if .config_detail_list}}\n" +
-                    "and (g.group_id,g.name) in({{ range $index,$item := .config_detail_list }} {{if $index}},{{end}} ({{$item.group_id}},{{$item.name_copy}}){{ end}})\n" +
-                    "{{end}}",
-                demo5: "{{ if .ldap_group_id_list }}\n" +
-                    "and ldap_group_id in ({{.ldap_group_id_list}})\n" +
-                    "{{ end }}",
-                demo4: "select a.*\n" +
-                    "from role a\n" +
-                    "where 1=1\n" +
-                    "{{ if .search }}\n" +
-                    "and (\n" +
-                    "a.role_name like {{.search}}\n" +
-                    "or a.role_code like {{.search}}\n" +
-                    ")\n" +
-                    "{{ end }}\n" +
-                    "order by a.order_index desc\n" +
-                    "{{ if  .pagination  }}\n" +
-                    "limit {{.start}} , {{.size}}\n" +
-                    "{{ end }}",
-                demo3: "select count(1) as count\n" +
-                    "from (require('./base.sql')) a",
-                demo2: "select a.*,\n" +
-                    "(\n" +
-                    "   select GROUP_CONCAT(name )\n" +
-                    "   from ldap_group lg\n" +
-                    "   join role_ldap_group rlg on rlg.ldap_group_id =lg.ldap_group_id\n" +
-                    "   where rlg.role_id =a.role_id\n" +
-                    ") as ldap_names,\n" +
-                    "(\n" +
-                    "    select GROUP_CONCAT(lg.ldap_group_id)\n" +
-                    "    from ldap_group lg\n" +
-                    "    join role_ldap_group rlg   on rlg.ldap_group_id =lg.ldap_group_id\n" +
-                    "    where rlg.role_id =a.role_id\n" +
-                    ") as ldap_group_ids\n" +
-                    "from (require(base.sql)) as a",
-                demo: '' +
-                    '  - key: user_list\n' +
-                    '    module: sql\n' +
-                    '    http: true\n' +
-                    '    params:\n' +
-                    '      search:\n' +
-                    '        template: "{{ if .search }}%{{.search}}%{{ end }}"\n' +
-                    '      page:\n' +
-                    '        type: int\n' +
-                    '        default: 1\n' +
-                    '      size:\n' +
-                    '        default: 20\n' +
-                    '        type: int\n' +
-                    '      start:\n' +
-                    '        template: " ({{.page}}-1) * {{.size}}"\n' +
-                    '        exec: true\n' +
-                    '        type: int\n' +
-                    '      pagination:\n' +
-                    '        default: true\n' +
-                    '      count:\n' +
-                    '        default: true\n' +
-                    '    data_file: user_list.sql\n' +
-                    '    count_file: user_list_count.sql\n' +
-                    '    pagination: "[pagination]"\n' +
-                    '    count: "[count]"\n',
-
                 paramData: [{
                     field: 'module',
                     type: 'string',
@@ -1444,6 +1417,9 @@
             this.loadGroup()
         },
         computed: {
+            tableHeight(){
+                return (window.innerHeight-200)+'px'
+            },
             formStyle() {
                 let height = window.innerHeight - 150;
                 return {
@@ -1462,11 +1438,31 @@
                 return this.groupListShow
             },
             parent_dir(){
-                return this.groupListShow(this.form.type)
-            }
+                return this.groupListShow(this.form.doc.type)
+            },
+            // params(){
+            //   return this.doc_params
+            // }
 
         },
         methods: {
+            async login(){
+                let loginForm={"service":"system.login","username":"zhangzhi","password":"zhangzhi@888"}
+                await this.post(loginForm)
+                this.loadGroup()
+            },
+            demo_list(item){
+              return item.doc_content.demo
+            },
+            doc(item){
+              return item.doc_content.doc
+            },
+            important_list(item){
+              return item.doc_content.important_list
+            },
+            doc_params(item){
+              return item.doc_content.params
+            },
             tabRemove(collect_doc_id){
                 let tab = this.getTab(collect_doc_id)
                 this.tab_list.remove(tab)
@@ -1525,6 +1521,14 @@
                 }
                 return l;
             },
+            async deleteDocData(item){
+              let params = {
+                  service: "config.doc_delete",
+                  collect_doc_id_list:[item.collect_doc_id]
+              }
+                const res = await this.post(params)
+                return res
+            },
             async saveGroup() {
                 let group_list = this.groupForm.group_list
                 for (let i = 0; i < group_list.length; i++) {
@@ -1540,7 +1544,9 @@
                 if(res.code =='0'){
                     this.groupShow = false
                     this.group_loading = false
-                    this.loadGroup()
+                    await this.loadGroup()
+
+
                 }
 
             },
@@ -1600,6 +1606,7 @@
                 // this.form.important_list.push({"name":""})
             },
             saveDoc() {
+
                 this.$refs.saveForm.validate(async (vali) => {
                     if (vali) {
                         let list = this.form.demo
@@ -1617,13 +1624,61 @@
                             let item = list[i]
                             item.order_index = (i + 1) * 10
                         }
+                        this.loading = true
                         const res = await this.post(this.form)
+                        this.loading = false
                         if (res.code === '0') {
-                            this.loadGroup()
+                            await this.loadGroup()
                             this.opShow=false
+                            if(this.op ==='edit'){
+                                this.tabRemove(this.editItem.collect_doc_id)
+                                this.$nextTick(()=>{
+                                    this.handlerDoc(this.editItem)
+                                })
+
+                            }
                         }
                     }
                 })
+            },
+            docDelete(item){
+                        this.$alert("确定删除所选记录吗?",'删除确认' , {
+                            confirmButtonText: '确定',
+                            callback: async action => {
+
+                                if (action === 'confirm') {
+                                    const res = await this.deleteDocData(item)
+                                    if (res.code === '0') {
+                                        this.loadGroup()
+                                        this.tabRemove(item.collect_doc_id)
+                                    }
+
+                                }
+
+                            }
+                        });
+
+
+            },
+            showDocEdit(item){
+                this.opShow = true
+                this.op = "edit"
+                this.editItem = item
+                let important_list = []
+                this.important_list(item).forEach(item=>{important_list.push({...item})})
+                let demo_list = []
+                this.demo_list(item).forEach(item=>{demo_list.push({...item})})
+                let params = []
+                this.doc_params(item).forEach(item=>{params.push({...item})})
+                this.form={
+                    service: "config.doc_edit",
+                    demo:demo_list,
+                    params:params,
+                    important_list: important_list,
+                    doc: Object.assign({},this.doc(item))
+
+
+                }
             },
             addDoc(type) {
                 this.opShow = true
@@ -1631,13 +1686,15 @@
                 //todo 获取当前文档数据+1
                 this.form = {
                     service: "config.doc_save",
-                    title: "",
-                    subTitle: "",
-                    code: "",
-                    order_index:"",
-                    type: type,
-                    parent_dir: "",
-                    code_desc: "",
+                    doc:{
+                        title: "",
+                        sub_title: "",
+                        code: "",
+                        order_index:"",
+                        type: type,
+                        parent_dir: "",
+                        code_desc: "",
+                    },
                     important_list: [],
                     params: [],
                     demo: [],
@@ -1792,6 +1849,14 @@
                     data = params
                 }
                 const res = await axios.post(this.url, data)
+                if(res.data.code!=='0'){
+                    this.$alert(res.data.msg,'运行错误' , {
+                            confirmButtonText: '确定',
+                            callback: async action => {
+                                console.log(action)
+                            }})
+                }
+
                 return res.data
                 // debugger
                 //

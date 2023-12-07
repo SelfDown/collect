@@ -251,29 +251,6 @@ service:
         save_field: local_username
         template: "{{le (len .local_username) 0 }}"
         err_msg: "ldap 用户名【{{.username}}】已经存在，请更换用户名"
-#      - key: field2array
-#        enable: "{{must .roles}}"
-#        field: "[roles]"
-#        save_field: role_list
-#      - key: service2field
-#        enable: "{{must .roles}}"
-#        service:
-#          service: hrm.ldap_group_query
-#          roles: "[roles]"
-#        save_field: ldap_group_list
-#      - key: arr2arrayObj
-#        enable: "{{must .role_list}}"
-#        foreach: "[role_list]"
-#        item: item
-#        fields:
-#          - field: "role_id"
-#            template: "{{.item}}"
-#          - field: user_id
-#            template: "[user_id]"
-#          - field: user_role_id
-#            template: "{{uuid}}"
-#        save_field: user_role_list
-
     data_json: create_user_flow.json
     result_handler:
       - key: param2result

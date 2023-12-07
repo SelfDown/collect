@@ -2,12 +2,13 @@
   {
     "service": "config.doc_query",
     "collect_doc_id": "{{.collect_doc_id}}",
-    "target_field": "doc"
+    "target_field": "doc",
+    "to_obj":true
   },
   {
     "service": "config.import_list_query",
     "collect_doc_id": "{{.collect_doc_id}}",
-    "target_field": "import_list"
+    "target_field": "important_list"
   },
   {
     "service": "config.params_query",

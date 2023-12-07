@@ -61,6 +61,20 @@ func (t *CacheHandler) Set(key, value interface{}, second int64) bool {
 	return ok
 }
 
+// SetMini 设置缓存,毫秒级别
+func (t *CacheHandler) SetMini(key, value interface{}, second int64) bool {
+	cache := getCacheObj()
+	ok := cache.SetWithTTL(key, value, 0, time.Duration(second)*time.Millisecond)
+
+	return ok
+}
+
+// GetTTl 设置缓存,毫秒级别
+func (t *CacheHandler) GetTTl(key interface{}) (time.Duration, bool) {
+	cache := getCacheObj()
+	return cache.GetTTL(key)
+}
+
 // Wait 设置缓存
 func (t *CacheHandler) Wait() {
 	cache := getCacheObj()

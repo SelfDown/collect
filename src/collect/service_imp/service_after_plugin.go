@@ -24,6 +24,10 @@ func HandlerOneParams(handlerParam *collect.HandlerParam,
 		}
 
 	}
+	if template.Log {
+		template.LogData("正在处理:" + handlerParam.Key)
+		template.LogData("名称:" + handlerParam.Name)
+	}
 	// 获取数据处理模块
 	module := GetModuleRegister(handlerParam.Key)
 	if module == nil {
@@ -52,17 +56,19 @@ func HandlerOneParams(handlerParam *collect.HandlerParam,
 			}
 		}
 	}
-	return common.Ok(r.GetData(), "执行成功")
+	result := common.Ok(r.GetData(), "执行成功")
+	if r.Count > 0 {
+		result.Count = r.Count
+	}
+	return r
+	//return result
 }
 
 //todo template 存储结果，针对结果进行处理
 func handlerParams(template *collect.Template, HandlerParams []collect.HandlerParam, ts *TemplateService) *common.Result {
 
 	for _, handlerParam := range HandlerParams {
-		if template.Log {
-			template.LogData("正在处理:" + handlerParam.Key)
-			template.LogData("名称:" + handlerParam.Name)
-		}
+
 		ret := HandlerOneParams(&handlerParam, template, ts)
 		if !ret.Success {
 			return ret

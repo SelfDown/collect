@@ -194,6 +194,11 @@ data_handler:
     name: 处理缓存
     type: inner
     path: HandlerCache
+  # 防止重复请求
+  - key: prevent_duplication
+    name: 防止重复请求
+    type: inner
+    path: PreventDuplication
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:
@@ -237,6 +242,9 @@ load_startup_plugin:
   - key: load_cache_config
     method: LoadCacheConfig
     name: 加载定时模板是否启动
+  - key: load_prevent_duplication_config
+    method: LoadPreventDuplicationConfig
+    name: 加载prevent_duplication
   - key: load_router_all_enable
     method: LoadRouterAllEnable
     name: 加载模板能用,处理handler_req_param 是否能用
@@ -394,6 +402,10 @@ before_plugin:
     method: HandlerReqParam
     enable: "true"
 
+  # 处理重复请求
+  - key: prevent_duplication
+    method: PreventDuplication
+    enable: "true"
   # 处理缓存
   - key: handler_cache
     method: HandlerCache

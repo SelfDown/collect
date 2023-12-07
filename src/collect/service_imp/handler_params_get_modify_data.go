@@ -309,14 +309,14 @@ func (s *SimpleFieldRule) Handler() ([]map[string]interface{}, bool) {
 	leftValue := utils.RenderVar(s.GetLeftField(), leftData)
 	rightValue := utils.RenderVar(s.GetRightField(), rightData)
 	dataList := make([]map[string]interface{}, 0)
-	if leftValue == rightValue {
+	if leftValue == rightValue || utils.Strval(leftValue) == utils.Strval(rightValue) {
 		return dataList, false
 	}
 	change := ChangeData{
-		AfterDataMap:  rightData,
-		BeforeDataMap: leftData,
-		Before:        leftValue,
-		After:         rightValue,
+		AfterDataMap:  leftData,
+		BeforeDataMap: rightData,
+		Before:        rightValue,
+		After:         leftValue,
 	}
 	data := s.getChangeData(&change)
 	dataList = append(dataList, data)
@@ -410,16 +410,21 @@ type ArrayObjRule struct {
 func getArrayObjMap(data []map[string]interface{}, fieldName string) map[string]int {
 	dict := make(map[string]int)
 	for _, item := range data {
-		key := utils.RenderVar(fieldName, item).(string)
-		dict[key] = 1
+		key := utils.RenderVar(fieldName, item)
+		if key == nil {
+			continue
+		}
+		dict[key.(string)] = 1
 	}
 	return dict
 }
 func getArrNotExistsData(data []map[string]interface{}, dict map[string]int, fieldName string) []map[string]interface{} {
 	dataList := make([]map[string]interface{}, 0)
 	for _, item := range data {
-		key := utils.RenderVar(fieldName, item).(string)
-		if _, ok := dict[key]; !ok {
+		key := utils.RenderVar(fieldName, item)
+		if key == nil {
+			dataList = append(dataList, item)
+		} else if _, ok := dict[key.(string)]; !ok {
 			dataList = append(dataList, item)
 		}
 	}
@@ -473,10 +478,12 @@ func (s *ArrayObjRule) handlerModify(leftArr []map[string]interface{}, rightArr 
 	leftCommon := make([]map[string]interface{}, 0)
 	leftCommonDict := make(map[string]map[string]interface{})
 	for _, item := range leftArr {
-		key := utils.RenderVar(s.GetLeftField(), item).(string)
-		if _, ok := rightDict[key]; ok {
+		key := utils.RenderVar(s.GetLeftField(), item)
+		if key == nil {
+
+		} else if _, ok := rightDict[key.(string)]; ok {
 			leftCommon = append(leftCommon, item)
-			leftCommonDict[key] = item
+			leftCommonDict[key.(string)] = item
 		}
 	}
 	// 获取右边的字典+数组

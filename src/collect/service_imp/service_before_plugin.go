@@ -5,6 +5,7 @@ import (
 	"collect.mod/src/collect/config"
 	cacheHandler "collect.mod/src/collect/service_imp/cache_handler"
 	utils "collect.mod/src/collect/utils"
+	"github.com/demdxx/gocast"
 )
 
 /**
@@ -139,5 +140,23 @@ func (t *AfterLoader) HandlerCache(config collect.Plugin, template *collect.Temp
 	// 设置缓存
 	handlerParam.Method = cacheHandler.CacheSetName
 	ret := HandlerOneParams(&handlerParam, template, ts)
+	return ret
+}
+
+// 防止重复请求
+func (t *BeforeLoader) PreventDuplication(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	handlerParam := template.PreventDuplication
+	if handlerParam.EnableTpl == nil {
+		return common.Ok(nil, "重复请求为配置，无需处理")
+	}
+	ret := HandlerOneParams(&handlerParam, template, ts)
+	// 如果设置了缓存
+	if ret.Success && gocast.ToString(ret.GetData()) == "1" {
+		ret.SetFinish(true)
+		ret.Success = false
+		ret.Code = "-1"
+		ret.Msg = "您重复请求[" + template.GetService() + "]剩余：" + gocast.ToString(ret.Count) + "毫秒"
+	}
+
 	return ret
 }

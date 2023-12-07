@@ -469,13 +469,6 @@ service:
     http: true
     module: ldap
     params:
-#      ldap_addr:
-#        template: '{{get_key "ldap_addr"}}'
-#      username:
-#        template: 'cn={{get_key "manager_username"}},{{get_key "base_dn"}}'
-#      password:
-#        template: '{{get_key "manager_password"}}'
-
       search_username:
         check:
           template: "{{must .search_username}}"

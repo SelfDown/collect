@@ -190,6 +190,7 @@ type ServiceConfig struct {
 	Params              map[string]ParamConfig  // 参数配置定义
 	Schedule            Schedule                // 定时任务
 	Cache               HandlerParam            // 缓存设置
+	PreventDuplication  HandlerParam            `yaml:"prevent_duplication"` // 重复请求处理
 	Module              string                  // 模块
 	Table               string                  // 表名
 	Http                bool                    //  是否支持http 访问

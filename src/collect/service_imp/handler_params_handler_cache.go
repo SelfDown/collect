@@ -23,14 +23,14 @@ func (hc *HandlerCache) HandlerData(template *config.Template, handlerParam *con
 		dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
 		data, ok := handler.Get(dataKey)
 		if ok {
-			result := data.(*common.Result)
+			result := data.(common.Result)
 			//result.SetFinish(true)
-			return result
+			return &result
 		}
 	} else if method == cacheHandler.CacheSetName { // 单个设置缓存
 		dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
 		result := template.GetResult()
-		ok := handler.Set(dataKey, result, handlerParam.Second)
+		ok := handler.Set(dataKey, *result, handlerParam.Second)
 		if !ok {
 			template.LogData("缓存设置失败" + dataKey)
 		} else {
@@ -44,7 +44,7 @@ func (hc *HandlerCache) HandlerData(template *config.Template, handlerParam *con
 			dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, itemMap)
 			data := utils.RenderVar(handlerParam.Field, itemMap)
 			result := common.Ok(data, "缓存中批量获取数据")
-			ok := handler.Set(dataKey, result, handlerParam.Second)
+			ok := handler.Set(dataKey, *result, handlerParam.Second)
 			if !ok {
 				template.LogData("缓存设置失败" + dataKey)
 			}

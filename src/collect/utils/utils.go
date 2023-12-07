@@ -150,6 +150,23 @@ func RenderVarOrValue(name interface{}, params map[string]interface{}) interface
 	}
 	return pKey
 }
+
+func RenderVarToMap(name string, params map[string]interface{}) (map[string]interface{}, string) {
+	data := RenderVar(name, params)
+	dataMap, ok := data.(map[string]interface{})
+	if ok {
+		return dataMap, ""
+	}
+	// 在深层次取，挨个转换
+	tmp, ok := data.(interface{})
+	if ok {
+		itemData, itemOk := tmp.(map[string]interface{})
+		if itemOk {
+			return itemData, ""
+		}
+	}
+	return dataMap, ""
+}
 func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string]interface{}, string) {
 	// 直接渲染变量
 	data := RenderVar(name, params)

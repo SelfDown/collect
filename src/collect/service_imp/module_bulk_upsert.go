@@ -40,7 +40,7 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 		}
 	}
 	//执行
-	modelList, fieldNames, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template)
+	modelList, fieldNames, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template, ts)
 	if !utils.IsValueEmpty(errMsg) {
 		return common.NotOk(errMsg)
 	}

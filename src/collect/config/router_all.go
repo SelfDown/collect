@@ -197,6 +197,7 @@ type ServiceConfig struct {
 	Options             string                  // 可以选择字段
 	MustLogin           *bool                   `yaml:"must_login"`  // 是否必须登录
 	DataFile            string                  `yaml:"data_file"`   // 文件路径
+	DataSource          string                  `yaml:"data_source"` // 数据源
 	RunStartup          bool                    `yaml:"run_startup"` // 启动是否运行
 	FileData            string                  // 文件内容
 	Pagination          string                  //分页字段

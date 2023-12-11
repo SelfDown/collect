@@ -21,11 +21,21 @@ type SqlService struct {
 func (s *SqlService) Result(template *config.Template, ts *TemplateService) *common.Result {
 	r := common.Result{}
 	var err error
-	db0, err = s.GetDatasource()
-	if err != nil {
-		msg := err.Error()
-		return r.NotOk(msg)
+	var db *sql.DB
+	if utils.IsValueEmpty(template.DataSource) {
+		db, err = s.GetDatasource()
+		if err != nil {
+			msg := err.Error()
+			return r.NotOk(msg)
+		}
+	} else {
+		db, err = s.GetOtherDatasource(template.DataSource)
+		if err != nil {
+			msg := err.Error()
+			return r.NotOk(msg)
+		}
 	}
+
 	//获取文件数据
 	// fileData := template.GetFileData()
 	params := template.GetParams()
@@ -47,7 +57,7 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 		template.LogData(realValues)
 	}
 	// 执行结果
-	maps, error := sqlToData(sql, realValues...)
+	maps, error := sqlToData(db, sql, realValues...)
 	if error != nil {
 		return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
 	}
@@ -71,7 +81,7 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 			template.LogData(countRealValues)
 		}
 		// 执行结果
-		countMaps, countError := sqlToData(countSql, countRealValues...)
+		countMaps, countError := sqlToData(db, countSql, countRealValues...)
 		if countError != nil {
 			return common.NotOk("执行sql报错:\n" + countSql + "\n详情:" + countError.Error())
 		}
@@ -117,8 +127,8 @@ func getSQL(sqlData string, params map[string]interface{}) (string, []interface{
 	return sql, realValues
 }
 
-func sqlToData(sqlTemplate string, params ...any) ([]map[string]interface{}, error) {
-	rows, err := db0.Query(sqlTemplate, params...)
+func sqlToData(db *sql.DB, sqlTemplate string, params ...any) ([]map[string]interface{}, error) {
+	rows, err := db.Query(sqlTemplate, params...)
 	if err != nil {
 		fmt.Println("出错了", err)
 		return nil, err

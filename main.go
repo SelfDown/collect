@@ -1,7 +1,7 @@
 package main
 
 import (
-	collect "collect/gen"
+	gen "collect/gen"
 	"collect/model"
 	templateService "collect/src/collect/service_imp"
 	"github.com/gin-contrib/sessions"
@@ -10,7 +10,7 @@ import (
 )
 
 func main1() {
-	collect.GenModel()
+	gen.GenModel()
 }
 func main() {
 

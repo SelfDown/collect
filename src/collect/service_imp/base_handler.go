@@ -1,7 +1,6 @@
 package collect
 
 import (
-	"collect/model"
 	common "collect/src/collect/common"
 	config "collect/src/collect/config"
 	utils "collect/src/collect/utils"
@@ -14,10 +13,12 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"time"
 )
 
 var db0 *sql.DB
 var gormDb *gorm.DB
+var otherLocalDatasource map[string]*sql.DB
 
 type BaseHandler struct {
 }
@@ -25,6 +26,20 @@ type BaseHandler struct {
 func init() {
 	base := BaseHandler{}
 	base.GetDatasource()
+	base.GetOtherDatasource("*")
+	// 30秒 ping 一次
+	go func() {
+		for {
+			Ping()
+			time.Sleep(30 * time.Second)
+		}
+	}()
+}
+func Ping() {
+	db0.Ping()
+	for name := range otherLocalDatasource {
+		otherLocalDatasource[name].Ping()
+	}
 }
 
 func (s *BaseHandler) RunFuncName() string {
@@ -50,6 +65,42 @@ func (s *BaseHandler) GetGormDb() *gorm.DB {
 		},
 	})
 	return gormDB
+}
+func (s *BaseHandler) GetOtherDatasource(name string) (*sql.DB, error) {
+	if otherLocalDatasource != nil {
+		db := otherLocalDatasource[name]
+		return db, nil
+	}
+	otherLocalDatasource = make(map[string]*sql.DB)
+	// 获取连接信息
+	dataSourceNames := utils.GetAppKey("otherDataSource")
+	if utils.IsValueEmpty(dataSourceNames) {
+		return nil, nil
+	}
+	arr := strings.Split(dataSourceNames, ",")
+	for _, dataSourceName := range arr {
+		// 获取驱动
+		driverName := utils.GetAppKey(dataSourceName + "DriverName")
+		dsn := utils.GetAppKey(dataSourceName + "DataSourceName")
+		db, err := sql.Open(driverName, dsn)
+		if err != nil {
+			log.Fatal(dataSourceName+"数据库打开出现了问题：", err)
+			return nil, err
+		}
+
+		if err != nil {
+			log.Fatal("数据库连接出现了问题：", err)
+			return nil, err
+		}
+		db.SetMaxOpenConns(10)
+		db.SetMaxIdleConns(5)
+		db.SetConnMaxLifetime(0)
+		db.SetConnMaxIdleTime(0)
+		db.Ping()
+		otherLocalDatasource[dataSourceName] = db
+	}
+
+	return nil, nil
 }
 
 // GetDatasource 获取数据库连接
@@ -130,7 +181,7 @@ func (s *BaseHandler) UpdateFieldsToMap(params map[string]interface{}, modelData
 }
 
 // UpdateFieldsToMapList 批量更新字段，批量创建和批量修改用的
-func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, modelData interface{}, template *config.Template) ([]map[string]interface{}, []string, string) {
+func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, modelData interface{}, template *config.Template, ts *TemplateService) ([]map[string]interface{}, []string, string) {
 	modelList := make([]map[string]interface{}, 0)
 	var fieldNames []string
 	fieldOptions, errMsg := s.getFieldOptions(template.Options, template.GetParams())
@@ -138,7 +189,7 @@ func (s *BaseHandler) UpdateFieldsToMapList(models []map[string]interface{}, mod
 		return nil, nil, errMsg
 	}
 	for _, item := range models {
-		modelItem := model.CloneModel(template.Table)
+		modelItem := ts.CloneModel(template.Table)
 		dataItem, names := s.UpdateFieldsToMap(item, &modelItem, template.IgnoreFields, template.UpdateFields, fieldOptions)
 		modelList = append(modelList, dataItem)
 		if fieldNames == nil {

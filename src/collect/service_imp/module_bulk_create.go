@@ -30,7 +30,7 @@ func (s *BulkCreateService) Result(template *config.Template, ts *TemplateServic
 		return common.NotOk(template.GetService() + "列表" + modelField + "数据为空")
 	}
 	// 将参数列表，转成模型列表
-	modelList, _, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template)
+	modelList, _, errMsg := s.UpdateFieldsToMapList(dataList, modelData, template, ts)
 	if !utils.IsValueEmpty(errMsg) {
 		return common.NotOk(errMsg)
 	}

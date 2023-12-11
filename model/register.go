@@ -1,7 +1,7 @@
 package model
 
 import (
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 var modelMap map[string]interface{}

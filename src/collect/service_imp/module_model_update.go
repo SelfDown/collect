@@ -1,10 +1,10 @@
 package collect
 
 import (
-	"collect.mod/model"
-	common "collect.mod/src/collect/common"
-	config "collect.mod/src/collect/config"
-	utils "collect.mod/src/collect/utils"
+	"collect/model"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
+	utils "collect/src/collect/utils"
 )
 
 type ModelUpdateService struct {

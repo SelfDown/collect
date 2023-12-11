@@ -6,8 +6,8 @@ import (
 	"strings"
 	text_template "text/template"
 
-	filters "collect.mod/src/collect/filters"
-	utils "collect.mod/src/collect/utils"
+	filters "collect/src/collect/filters"
+	utils "collect/src/collect/utils"
 )
 
 /*

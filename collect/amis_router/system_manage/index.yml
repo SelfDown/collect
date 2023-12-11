@@ -1,4 +1,16 @@
 service:
+  - key: menu_manage
+    http: true
+
+
+
+    handler_params:
+      - key: file2datajson
+        save_field: data
+      - key: param2result
+        field: data
+    data_file: menu_manage.json
+    module: empty
   - key: config_manage
     http: true
     handler_params:

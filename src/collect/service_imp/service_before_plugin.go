@@ -1,10 +1,10 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	"collect.mod/src/collect/config"
-	cacheHandler "collect.mod/src/collect/service_imp/cache_handler"
-	utils "collect.mod/src/collect/utils"
+	common "collect/src/collect/common"
+	"collect/src/collect/config"
+	cacheHandler "collect/src/collect/service_imp/cache_handler"
+	utils "collect/src/collect/utils"
 	"github.com/demdxx/gocast"
 )
 

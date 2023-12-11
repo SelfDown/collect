@@ -1,7 +1,7 @@
 package collect
 
 import (
-	config "collect.mod/src/collect/config"
+	config "collect/src/collect/config"
 	"log"
 	"reflect"
 )

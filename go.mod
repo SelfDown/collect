@@ -1,4 +1,4 @@
-module collect.mod
+module collect
 
 go 1.18
 

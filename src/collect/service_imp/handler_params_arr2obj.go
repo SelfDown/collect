@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	config "collect.mod/src/collect/config"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
 	"reflect"
 )
 

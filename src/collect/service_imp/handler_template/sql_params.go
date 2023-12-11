@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 //todo  定义一个结构体

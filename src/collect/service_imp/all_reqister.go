@@ -34,6 +34,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &UpdateArrayFromArray{})
 	l = append(l, &CombineArray{})
 	l = append(l, &PreventDuplication{})
+	l = append(l, &ToTree{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

@@ -570,10 +570,10 @@
                                 <el-col :span="is_doc(item)?24:12">
                                     <el-row class="doc-sub-title">
                                         示例
-                                        <el-button @click="changeReq(doc(item).code)" size="mini" primary icon="el-icon-thumb">发送此请求</el-button>
+                                        <el-button v-show="!is_doc(item)" @click="changeReq(doc(item).code)" size="mini" primary icon="el-icon-thumb">发送此请求</el-button>
                                     </el-row>
                                     <el-row class="doc-block" >
-                                        <el-input autosize type="textarea" v-model="doc(item).code"> </el-input>
+                                        <el-input :autosize="{ minRows: 6}" type="textarea" v-model="doc(item).code"> </el-input>
                                     </el-row>
                                 </el-col>
                                 <el-col :span="12" v-if="!is_doc(item)">
@@ -963,7 +963,7 @@
 
 
 
-                        <el-row>
+                        <el-row v-if="form.doc.type=='service'">
                             <el-form-item label="结果描述">
                                 <el-button
                                         @click="addTableData('result',{'name':'','type':'','must':'','desc':''})"

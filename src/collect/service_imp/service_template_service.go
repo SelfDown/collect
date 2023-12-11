@@ -2,15 +2,15 @@ package collect
 
 import (
 	"bytes"
-	common "collect.mod/src/collect/common"
-	"collect.mod/src/collect/config"
-	startup "collect.mod/src/collect/startup"
+	common "collect/src/collect/common"
+	"collect/src/collect/config"
+	startup "collect/src/collect/startup"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"reflect"
 	"time"
 
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 	"fmt"
 	"github.com/demdxx/gocast"
 	"github.com/gin-contrib/sessions"

@@ -1,8 +1,8 @@
 package main
 
 import (
-	collect "collect.mod/gen"
-	template_service "collect.mod/src/collect/service_imp"
+	collect "collect/gen"
+	template_service "collect/src/collect/service_imp"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"

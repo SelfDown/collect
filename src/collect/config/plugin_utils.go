@@ -1,7 +1,7 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
+	common "collect/src/collect/common"
 	"reflect"
 )
 

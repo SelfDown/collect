@@ -57,6 +57,18 @@
                 },
                 "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
               }
+            },
+            {
+              "label": "菜单管理",
+              "url": "menu_manage",
+              "schemaApi": {
+                "method": "post",
+                "url": "/template_data/data",
+                "data": {
+                  "service": "amis_router.menu_manage"
+                },
+                "adaptor": "return {\n    ...payload,\n    status: payload.success === true? 0 : 1\n}"
+              }
             }
 
           ]

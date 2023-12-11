@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	config "collect.mod/src/collect/config"
-	cacheHandler "collect.mod/src/collect/service_imp/cache_handler"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
+	cacheHandler "collect/src/collect/service_imp/cache_handler"
 	"github.com/demdxx/gocast"
 )
 

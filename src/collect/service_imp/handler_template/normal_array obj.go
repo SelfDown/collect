@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strconv"
 
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 type NormalArrayObj struct {

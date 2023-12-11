@@ -1,17 +1,17 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
+	common "collect/src/collect/common"
 
-	handler_template "collect.mod/src/collect/service_imp/handler_template"
-	utils "collect.mod/src/collect/utils"
+	handler_template "collect/src/collect/service_imp/handler_template"
+	utils "collect/src/collect/utils"
 	"database/sql"
 	"fmt"
 	"github.com/demdxx/gocast"
 	"log"
 	text_template "text/template"
 
-	config "collect.mod/src/collect/config"
+	config "collect/src/collect/config"
 )
 
 type SqlService struct {

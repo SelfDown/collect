@@ -1,7 +1,7 @@
 package collect
 
 import (
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 	"encoding/json"
 )
 

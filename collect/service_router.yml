@@ -200,6 +200,12 @@ data_handler:
     type: inner
     path: PreventDuplication
 
+  # 转树形结构
+  - key: to_tree
+    name: 列表转树形结构
+    type: inner
+    path: ToTree
+
 # 加载启动配置，读取文件内容
 load_startup_plugin:
   - key: load_data_file

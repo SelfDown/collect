@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	"collect.mod/src/collect/config"
-	utils "collect.mod/src/collect/utils"
+	common "collect/src/collect/common"
+	"collect/src/collect/config"
+	utils "collect/src/collect/utils"
 )
 
 type AfterLoader struct {

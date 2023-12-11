@@ -6,7 +6,7 @@ import (
 	text_template "text/template"
 	"text/template/parse"
 
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 /**

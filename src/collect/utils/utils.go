@@ -2,7 +2,7 @@ package collect
 
 import (
 	"bytes"
-	common "collect.mod/src/collect/common"
+	common "collect/src/collect/common"
 	"encoding/json"
 	"fmt"
 	"github.com/demdxx/gocast"

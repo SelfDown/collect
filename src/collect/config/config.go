@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	utils "collect.mod/src/collect/utils"
+	common "collect/src/collect/common"
+	utils "collect/src/collect/utils"
 )
 
 /*

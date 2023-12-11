@@ -3,7 +3,6 @@ service:
     http: true
     module: empty
     modify_config: doc_modify.json
-    log: true
     prevent_duplication:
       name: 后台防止重复请求，second 表示毫秒
       key: prevent_duplication
@@ -273,7 +272,6 @@ service:
       collect_doc_id__in: "[collect_doc_id_list]"
 
   - key: demo_query
-    log: true
     module: sql
     params:
       collect_doc_id:
@@ -283,7 +281,6 @@ service:
 
     data_file: demo_query.sql
   - key: result_query
-    log: true
     module: sql
     http: true
     params:
@@ -295,7 +292,6 @@ service:
     data_file: result_query.sql
   - key: import_list_query
     module: sql
-    log: true
     params:
       collect_doc_id:
         check:
@@ -304,7 +300,6 @@ service:
     data_file: import_list_query.sql
   - key: params_query
     module: sql
-    log: true
     params:
       collect_doc_id:
         check:
@@ -326,7 +321,6 @@ service:
         field: service_list
   - key: doc_detail
     http: true
-    log: true
     module: bulk_service
     params:
       collect_doc_id:
@@ -358,7 +352,7 @@ service:
       - key: param2result
         field: result_data
   - key: doc_query
-    log: true
+#    log: true
     http: true
     module: sql
     params:
@@ -372,7 +366,6 @@ service:
   - key: collect_doc_params_update
     module: bulk_upsert
     table: "collect_doc_params"
-    log: true
     params:
       params:
         check:
@@ -382,7 +375,6 @@ service:
   - key: collect_doc_params_remove
     module: model_delete
     table: "collect_doc_params"
-    log: true
     params:
       params:
         check:
@@ -490,7 +482,6 @@ service:
   - key: collect_doc_demo_update
     module: bulk_upsert
     table: collect_doc_demo
-    log: true
     params:
       demo_list:
         check:
@@ -500,7 +491,7 @@ service:
   - key: collect_doc_result_update
     module: bulk_upsert
     table: collect_doc_result
-    log: true
+#    log: true
     params:
       result:
         check:
@@ -572,7 +563,6 @@ service:
   - key: collect_doc_update
     module: model_update
     table: collect_doc
-    log: true
     params:
       collect_doc_id:
         check:
@@ -584,7 +574,6 @@ service:
   - key: doc_save
     http: true
     module: empty
-    log: true
     params:
       collect_doc_id:
         template: "{{uuid}}"

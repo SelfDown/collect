@@ -1,7 +1,7 @@
 service:
   - key: doc_group_update
     table: doc_group
-    log: true
+#    log: true
     module: bulk_upsert
     params:
       doc_group_list:
@@ -52,7 +52,7 @@ service:
           - field: create_user
             template: "{{.session_user_id}}"
   - key: doc_group_query
-    log: true
+#    log: true
     http: true
     module: sql
     data_file: doc_group_query.sql
@@ -84,7 +84,7 @@ service:
   - key: doc_group_bulk_save
     module: empty
     http: true
-    log: true
+#    log: true
     modify_config: doc_group_modify.json
     params:
       doc_group_list:

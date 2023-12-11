@@ -5,7 +5,7 @@ import (
 	"strings"
 	text_template "text/template"
 
-	utils "collect.mod/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 // type ModuleResult interface {
@@ -328,6 +328,8 @@ type HandlerParam struct {
 	Room                string
 	Second              int64
 	Children            string //children
+	Pid                 string //parent_id
+	Id                  string //id
 }
 type ExcelConfig struct {
 	Name   string   // 名称

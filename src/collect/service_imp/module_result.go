@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "collect.mod/src/collect/common"
-	"collect.mod/src/collect/config"
+	common "collect/src/collect/common"
+	"collect/src/collect/config"
 	// template "test.mod/src/collect/template"
 )
 

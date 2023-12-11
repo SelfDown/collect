@@ -1,7 +1,7 @@
 service:
   - key: config_param_restore
     http: true
-    log: true
+#    log: true
     module: empty
     params:
       ids:
@@ -153,7 +153,7 @@ service:
     count: "[count]"
 
   - key: config_detail_change_history_bulk_save
-    log: true
+#    log: true
     module: bulk_create
     params:
       change_list:
@@ -186,7 +186,7 @@ service:
   - key: config_detail_bulk_create
     name: 配置批量新增
     module: bulk_create
-    log: true
+#    log: true
     table: "config_detail"
     model_field: "[detail_list]"
     http: true
@@ -222,7 +222,7 @@ service:
     filter:
       config_detail_id__in: "[config_detail_id_list]"
   - key: config_detail_bulk_save
-    log: true
+#    log: true
     module: empty
     table: "config_detail"
     model_field: "[detail_list]"

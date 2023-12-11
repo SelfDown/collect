@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"collect.mod/model"
+	"collect/model"
 )
 
 func newProject(db *gorm.DB, opts ...gen.DOOption) project {

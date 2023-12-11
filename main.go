@@ -2,7 +2,8 @@ package main
 
 import (
 	collect "collect/gen"
-	template_service "collect/src/collect/service_imp"
+	"collect/model"
+	templateService "collect/src/collect/service_imp"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -20,12 +21,14 @@ func main() {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session_id", store))
 	r.Static("/static", "./static")
+	// 设置数据库表
+	templateService.SetDatabaseModel(&model.TableData{})
 	// 添加定时任务
-	template_service.RunScheduleService()
+	templateService.RunScheduleService()
 	// 添加启动服务
-	template_service.RunStartupService()
+	templateService.RunStartupService()
 	r.POST("/template_data/data", func(c *gin.Context) {
-		template_service.HandlerRequest(c)
+		templateService.HandlerRequest(c)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

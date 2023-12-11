@@ -1,7 +1,6 @@
 package collect
 
 import (
-	"collect/model"
 	common "collect/src/collect/common"
 	config "collect/src/collect/config"
 	utils "collect/src/collect/utils"
@@ -15,7 +14,7 @@ func (s *ModelSaveService) Result(template *config.Template, ts *TemplateService
 
 	params := template.GetParams()
 	tableName := template.Table
-	modelData := model.GetModel(tableName)
+	modelData := ts.GetModel(tableName)
 	if modelData == nil {
 		return common.NotOk(tableName + "没有找到，请检查模型数据")
 	}

@@ -26,6 +26,32 @@ type TemplateService struct {
 	ResponseFilePath string
 	ResponseFileName string
 	File             multipart.File // 单个上传文件
+
+}
+
+/*
+* 数据库表
+ */
+var _model DatabaseModel
+
+type DatabaseModel interface {
+	GetModel(tableName string) interface{}
+	CloneModel(tableName string) interface{}
+	GetPrimaryKey(tableName string) []string
+}
+
+// SetDatabaseModel 设置数据库表
+func SetDatabaseModel(m DatabaseModel) {
+	_model = m
+}
+func (*TemplateService) GetModel(tableName string) interface{} {
+	return _model.GetModel(tableName)
+}
+func (*TemplateService) CloneModel(tableName string) interface{} {
+	return _model.CloneModel(tableName)
+}
+func (*TemplateService) GetPrimaryKey(tableName string) []string {
+	return _model.GetPrimaryKey(tableName)
 }
 
 func handlerAmis(result *common.Result) {

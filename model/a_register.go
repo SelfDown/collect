@@ -1,11 +1,16 @@
 package model
 
 import (
+	template_service "collect/src/collect/service_imp"
 	utils "collect/src/collect/utils"
 )
 
 var modelMap map[string]interface{}
 var primaryKeyMap map[string][]string
+
+type TableData struct {
+	template_service.DatabaseModel
+}
 
 // 生成一个脚本自动填充这个
 func init() {
@@ -14,13 +19,13 @@ func init() {
 	primaryKeyMap = make(map[string][]string)
 	addTable()
 }
-func GetModel(tableName string) interface{} {
+func (*TableData) GetModel(tableName string) interface{} {
 	return modelMap[tableName]
 }
-func CloneModel(tableName string) interface{} {
+func (*TableData) CloneModel(tableName string) interface{} {
 	data := modelMap[tableName]
 	return utils.Copy(data)
 }
-func GetPrimaryKey(tableName string) []string {
+func (*TableData) GetPrimaryKey(tableName string) []string {
 	return primaryKeyMap[tableName]
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gorm.io/gen"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -29,7 +30,14 @@ func fixModel() {
 		filePath := directory + "/" + name
 		content, _ := ioutil.ReadFile(filePath)
 		contentData := utils.Strval(content)
-		tableName := strings.ReplaceAll(name, ".gen.go", "")
+		//tableName := strings.ReplaceAll(name, ".gen.go", "") 替换成正则
+		reg := regexp.MustCompile("const TableName(.*) = \"(.*)\"")
+		var tableName string
+		if match := reg.FindStringSubmatch(contentData); len(match) > 0 {
+			tableName = match[2]
+		} else {
+			continue
+		}
 		modelName := utils.ToSchemaName(tableName)
 		primaryKeyList := make([]string, 0)
 		varName := "table" + modelName
@@ -90,7 +98,15 @@ func GenModel() {
 	tableList, _ := gormDB.Migrator().GetTables()
 	for _, item := range tableList {
 		fmt.Println(item)
-		g.ApplyBasic(g.GenerateModel(item))
+		utils.Block{
+			Try: func() {
+				g.ApplyBasic(g.GenerateModel(item))
+			},
+			Catch: func(e utils.Exception) {
+				println(e)
+			},
+		}.Do()
+
 	}
 	//g.ApplyBasic(
 	//g.GenerateAllTable(),

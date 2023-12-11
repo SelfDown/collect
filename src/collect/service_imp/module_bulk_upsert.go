@@ -1,7 +1,6 @@
 package collect
 
 import (
-	"collect/model"
 	common "collect/src/collect/common"
 	config "collect/src/collect/config"
 	utils "collect/src/collect/utils"
@@ -16,7 +15,7 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 
 	params := template.GetParams()
 	tableName := template.Table
-	modelData := model.GetModel(tableName)
+	modelData := ts.GetModel(tableName)
 	if modelData == nil {
 		return common.NotOk(tableName + "没有找到，请检查模型数据")
 	}
@@ -33,7 +32,7 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 	}
 	// 将参数列表，转成模型列表
 	if template.UpdateFields != nil { // 添加主键
-		primaryKeys := model.GetPrimaryKey(template.Table)
+		primaryKeys := ts.GetPrimaryKey(template.Table)
 		for _, pk := range primaryKeys {
 			if !utils.StringArrayContain(template.UpdateFields, pk) {
 				template.UpdateFields = append(template.UpdateFields, pk)

@@ -1,7 +1,6 @@
 package collect
 
 import (
-	"collect/model"
 	common "collect/src/collect/common"
 	config "collect/src/collect/config"
 	utils "collect/src/collect/utils"
@@ -15,7 +14,7 @@ func (s *ModelUpdateService) Result(template *config.Template, ts *TemplateServi
 
 	params := template.GetParams()
 	tableName := template.Table
-	modelData := model.GetModel(tableName)
+	modelData := ts.GetModel(tableName)
 	checkResult := s.CheckFilter(template, modelData)
 	if !checkResult.Success {
 		return checkResult
@@ -27,7 +26,7 @@ func (s *ModelUpdateService) Result(template *config.Template, ts *TemplateServi
 	if template.IgnoreFields == nil {
 		template.IgnoreFields = make([]string, 0)
 	}
-	pk := model.GetPrimaryKey(tableName)
+	pk := ts.GetPrimaryKey(tableName)
 	//不允许更新主键
 	for _, k := range pk {
 		if !utils.StringArrayContain(template.IgnoreFields, k) {

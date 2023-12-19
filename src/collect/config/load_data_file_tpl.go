@@ -438,10 +438,13 @@ func (t *PluginLoader) LoadDataFileTpl(config Plugin, template *Template, router
 func _load_template(fileData string) (*text_template.Template, error) {
 	filters := filters.GetFilters()
 	collectTemplate := text_template.New(fileData).Funcs(filters)
-	tpl, error_info := collectTemplate.Parse(fileData)
-	if error_info != nil {
-		fmt.Println(error_info)
+	tpl, errorInfo := collectTemplate.Parse(fileData)
+	if errorInfo != nil {
+		fmt.Println(errorInfo)
 	}
-	return tpl, error_info
+	return tpl, errorInfo
 
+}
+func CastTemplate(fileData string) (*text_template.Template, error) {
+	return _load_template(fileData)
 }

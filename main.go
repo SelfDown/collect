@@ -17,6 +17,7 @@ func main() {
 	// todo go profile 使用
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
 	// 生成cookies
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session_id", store))
@@ -30,5 +31,5 @@ func main() {
 	r.POST("/template_data/data", func(c *gin.Context) {
 		templateService.HandlerRequest(c)
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":8088") // listen and serve on 0.0.0.0:8080
 }

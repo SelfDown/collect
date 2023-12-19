@@ -205,6 +205,16 @@ data_handler:
     name: 列表转树形结构
     type: inner
     path: ToTree
+  # 树形转列表结构
+  - key: to_list
+    name: 树形转列表结构
+    type: inner
+    path: ToList
+  # 修改排序号
+  - key: update_order
+    name: 修改排序号
+    type: inner
+    path: UpdateOrder
 
 # 加载启动配置，读取文件内容
 load_startup_plugin:

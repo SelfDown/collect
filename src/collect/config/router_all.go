@@ -265,8 +265,9 @@ type SubField struct {
 	ThirdArrayField  string       `yaml:"third_array_field"`
 	ThirdArrayFields []ThirdField `yaml:"third_array_fields"` // 三级字段列表
 
-	Rule  string // 规则
-	Width float64
+	Rule      string // 规则
+	Width     float64
+	SaveField string `yaml:"save_field"json:"save_field"`
 }
 type ThirdField struct {
 	From  string // 来源
@@ -342,6 +343,7 @@ type ModifyConfig struct {
 	Fields          []HandlerParam
 }
 type DataJsonConfig struct {
+	Connect  map[string]interface{}
 	Finish   HandlerParam   //结束
 	Services []HandlerParam // 服务
 }

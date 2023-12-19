@@ -90,7 +90,9 @@ func getNextNode(nodeStart *config.HandlerParam,
 	} else {
 		fail := nodeStart.NodeFailTpl
 		if fail == nil {
-			template.LogData("运行错误【" + currentName + "】但是未配置node_fail节点")
+			msg := "运行错误【" + currentName + "】但是未配置node_fail节点"
+			template.LogData(msg)
+			return nil, msg
 		}
 		nextNodeName = utils.RenderTplData(fail, params).(string)
 	}
@@ -207,9 +209,17 @@ func (s *BaseFlow) _executeFlow(template *config.Template,
 	empty := make(map[string]interface{})
 	return common.Ok(empty, "成功")
 }
-func (s *BaseFlow) flow(template *config.Template, ts *TemplateService, handlerNode func(param *config.HandlerParam, template *config.Template, ts *TemplateService) *common.Result) *common.Result {
+func (s *BaseFlow) Flow(template *config.Template, ts *TemplateService, handlerNode func(param *config.HandlerParam, template *config.Template, ts *TemplateService) *common.Result) *common.Result {
 	// 执行中
 	result := s._executeFlow(template, ts, handlerNode)
 	// 处理finish
+	finish := template.DataJsonConfig.Finish
+	if !utils.IsValueEmpty(finish.Key) {
+		finishResult := HandlerOneParams(&finish, template, ts)
+		if template.Log {
+			template.LogData("finish运行结果")
+			template.LogData(finishResult)
+		}
+	}
 	return result
 }

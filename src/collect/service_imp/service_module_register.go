@@ -2,7 +2,6 @@ package collect
 
 import (
 	config "collect/src/collect/config"
-	"log"
 	"reflect"
 )
 
@@ -11,6 +10,22 @@ var localModuleDict map[string]config.Plugin
 
 // 注册的模块
 var localModuleRegisterDict map[string]ModuleResult
+var outerRegisterModule []ModuleResult
+
+// SetOuterModuleRegister 设置外部处理器
+func SetOuterModuleRegister(registerList []ModuleResult) {
+	moduleDict := localModuleDict
+	outerRegisterModule = registerList
+	for _, reg := range registerList {
+		// 这里根据字符串，注册层服务
+		name := reflect.TypeOf(reg).Elem().Name()
+		//moduleRegisterDict 进行赋值
+		if module, ok := moduleDict[name]; ok {
+			localModuleRegisterDict[module.Key] = reg
+		}
+
+	}
+}
 
 func SetRegisterList(t *config.RouterAll, registerList []ModuleResult) {
 
@@ -22,6 +37,7 @@ func SetRegisterList(t *config.RouterAll, registerList []ModuleResult) {
 	for _, module := range t.DataHandler {
 		moduleDict[module.Path] = module
 	}
+
 	localModuleDict = moduleDict
 	// 清空字典
 	localModuleRegisterDict = make(map[string]ModuleResult)
@@ -31,8 +47,6 @@ func SetRegisterList(t *config.RouterAll, registerList []ModuleResult) {
 		//moduleRegisterDict 进行赋值
 		if module, ok := moduleDict[name]; ok {
 			localModuleRegisterDict[module.Key] = reg
-		} else {
-			log.Println("模块【" + name + "】没有注册，请检查配置！！！")
 		}
 
 	}

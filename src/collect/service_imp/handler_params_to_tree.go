@@ -32,15 +32,12 @@ func listToTree(arr []map[string]interface{}, id string, pid string, children st
 		parentId := aVal[pid]
 		if hashVp, ok := hash[parentId]; ok {
 
-			if ch, hasKey := hashVp[children]; hasKey {
-				tmp := ch.([]map[string]interface{})
-				tmp = append(tmp, aVal)
-				hashVp[children] = tmp
-			} else {
-				tmp := make([]map[string]interface{}, 0)
-				tmp = append(tmp, aVal)
-				hashVp[children] = tmp
+			if _, hasKey := hashVp[children]; !hasKey {
+				hashVp[children] = make([]map[string]interface{}, 0)
 			}
+			ch, _ := utils.RenderVarToArrMap(children, hashVp)
+			ch = append(ch, aVal)
+			hashVp[children] = ch
 		} else {
 			r = append(r, aVal)
 		}

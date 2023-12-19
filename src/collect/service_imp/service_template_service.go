@@ -26,7 +26,7 @@ type TemplateService struct {
 	ResponseFilePath string
 	ResponseFileName string
 	File             multipart.File // 单个上传文件
-
+	thirdData        map[string]interface{}
 }
 
 /*
@@ -38,6 +38,28 @@ type DatabaseModel interface {
 	GetModel(tableName string) interface{}
 	CloneModel(tableName string) interface{}
 	GetPrimaryKey(tableName string) []string
+}
+
+// 扩展模块设置
+func (s *TemplateService) SetThirdData(key string, value interface{}) {
+	if s.thirdData == nil {
+		s.thirdData = make(map[string]interface{})
+	}
+	s.thirdData[key] = value
+}
+func (s *TemplateService) HasThirdData(key string) bool {
+	_, has := s.thirdData[key]
+	return has
+}
+
+//扩展模块获取
+func (s *TemplateService) GetThirdData(key string) interface{} {
+	return s.thirdData[key]
+}
+
+//扩展模块获取
+func (s *TemplateService) RemoveThirdData(key string) {
+	delete(s.thirdData, key)
 }
 
 // SetDatabaseModel 设置数据库表

@@ -29,7 +29,13 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 			return r.NotOk(msg)
 		}
 	} else {
-		db, err = s.GetOtherDatasource(template.DataSource)
+		dataSource := utils.RenderVarOrValue(template.DataSource, template.GetParams())
+		if utils.IsValueEmpty(dataSource) {
+			db, err = s.GetDatasource()
+		} else {
+			db, err = s.GetOtherDatasource(dataSource.(string))
+		}
+
 		if err != nil {
 			msg := err.Error()
 			return r.NotOk(msg)

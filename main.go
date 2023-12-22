@@ -15,8 +15,9 @@ func main1() {
 func main() {
 
 	// todo go profile 使用
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// 生成cookies
 	store := cookie.NewStore([]byte("secret"))

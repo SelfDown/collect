@@ -41,10 +41,22 @@ service:
       - key: file2result
         path: "[excel_path]"
         result_name: "[response_name]"
+  - key: snow_id
+    http: true
+    module: empty
+    params:
+      snow_id:
+        template: "{{snow_id}}"
+        type: int64
+    result_handler:
+      - key: param2result
+        field: "[snow_id]"
+
 
   - key: empty_test
     module: empty
     http: true
+
     handler_params:
       - key: service2field
         service:

@@ -3,9 +3,11 @@ module collect
 go 1.18
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/demdxx/gocast v1.2.0
 	github.com/dengsgo/math-engine v0.0.0-20220911070221-a5a560a8684b
 	github.com/dgraph-io/ristretto v0.1.1
+	github.com/emirpasic/gods v1.18.1
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-ldap/ldap/v3 v3.4.4
@@ -17,6 +19,7 @@ require (
 	golang.org/x/text v0.6.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.4.4
+	gorm.io/driver/sqlite v1.4.1
 	gorm.io/gen v0.3.18
 	gorm.io/gorm v1.24.6
 	gorm.io/plugin/dbresolver v1.3.0
@@ -26,7 +29,6 @@ require (
 	github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
@@ -43,6 +45,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect

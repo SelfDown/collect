@@ -4037,3 +4037,5 @@ INSERT INTO doc_group (doc_group_id, name, `type`, `desc`, order_index, create_t
 INSERT INTO doc_group (doc_group_id, name, `type`, `desc`, order_index, create_time, create_user, is_delete) VALUES('dd336894-53b6-405b-98c7-f327407d7cfa', '如何编写服务', 'doc', '', 10, '2023-11-23 09:01:07', '739ade44-7e83-48a2-8c60-9a7c1e9f3d0a', '0');
 INSERT INTO doc_group (doc_group_id, name, `type`, `desc`, order_index, create_time, create_user, is_delete) VALUES('efbb8e60-eeab-4326-b742-27cedbcc9083', '拦截器', 'doc', NULL, 50, '2023-11-23 09:12:20', '739ade44-7e83-48a2-8c60-9a7c1e9f3d0a', '0');
 INSERT INTO doc_group (doc_group_id, name, `type`, `desc`, order_index, create_time, create_user, is_delete) VALUES('f0c5c31f-d835-4aa6-8f39-c9fb6c1adfc8', '人资管理', 'service', '', 60, '2023-11-23 09:01:38', '739ade44-7e83-48a2-8c60-9a7c1e9f3d0a', '0');
+
+

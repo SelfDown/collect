@@ -16,7 +16,7 @@ func (s *ModelSaveService) Result(template *config.Template, ts *TemplateService
 	tableName := template.Table
 	modelData := ts.GetModel(tableName)
 	if modelData == nil {
-		return common.NotOk(tableName + "没有找到，请检查模型数据")
+		return common.NotOk("table:["+tableName + "]没有找到，请检查模型数据")
 	}
 	fieldOptions, errMsg := s.getFieldOptions(template.Options, params)
 	if !utils.IsValueEmpty(errMsg) {

@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"github.com/demdxx/gocast"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"log"
@@ -56,15 +57,29 @@ func (s *BaseHandler) GetGormDb() *gorm.DB {
 		return gormDb
 	}
 	db, _ := s.GetDatasource()
-	gormDB, _ := gorm.Open(mysql.New(mysql.Config{
-		Conn: db,
-	}), &gorm.Config{
-		CreateBatchSize: 1000,
-		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true, // 使用单数表名
-		},
-	})
-	return gormDB
+	driverName := utils.GetAppKey("driverName")
+	if driverName == "mysql" {
+		gormDB, _ := gorm.Open(mysql.New(mysql.Config{
+			Conn: db,
+		}), &gorm.Config{
+			CreateBatchSize: 1000,
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true, // 使用单数表名
+			},
+		})
+		return gormDB
+	} else if driverName == "sqlite3" {
+		dataSourceName := utils.GetAppKey("dataSourceName")
+		gormDB, _ := gorm.Open(sqlite.Open(dataSourceName), &gorm.Config{
+			CreateBatchSize: 100,
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true, // 使用单数表名
+			},
+		})
+		return gormDB
+	}
+
+	return nil
 }
 func (s *BaseHandler) GetOtherDatasource(name string) (*sql.DB, error) {
 	if otherLocalDatasource != nil {

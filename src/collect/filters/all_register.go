@@ -14,6 +14,7 @@ func GetFilters() map[string]any {
 		"get_key":             GetKey,
 		"pinyin":              Pinyin,
 		"hash_sha":            HashSha,
+		"snow_id":             SnowID,
 	}
 
 }

@@ -1,12 +1,12 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
 	"encoding/json"
+	common "github.com/SelfDown/collect/src/collect/common"
 	"log"
 
 	// service_config "test.mod/src/collect/service_config"
-	utils "collect/src/collect/utils"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 
 	"gopkg.in/yaml.v2"
 )

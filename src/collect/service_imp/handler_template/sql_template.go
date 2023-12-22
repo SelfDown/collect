@@ -6,7 +6,7 @@ import (
 	text_template "text/template"
 	"text/template/parse"
 
-	utils "collect/src/collect/utils"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 )
 
 /**

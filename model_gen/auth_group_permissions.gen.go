@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"collect/model"
+	"github.com/SelfDown/collect/model"
 )
 
 func newAuthGroupPermissions(db *gorm.DB, opts ...gen.DOOption) authGroupPermissions {

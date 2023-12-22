@@ -2,16 +2,16 @@ package collect
 
 import (
 	"bytes"
-	common "collect/src/collect/common"
-	"collect/src/collect/config"
-	startup "collect/src/collect/startup"
+	common "github.com/SelfDown/collect/src/collect/common"
+	"github.com/SelfDown/collect/src/collect/config"
+	startup "github.com/SelfDown/collect/src/collect/startup"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"reflect"
 	"time"
 
-	utils "collect/src/collect/utils"
 	"fmt"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
 	"github.com/gin-contrib/sessions"
 	"github.com/robfig/cron/v3"

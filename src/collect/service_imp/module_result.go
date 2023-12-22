@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	"collect/src/collect/config"
+	common "github.com/SelfDown/collect/src/collect/common"
+	"github.com/SelfDown/collect/src/collect/config"
 	// template "test.mod/src/collect/template"
 )
 

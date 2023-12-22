@@ -1,9 +1,9 @@
 package collect
 
 import (
-	serviceImp "collect/src/collect/service_imp"
-	utils "collect/src/collect/utils"
 	"fmt"
+	serviceImp "github.com/SelfDown/collect/src/collect/service_imp"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	"gorm.io/gen"
 	"io/ioutil"
 	"regexp"

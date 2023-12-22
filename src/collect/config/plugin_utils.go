@@ -1,7 +1,7 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
+	common "github.com/SelfDown/collect/src/collect/common"
 	"reflect"
 )
 

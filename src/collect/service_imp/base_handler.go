@@ -1,10 +1,10 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
 	"database/sql"
+	common "github.com/SelfDown/collect/src/collect/common"
+	config "github.com/SelfDown/collect/src/collect/config"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"

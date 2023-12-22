@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	cacheHandler "collect/src/collect/service_imp/cache_handler"
+	common "github.com/SelfDown/collect/src/collect/common"
+	config "github.com/SelfDown/collect/src/collect/config"
+	cacheHandler "github.com/SelfDown/collect/src/collect/service_imp/cache_handler"
 	"github.com/demdxx/gocast"
 )
 

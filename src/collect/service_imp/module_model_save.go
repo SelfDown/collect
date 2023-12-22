@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
+	common "github.com/SelfDown/collect/src/collect/common"
+	config "github.com/SelfDown/collect/src/collect/config"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 )
 
 type ModelSaveService struct {
@@ -16,7 +16,7 @@ func (s *ModelSaveService) Result(template *config.Template, ts *TemplateService
 	tableName := template.Table
 	modelData := ts.GetModel(tableName)
 	if modelData == nil {
-		return common.NotOk("table:["+tableName + "]没有找到，请检查模型数据")
+		return common.NotOk("table:[" + tableName + "]没有找到，请检查模型数据")
 	}
 	fieldOptions, errMsg := s.getFieldOptions(template.Options, params)
 	if !utils.IsValueEmpty(errMsg) {

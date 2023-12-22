@@ -6,8 +6,8 @@ import (
 	"strings"
 	text_template "text/template"
 
-	filters "collect/src/collect/filters"
-	utils "collect/src/collect/utils"
+	filters "github.com/SelfDown/collect/src/collect/filters"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 )
 
 /*

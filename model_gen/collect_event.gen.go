@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"collect/model"
+	"github.com/SelfDown/collect/model"
 )
 
 func newCollectEvent(db *gorm.DB, opts ...gen.DOOption) collectEvent {

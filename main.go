@@ -1,9 +1,9 @@
 package main
 
 import (
-	gen "collect/gen"
-	"collect/model"
-	templateService "collect/src/collect/service_imp"
+	gen "github.com/SelfDown/collect/gen"
+	"github.com/SelfDown/collect/model"
+	templateService "github.com/SelfDown/collect/src/collect/service_imp"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"

@@ -2,9 +2,9 @@ package collect
 
 import (
 	"bytes"
-	common "collect/src/collect/common"
 	"encoding/json"
 	"fmt"
+	common "github.com/SelfDown/collect/src/collect/common"
 	"github.com/demdxx/gocast"
 	engine "github.com/dengsgo/math-engine/engine"
 	"github.com/emirpasic/gods/utils"

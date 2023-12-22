@@ -3,8 +3,8 @@ package collect
 import (
 	// "fmt"
 
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
+	config "github.com/SelfDown/collect/src/collect/config"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	// sql "test.mod/src/collect/service_imp/sql"
 )
 

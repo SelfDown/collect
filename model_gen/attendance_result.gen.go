@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"collect/model"
+	"github.com/SelfDown/collect/model"
 )
 
 func newAttendanceResult(db *gorm.DB, opts ...gen.DOOption) attendanceResult {

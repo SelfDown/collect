@@ -1,4 +1,4 @@
-module collect
+module github.com/SelfDown/collect
 
 go 1.18
 

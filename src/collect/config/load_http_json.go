@@ -1,8 +1,8 @@
 package collect
 
 import (
-	utils "collect/src/collect/utils"
 	"encoding/json"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	text_template "text/template"
 )
 

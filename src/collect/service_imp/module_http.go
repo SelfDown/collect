@@ -2,10 +2,10 @@ package collect
 
 import (
 	"bytes"
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
 	"encoding/json"
+	common "github.com/SelfDown/collect/src/collect/common"
+	config "github.com/SelfDown/collect/src/collect/config"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 	"io"
 	"io/ioutil"
 	"net/http"

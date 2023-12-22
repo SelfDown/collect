@@ -1,7 +1,7 @@
 package collect
 
 import (
-	utils "collect/src/collect/utils"
+	utils "github.com/SelfDown/collect/src/collect/utils"
 )
 
 /*

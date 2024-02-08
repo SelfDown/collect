@@ -234,6 +234,9 @@ func GetFieldValueList(fields []string, params map[string]interface{}) []string 
 	}
 	return valueList
 }
+func GetSplitConst() string {
+	return "[^☉★\x01∨★^]"
+}
 func RenderVar(name string, params map[string]interface{}) interface{} {
 
 	varName := GetRenderVarName(name)
@@ -244,7 +247,7 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		for index, pname := range varArr {
 			valueList[index] = utils.ToString(params[pname])
 		}
-		return strings.Join(valueList, "[^☉★\x01∨★^]")
+		return strings.Join(valueList, GetSplitConst())
 	}
 	// 取一级变量
 	tmpArr := strings.Split(varName, ".")

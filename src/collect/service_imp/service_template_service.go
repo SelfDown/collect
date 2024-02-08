@@ -21,6 +21,7 @@ import (
 type TemplateService struct {
 	OpUser           string
 	session          *sessions.Session // 设置session
+	context          *gin.Context      // 设置http 上下文
 	Request          interface{}
 	IsFileResponse   bool
 	ResponseFilePath string
@@ -76,28 +77,29 @@ func (*TemplateService) GetPrimaryKey(tableName string) []string {
 	return _model.GetPrimaryKey(tableName)
 }
 
-func handlerAmis(result *common.Result) {
-	// 将结果转成支持amis形式
-	if utils.GetAppKey("to_amis") == "true" {
-		if result.Success { // 将status 设置成数字
-			result.Status = 0
-		} else {
-			result.Status = -1
-		}
-		dataResult := result.GetData()
-		// 处理data
-		if _, ok := dataResult.(map[string]interface{}); !ok && result.Success {
-			rData := make(map[string]interface{})
-			rData["data"] = dataResult
-			// 只有查询返回list,list 才有count
-			if _, isList := dataResult.([]map[string]interface{}); isList {
-				rData["count"] = result.GetCount()
-			}
-			result.Data = rData
-		}
-
-	}
-}
+//
+//func handlerAmis(result *common.Result) {
+//	// 将结果转成支持amis形式
+//	if utils.GetAppKey("to_amis") == "true" {
+//		if result.Success { // 将status 设置成数字
+//			result.Status = 0
+//		} else {
+//			result.Status = -1
+//		}
+//		dataResult := result.GetData()
+//		// 处理data
+//		if _, ok := dataResult.(map[string]interface{}); !ok && result.Success {
+//			rData := make(map[string]interface{})
+//			rData["data"] = dataResult
+//			// 只有查询返回list,list 才有count
+//			if _, isList := dataResult.([]map[string]interface{}); isList {
+//				rData["count"] = result.GetCount()
+//			}
+//			result.Data = rData
+//		}
+//
+//	}
+//}
 
 // RunScheduleService 添加定时任务
 func RunScheduleService() []*collect.ServiceConfig {
@@ -150,14 +152,31 @@ func RunStartupService() []*collect.ServiceConfig {
 	return startupService
 }
 
-func HandlerRequest(c *gin.Context) {
-	s := sessions.Default(c)
-	//设置参数
-	params := make(map[string]interface{})
-	c.Bind(&params)
+func HandlerWsRequest(context *gin.Context) {
+	// 如果后面还有ws的任务，可以将ws的配置，移动到这里，目前只有一个就写在了shell_term 中
+	ts := getTs(context)
 
+	//var data *common.Result
+	params := make(map[string]interface{})
+	params["service"] = utils.GetAppKey("ws_service")
+	params["token"] = 	context.Param("token")
+	utils.Block{
+		Try: func() {
+			_ = ts.Result(params, true)
+		},
+		Catch: func(e utils.Exception) {
+			dv := reflect.ValueOf(e)
+			_ = common.NotOk(dv.String())
+		},
+	}.Do()
+
+}
+func getTs(c *gin.Context) TemplateService {
+	s := sessions.Default(c)
+
+	user_id_key := utils.GetAppKey("user_id_key")
 	// session 中设置用户ID
-	userId := s.Get("user_id")
+	userId := s.Get(user_id_key)
 	var opUser string
 	if userId != nil {
 		opUser = userId.(string)
@@ -165,6 +184,16 @@ func HandlerRequest(c *gin.Context) {
 		opUser = ""
 	}
 	ts := TemplateService{OpUser: opUser}
+	ts.SetSession(&s)
+	ts.SetContext(c)
+	return ts
+}
+func HandlerRequest(c *gin.Context) {
+	ts := getTs(c)
+	
+	//设置参数
+	params := make(map[string]interface{})
+	c.Bind(&params)
 	if c.Request.PostForm != nil {
 		for k, v := range c.Request.PostForm {
 			if len(v) > 0 {
@@ -184,7 +213,6 @@ func HandlerRequest(c *gin.Context) {
 	}
 	// 设置session
 
-	ts.SetSession(&s)
 	// 处理结果
 	var data *common.Result
 	utils.Block{
@@ -222,6 +250,15 @@ func init() {
 func (t *TemplateService) SetSession(session *sessions.Session) {
 
 	t.session = session
+}
+
+func (t *TemplateService) SetContext(context *gin.Context) {
+
+	t.context = context
+}
+
+func (t *TemplateService) GetContext() *gin.Context {
+	return t.context
 }
 
 // GetSession 获取session
@@ -277,7 +314,13 @@ func (t *TemplateService) before(params map[string]interface{}, isHttp bool) (*c
 		temp.LogData(params)
 	}
 	// 如果是http 请求，并且配置必须登录，如果没有用户ID,则提示必须登录
+	mustLoginConfig := utils.GetAppKeyWithDefault("must_login", "true")
 	mustLogin := true
+	// 总开关
+	if mustLoginConfig != "true" {
+		mustLogin = false
+	}
+	// 服务开关
 	if temp.MustLogin != nil && *temp.MustLogin == false {
 		mustLogin = false
 	}

@@ -36,9 +36,24 @@ func (s *BaseRule) Handler() {
 func (s *BaseRule) getChangeData(change *ChangeData) map[string]interface{} {
 	data := make(map[string]interface{})
 	// 设置改变前的值
-	data[s.GetTransferName(s.GetBeforeName())] = change.Before
+	before := change.Before
+	sconst := utils.GetSplitConst()
+	if !utils.IsValueEmpty(before) { // 为了好看点，将分割符号换成#
+		tmp, ok := before.(string)
+		if ok && strings.Contains(tmp, sconst) {
+			before = strings.ReplaceAll(tmp, sconst, "#")
+		}
+	}
+	after := change.After
+	if !utils.IsValueEmpty(after) { // 为了好看点，将分割符号换成#
+		tmp, ok := after.(string)
+		if ok && strings.Contains(tmp, sconst) {
+			after = strings.ReplaceAll(tmp, sconst, "#")
+		}
+	}
+	data[s.GetTransferName(s.GetBeforeName())] = before
 	// 设置改变后的值
-	data[s.GetTransferName(s.GetAfterName())] = change.After
+	data[s.GetTransferName(s.GetAfterName())] = after
 	// 设置操作
 	op := s.Field.Operation
 	if !utils.IsValueEmpty(change.Operation) {

@@ -545,8 +545,13 @@
                                     icon="el-icon-s-promotion">
                                 发送请求
                             </el-button>
-                            <el-button @click="toJSON" size="mini" primary icon="el-icon-s-opportunity">请求格式化</el-button>
-                            <el-button @click="addDoc('service',params,result)" size="mini" icon="el-icon-document-add">新建文档</el-button>
+                            <el-button @click="toJSON" size="mini" primary icon="el-icon-s-opportunity">
+                                请求格式化
+                            </el-button>
+                            <el-button @click="addDoc('service',params,result)" size="mini" icon="el-icon-document-add">
+                                新建文档
+                            </el-button>
+
                         </div>
                         <div class="bottom-console">
                             <textarea v-model="result" class="code-area" ></textarea>

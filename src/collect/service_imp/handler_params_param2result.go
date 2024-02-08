@@ -13,10 +13,11 @@ type Param2Result struct {
 func (pr *Param2Result) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 
-	result, ok := params[utils.GetRenderVarName(handlerParam.Field)]
-	if !ok {
-		return common.NotOk(handlerParam.Field + "在参数中没有找到")
-	}
+	result :=utils.RenderVar(handlerParam.Field,params)
+	//result, ok := params[utils.GetRenderVarName(handlerParam.Field)]
+	//if !ok {
+	//	return common.NotOk(handlerParam.Field + "在参数中没有找到")
+	//}
 	var rd *common.Result
 	if template.HasResult() {
 		rd = template.GetResult()

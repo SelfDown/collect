@@ -37,7 +37,8 @@ func init() {
 	}()
 }
 func Ping() {
-	db0.Ping()
+	go db0.Ping()
+	go db0.Ping()
 	for name := range otherLocalDatasource {
 		otherLocalDatasource[name].Ping()
 	}
@@ -144,7 +145,8 @@ func (s *BaseHandler) GetDatasource() (*sql.DB, error) {
 	db.SetConnMaxLifetime(0)
 	db.SetConnMaxIdleTime(0)
 	db0 = db
-	db.Ping()
+	go db.Ping()
+	go db.Ping()
 	return db, err
 }
 

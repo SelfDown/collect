@@ -76,6 +76,7 @@
         "body": {
           "type": "form",
           "name": "sample-add-form",
+          "label-width": "80px",
           "api": {
             "method": "post",
             "url": "/template_data/data",

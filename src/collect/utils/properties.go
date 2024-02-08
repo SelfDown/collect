@@ -26,6 +26,12 @@ func LoadAppProperties(path string) {
 	p = properties
 
 }
+func GetAppKeyWithDefault(key string, defaultValue string) string {
+	if !p.HasKey(key) {
+		return defaultValue
+	}
+	return p.GetKey(key)
+}
 func GetAppKey(key string) string {
 	if !p.HasKey(key) {
 		log.Println("没有找到配置" + key)

@@ -30,6 +30,9 @@ func fixModel() {
 		filePath := directory + "/" + name
 		content, _ := ioutil.ReadFile(filePath)
 		contentData := utils.Strval(content)
+		if strings.Contains(contentData,"PrimaryKey"){
+			continue
+		}
 		//tableName := strings.ReplaceAll(name, ".gen.go", "") 替换成正则
 		reg := regexp.MustCompile("const TableName(.*) = \"(.*)\"")
 		var tableName string

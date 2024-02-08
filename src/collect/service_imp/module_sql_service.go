@@ -17,7 +17,16 @@ import (
 type SqlService struct {
 	BaseHandler
 }
+type SqlResult struct {
+	Data  []map[string]interface{}
+	Error error
+}
 
+func runSQL(db *sql.DB, sql string, realValues []interface{}, result chan<- *SqlResult) {
+	data, err := sqlToData(db, sql, realValues...)
+	r := SqlResult{Data: data, Error: err}
+	result <- &r
+}
 func (s *SqlService) Result(template *config.Template, ts *TemplateService) *common.Result {
 	r := common.Result{}
 	var err error
@@ -62,11 +71,8 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 		template.LogData("数据SQL参数:")
 		template.LogData(realValues)
 	}
-	// 执行结果
-	maps, error := sqlToData(db, sql, realValues...)
-	if error != nil {
-		return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
-	}
+	var maps []map[string]interface{}
+
 	var count int64
 	// 判断是否运行总数sql
 	runCountStr := template.Count
@@ -86,8 +92,35 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 			template.LogData("count SQL参数:")
 			template.LogData(countRealValues)
 		}
+
+		//多线程执行开始 start
+		resultChanList := make([]chan *SqlResult, 2)
+		ch1 := make(chan *SqlResult)
+		ch2 := make(chan *SqlResult)
+		resultChanList[0] = ch1
+		resultChanList[1] = ch2
+		resultList := make([]*SqlResult, 2)
+		// 多线程执行
+		go runSQL(db, sql, realValues, resultChanList[0])
+		go runSQL(db, countSql, countRealValues, resultChanList[1])
+		for index, result := range resultChanList {
+			resultData := <-result
+			resultList[index] = resultData
+		}
 		// 执行结果
-		countMaps, countError := sqlToData(db, countSql, countRealValues...)
+		maps = resultList[0].Data
+		error := resultList[0].Error
+		countMaps := resultList[1].Data
+		countError := resultList[1].Error
+		// 多线程执行结束 end
+		// 如果多线程执行有问题，可以把上面代码屏蔽，执行下面3行
+		//mapsSimple, error := sqlToData(db, sql, realValues...)
+		//maps = mapsSimple
+		//countMaps, countError := sqlToData(db, countSql, countRealValues...)
+		if error != nil {
+			return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
+		}
+		// 执行结果
 		if countError != nil {
 			return common.NotOk("执行sql报错:\n" + countSql + "\n详情:" + countError.Error())
 		}
@@ -107,6 +140,12 @@ func (s *SqlService) Result(template *config.Template, ts *TemplateService) *com
 
 		}
 
+	} else { //只有sql直接运行
+		mapsSimple, error := sqlToData(db, sql, realValues...)
+		maps = mapsSimple
+		if error != nil {
+			return common.NotOk("执行sql报错:\n" + sql + "\n详情:" + error.Error())
+		}
 	}
 	t := r.OkWithCount(maps, "执行成功", count)
 	return t

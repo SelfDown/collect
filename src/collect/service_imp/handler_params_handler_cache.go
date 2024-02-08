@@ -30,7 +30,16 @@ func (hc *HandlerCache) HandlerData(template *config.Template, handlerParam *con
 	} else if method == cacheHandler.CacheSetName { // 单个设置缓存
 		dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
 		result := template.GetResult()
-		ok := handler.Set(dataKey, *result, handlerParam.Second)
+		var ok = false
+		field := handlerParam.Field
+
+		if utils.IsValueEmpty(field) { //如果有field 证明是在handler_params 中，没有field是在cache中
+			ok = handler.Set(dataKey, *result, handlerParam.Second)
+		} else {
+			data := utils.RenderVar(field, params)
+			result = common.Ok(data, "缓存数据")
+			ok = handler.Set(dataKey, *result, handlerParam.Second)
+		}
 		if !ok {
 			template.LogData("缓存设置失败" + dataKey)
 		} else {

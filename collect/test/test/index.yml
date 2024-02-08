@@ -1,0 +1,38 @@
+service:
+  - key: test
+    http: true
+    module: sql
+    count_file: test_count.sql
+    data_file: test.sql
+
+  - key: test2
+    module: model_save
+    http: true
+    log: true
+    params:
+      user_id:
+        template: "{{uuid}}"
+      password:
+        template: "{{ if .password }}{{md5 .password}}{{ end }}"
+        default: "123456"
+      is_delete:
+        default: "0"
+      user_name:
+        template: "{{.username}}"
+      username:
+        check:
+          template: "{{must .username}}"
+          err_msg: 用户名不能为空
+      user_status:
+        default: "trial"
+      role_id:
+        default: "xxxx"
+      avatar:
+        template: session_user_id
+      create_time:
+        template: "{{current_date_time}}"
+      create_user:
+        template: "{{.session_user_id}}"
+      modify_time:
+        template: "{{current_date_time}}"
+    table: "user_account"

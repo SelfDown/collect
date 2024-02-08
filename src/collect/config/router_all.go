@@ -319,7 +319,7 @@ type HandlerParam struct {
 	Rule                string
 	Right               string
 	Left                string
-	Operation           string
+	Operation           string 
 	TargetTransferKey   string   `yaml:"target_transfer_key"json:"target_transfer_key"`     // 失败流转
 	TargetTransferValue string   `yaml:"target_transfer_value"json:"target_transfer_value"` // 失败流转
 	ValueListField      string   `yaml:"value_list_field"json:"value_list_field"`           // 失败流转

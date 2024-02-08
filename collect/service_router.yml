@@ -1,5 +1,8 @@
 # 系统总路由
 services:
+  - key: 'test'
+    name: '测试'
+    path: 'test/service.yml'
   - key: 'amis_router'
     name: '项目路由'
     path: 'amis_router/service.yml'

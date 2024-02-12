@@ -9,13 +9,15 @@ import (
 	"mime/multipart"
 	"reflect"
 	"time"
-
+	"github.com/gorilla/websocket"
+	"net/http"
 	"fmt"
 	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
 	"github.com/gin-contrib/sessions"
 	"github.com/robfig/cron/v3"
 	text_template "text/template"
+	"unicode/utf8"
 )
 
 type TemplateService struct {
@@ -27,7 +29,15 @@ type TemplateService struct {
 	ResponseFilePath string
 	ResponseFileName string
 	File             multipart.File // 单个上传文件
+	FileHeader             *multipart.FileHeader // 单个上传文件
 	thirdData        map[string]interface{}
+	ws *websocket.Conn
+	ts TsFile
+
+}
+type TsFile interface {
+	ReadAt(b []byte, off int64)(int, error)
+	Size()int64
 }
 
 /*
@@ -39,6 +49,25 @@ type DatabaseModel interface {
 	GetModel(tableName string) interface{}
 	CloneModel(tableName string) interface{}
 	GetPrimaryKey(tableName string) []string
+}
+
+func (s *TemplateService)SetTsFile(ts TsFile)  {
+	s.ts=ts
+}
+func (s *TemplateService)GetTsFile()  TsFile{
+	return s.ts
+}
+func (s *TemplateService) SetWs(ws *websocket.Conn){
+	s.ws = ws
+}
+func (s *TemplateService) GetWs() *websocket.Conn{
+	return s.ws
+}
+
+func  (s *TemplateService) GetWsOutput()WSoutput{
+	return WSoutput{
+		ws: s.ws,
+	}
 }
 
 // 扩展模块设置
@@ -152,17 +181,63 @@ func RunStartupService() []*collect.ServiceConfig {
 	return startupService
 }
 
+
+var upgrader = websocket.Upgrader{
+
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	// 解决跨域问题
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+} // use default options
+type WSoutput struct {
+	ws *websocket.Conn
+}
+
+// Write: implement Write interface to write bytes from ssh server into bytes.Buffer.
+func (w *WSoutput) Write(p []byte) (int, error) {
+	// 处理非utf8字符
+	if !utf8.Valid(p) {
+		bufStr := string(p)
+		buf := make([]rune, 0, len(bufStr))
+		for _, r := range bufStr {
+			if r == utf8.RuneError {
+				buf = append(buf, []rune("@")...)
+			} else {
+				buf = append(buf, r)
+			}
+		}
+		p = []byte(string(buf))
+	}
+	err := w.ws.WriteMessage(websocket.TextMessage, p)
+	return len(p), err
+}
+
 func HandlerWsRequest(context *gin.Context) {
 	// 如果后面还有ws的任务，可以将ws的配置，移动到这里，目前只有一个就写在了shell_term 中
 	ts := getTs(context)
 
+	w := context.Writer
+	req := context.Request
+	c, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		//log.Print("upgrade:", err)
+		return
+	}
+	defer c.Close()
+	ts.SetWs(c)
 	//var data *common.Result
 	params := make(map[string]interface{})
 	params["service"] = utils.GetAppKey("ws_service")
-	params["token"] = 	context.Param("token")
+	params["token"] = context.Param("token")
 	utils.Block{
 		Try: func() {
-			_ = ts.Result(params, true)
+			r := ts.Result(params, true)
+			if !r.Success{
+				c.WriteMessage(websocket.TextMessage, []byte(r.GetMsg()))	
+			}
+			
 		},
 		Catch: func(e utils.Exception) {
 			dv := reflect.ValueOf(e)
@@ -190,7 +265,7 @@ func getTs(c *gin.Context) TemplateService {
 }
 func HandlerRequest(c *gin.Context) {
 	ts := getTs(c)
-	
+
 	//设置参数
 	params := make(map[string]interface{})
 	c.Bind(&params)
@@ -204,11 +279,13 @@ func HandlerRequest(c *gin.Context) {
 
 		}
 		// 处理单个文件上传
-		file, _, error := c.Request.FormFile("file")
+		file, fileHeader, error := c.Request.FormFile("file")
 		if error != nil {
 			data := common.NotOk(error.Error())
 			c.JSON(200, data)
 		}
+		
+		ts.FileHeader= fileHeader
 		ts.File = file
 	}
 	// 设置session
@@ -228,10 +305,17 @@ func HandlerRequest(c *gin.Context) {
 	// 处理amis结果
 	//handlerAmis(data)
 	if ts.IsFileResponse {
-		filename := ts.ResponseFileName
-		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
-		c.Writer.Header().Add("Content-Type", "application/octet-stream")
-		c.File(ts.ResponseFilePath)
+		
+		
+		if !utils.IsValueEmpty(ts.ResponseFilePath){
+			filename := ts.ResponseFileName
+			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+			c.Writer.Header().Add("Content-Type", "application/octet-stream")
+			c.File(ts.ResponseFilePath)
+		}
+
+
+		
 	} else {
 		c.JSON(200, data)
 	}

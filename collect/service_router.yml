@@ -188,6 +188,10 @@ data_handler:
     name: 分组
     type: inner
     path: GroupBy
+  - key: order_by
+    name: 排序
+    type: inner
+    path: OrderBy
   - key: combine_array
     name: 数组添加字段
     type: inner

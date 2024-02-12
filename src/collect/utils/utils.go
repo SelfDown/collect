@@ -93,6 +93,13 @@ func CurrentDateFormat(timeLayout string) string {
 	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
 	return timeStr
 }
+func DateFormat(t time.Time,timeLayout string) string{
+	if IsValueEmpty(timeLayout) {
+		timeLayout = "2006-01-02 15:04:05"
+	}
+	timeStr := t.Format(timeLayout)
+	return timeStr
+}
 
 /*
 * @param exec 是计算，是否执行运算结果

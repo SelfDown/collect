@@ -16,6 +16,8 @@ func GetFilters() map[string]any {
 		"hash_sha":            HashSha,
 		"snow_id":             SnowID,
 		"index":               Index,
+		"unix_time":           UnixTime,
+		"unix_time2datetime":  UnixTime2Datetime,
 	}
 
 }

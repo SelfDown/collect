@@ -21,9 +21,9 @@ require (
 	golang.org/x/text v0.13.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.4.4
-	gorm.io/driver/sqlite v1.4.1
+	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gen v0.3.18
-	gorm.io/gorm v1.24.6
+	gorm.io/gorm v1.25.10
 	gorm.io/plugin/dbresolver v1.3.0
 )
 

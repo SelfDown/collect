@@ -7,7 +7,6 @@ import (
 	common "github.com/SelfDown/collect/src/collect/common"
 	"github.com/demdxx/gocast"
 	engine "github.com/dengsgo/math-engine/engine"
-	"github.com/emirpasic/gods/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"log"
@@ -84,6 +83,19 @@ func CurrentDateTime() string {
 	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
 	return timeStr
 }
+func DateTimeUnix(dateStr string) int64 {
+	// 创建布局模板
+	layout := "2006-01-02 15:04:05"
+	// 解析字符串为时间对象
+	t, err := time.ParseInLocation(layout, dateStr,time.Local)
+	if err != nil {
+		panic("无法解析日期")
+	}
+	// 获取时间戳（Unix时间）
+	timestamp := t.Unix()
+	return timestamp
+
+}
 func CurrentDateFormat(timeLayout string) string {
 	timeStamp := time.Now().Unix()
 	if IsValueEmpty(timeLayout) {
@@ -93,12 +105,18 @@ func CurrentDateFormat(timeLayout string) string {
 	timeStr := time.Unix(timeStamp, 0).Format(timeLayout)
 	return timeStr
 }
-func DateFormat(t time.Time,timeLayout string) string{
+func DateFormat(t time.Time, timeLayout string) string {
 	if IsValueEmpty(timeLayout) {
 		timeLayout = "2006-01-02 15:04:05"
 	}
 	timeStr := t.Format(timeLayout)
 	return timeStr
+}
+func DateFormatDefault(t time.Time) string {
+	return DateFormat(t, "")
+}
+func DateFormatDay(t time.Time) string {
+	return DateFormat(t, "2006-01-02")
 }
 
 /*
@@ -252,7 +270,7 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		varArr := strings.Split(varName, "&")
 		valueList := make([]string, len(varArr))
 		for index, pname := range varArr {
-			valueList[index] = utils.ToString(params[pname])
+			valueList[index] = Strval(params[pname])
 		}
 		return strings.Join(valueList, GetSplitConst())
 	}

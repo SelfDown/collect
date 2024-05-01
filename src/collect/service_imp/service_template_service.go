@@ -2,22 +2,24 @@ package collect
 
 import (
 	"bytes"
+	"fmt"
 	common "github.com/SelfDown/collect/src/collect/common"
 	"github.com/SelfDown/collect/src/collect/config"
 	startup "github.com/SelfDown/collect/src/collect/startup"
-	"github.com/gin-gonic/gin"
-	"mime/multipart"
-	"reflect"
-	"time"
-	"github.com/gorilla/websocket"
-	"net/http"
-	"fmt"
 	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
+	"mime/multipart"
+	"net/http"
+	"reflect"
+	"sync"
 	text_template "text/template"
+	"time"
 	"unicode/utf8"
+	"log"
 )
 
 type TemplateService struct {
@@ -28,16 +30,15 @@ type TemplateService struct {
 	IsFileResponse   bool
 	ResponseFilePath string
 	ResponseFileName string
-	File             multipart.File // 单个上传文件
-	FileHeader             *multipart.FileHeader // 单个上传文件
+	File             multipart.File        // 单个上传文件
+	FileHeader       *multipart.FileHeader // 单个上传文件
 	thirdData        map[string]interface{}
-	ws *websocket.Conn
-	ts TsFile
-
+	ws               *websocket.Conn
+	ts               TsFile
 }
 type TsFile interface {
-	ReadAt(b []byte, off int64)(int, error)
-	Size()int64
+	ReadAt(b []byte, off int64) (int, error)
+	Size() int64
 }
 
 /*
@@ -51,22 +52,25 @@ type DatabaseModel interface {
 	GetPrimaryKey(tableName string) []string
 }
 
-func (s *TemplateService)SetTsFile(ts TsFile)  {
-	s.ts=ts
+func (s *TemplateService) SetTsFile(ts TsFile) {
+	s.ts = ts
 }
-func (s *TemplateService)GetTsFile()  TsFile{
+func (s *TemplateService) GetTsFile() TsFile {
 	return s.ts
 }
-func (s *TemplateService) SetWs(ws *websocket.Conn){
+func (s *TemplateService) SetWs(ws *websocket.Conn) {
 	s.ws = ws
 }
-func (s *TemplateService) GetWs() *websocket.Conn{
+func (s *TemplateService) GetWs() *websocket.Conn {
 	return s.ws
 }
 
-func  (s *TemplateService) GetWsOutput()WSoutput{
+func (s *TemplateService) GetWsOutput(params map[string]interface{}) WSoutput {
+
 	return WSoutput{
 		ws: s.ws,
+		params: params,
+		ts: s,
 	}
 }
 
@@ -106,30 +110,6 @@ func (*TemplateService) GetPrimaryKey(tableName string) []string {
 	return _model.GetPrimaryKey(tableName)
 }
 
-//
-//func handlerAmis(result *common.Result) {
-//	// 将结果转成支持amis形式
-//	if utils.GetAppKey("to_amis") == "true" {
-//		if result.Success { // 将status 设置成数字
-//			result.Status = 0
-//		} else {
-//			result.Status = -1
-//		}
-//		dataResult := result.GetData()
-//		// 处理data
-//		if _, ok := dataResult.(map[string]interface{}); !ok && result.Success {
-//			rData := make(map[string]interface{})
-//			rData["data"] = dataResult
-//			// 只有查询返回list,list 才有count
-//			if _, isList := dataResult.([]map[string]interface{}); isList {
-//				rData["count"] = result.GetCount()
-//			}
-//			result.Data = rData
-//		}
-//
-//	}
-//}
-
 // RunScheduleService 添加定时任务
 func RunScheduleService() []*collect.ServiceConfig {
 	services := collect.GetLocalRouter().GetRegisterServices()
@@ -160,6 +140,16 @@ func RunScheduleService() []*collect.ServiceConfig {
 	return scheduleService
 }
 
+const batchSize = 100 // 每批次处理的消息数量
+var queue chan Msg
+
+type Msg struct {
+	DataType string
+	Data     interface{}
+	Params     map[string]interface{}
+	CreateTime int64
+}
+
 // RunStartupService 添加启动服务
 func RunStartupService() []*collect.ServiceConfig {
 	services := collect.GetLocalRouter().GetRegisterServices()
@@ -178,9 +168,72 @@ func RunStartupService() []*collect.ServiceConfig {
 
 	}
 
+	var wg sync.WaitGroup
+	queue = make(chan Msg, batchSize)
+	wg.Add(1)
+	go consumer(queue, &wg)
 	return startupService
 }
 
+func updateTimer(timer *time.Timer) {
+	timer.Reset(time.Second * 10)
+}
+// consumer 函数从队列中接收并处理指定数量的消息
+func consumer(queue <-chan Msg, wg *sync.WaitGroup) {
+	defer wg.Done()
+	batch := make([]Msg, 0, batchSize)
+	timer := time.NewTimer(time.Second * 10)
+	updateTime := utils.Debounce(func() {
+		updateTimer(timer)
+	}, 5)
+	for {
+		select {
+		case msg, ok := <-queue:
+			updateTime()
+			if !ok {
+				// 通道已关闭，退出循环
+				return
+			}
+			batch = append(batch, msg)
+			if len(batch) == batchSize {
+				// 处理当前批次的消息
+				processBatch(batch)
+				batch = batch[:0] // 清空批次切片以便接收下一批消息
+			}
+		case <-timer.C:
+			if len(batch)>0{
+				processBatch(batch)
+				batch = batch[:0] // 清空批次切片以便接收下一批消息	
+			}
+			
+		default:
+			// 如果没有消息可接收，则休眠以减少CPU使用率
+			time.Sleep(time.Millisecond * 100)
+		}
+	}
+}
+
+// processBatch 函数处理一个批次的消息
+func processBatch(batch []Msg) {
+	paramService:=make(map[string]interface{})
+	dataList:=make([]map[string]interface{},0)
+	for _, msg := range batch {
+		item:=make(map[string]interface{},0)
+		item["data_type"]=msg.DataType
+		item["data"]=msg.Data
+		item["params"]=msg.Params
+		item["create_time"]=msg.CreateTime
+		dataList = append(dataList, item)
+	}
+	ts := TemplateService{OpUser: "msg"}
+	paramService["service"]=utils.GetAppKey("msg_service")
+	paramService["data_list"]=dataList
+	r:=ts.ResultInner(paramService)
+	if !r.Success{
+		log.Println(r.GetMsg())
+	}
+	
+}
 
 var upgrader = websocket.Upgrader{
 
@@ -193,6 +246,8 @@ var upgrader = websocket.Upgrader{
 } // use default options
 type WSoutput struct {
 	ws *websocket.Conn
+	params map[string]interface{}
+	ts *TemplateService
 }
 
 // Write: implement Write interface to write bytes from ssh server into bytes.Buffer.
@@ -208,9 +263,13 @@ func (w *WSoutput) Write(p []byte) (int, error) {
 				buf = append(buf, r)
 			}
 		}
+
 		p = []byte(string(buf))
 	}
 	err := w.ws.WriteMessage(websocket.TextMessage, p)
+	w.ts.AddMsg("term", string(p),w.params)
+	// 添加日志消息
+	
 	return len(p), err
 }
 
@@ -234,10 +293,10 @@ func HandlerWsRequest(context *gin.Context) {
 	utils.Block{
 		Try: func() {
 			r := ts.Result(params, true)
-			if !r.Success{
-				c.WriteMessage(websocket.TextMessage, []byte(r.GetMsg()))	
+			if !r.Success {
+				c.WriteMessage(websocket.TextMessage, []byte(r.GetMsg()))
 			}
-			
+
 		},
 		Catch: func(e utils.Exception) {
 			dv := reflect.ValueOf(e)
@@ -284,8 +343,8 @@ func HandlerRequest(c *gin.Context) {
 			data := common.NotOk(error.Error())
 			c.JSON(200, data)
 		}
-		
-		ts.FileHeader= fileHeader
+
+		ts.FileHeader = fileHeader
 		ts.File = file
 	}
 	// 设置session
@@ -305,17 +364,14 @@ func HandlerRequest(c *gin.Context) {
 	// 处理amis结果
 	//handlerAmis(data)
 	if ts.IsFileResponse {
-		
-		
-		if !utils.IsValueEmpty(ts.ResponseFilePath){
+
+		if !utils.IsValueEmpty(ts.ResponseFilePath) {
 			filename := ts.ResponseFileName
 			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
 			c.Writer.Header().Add("Content-Type", "application/octet-stream")
 			c.File(ts.ResponseFilePath)
 		}
 
-
-		
 	} else {
 		c.JSON(200, data)
 	}
@@ -335,6 +391,13 @@ func (t *TemplateService) SetSession(session *sessions.Session) {
 
 	t.session = session
 }
+
+func (t *TemplateService) AddMsg(dataType string,data interface{},params map[string]interface{}) {
+	now :=time.Now().UnixNano()
+	msg:=Msg{DataType: dataType,Data: data,Params: params,CreateTime:now }
+	queue<-msg
+}
+
 
 func (t *TemplateService) SetContext(context *gin.Context) {
 

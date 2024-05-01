@@ -86,10 +86,10 @@ func (p *Properties) GetKey(key string) string {
 }
 
 /*
-** 判断是否有值
+** 判断是否有key
  */
 func (p *Properties) HasKey(key string) bool {
-	if IsEmpty(key, p.Data) {
+	if _, ok := p.Data[key]; !ok {
 		return false
 	} else {
 		return true

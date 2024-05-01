@@ -11,7 +11,7 @@ import (
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
-// NamedPet is a reference to a Named `Pets` (has many)
+// NamedPet is a reference to a named `Pet` (has one)
 type User struct {
 	gorm.Model
 	Name      string
@@ -20,7 +20,8 @@ type User struct {
 	Account   Account
 	Pets      []*Pet
 	NamedPet  *Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
+	Toys      []Toy   `gorm:"polymorphic:Owner"`
+	Tools     []Tools `gorm:"polymorphicType:Type;polymorphicId:CustomID"`
 	CompanyID *int
 	Company   Company
 	ManagerID *uint
@@ -49,6 +50,13 @@ type Toy struct {
 	Name      string
 	OwnerID   string
 	OwnerType string
+}
+
+type Tools struct {
+	gorm.Model
+	Name     string
+	CustomID string
+	Type     string
 }
 
 type Company struct {

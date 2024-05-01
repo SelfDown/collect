@@ -131,6 +131,21 @@ func (t *BaseRequestHandler) GetData() interface{} {
 	if utils.IsValueEmpty(p) && !utils.IsValueEmpty(data) { // 处理字符串
 		return data
 	}
+	params:=t.GetParams()
+	for key,value:=range p{
+		tpl,ok:=value.(string)
+		if !ok{
+			continue
+		}
+		if !utils.IsRenderVar(tpl){
+			continue
+		}
+		val :=utils.RenderVarOrValue(value,params)
+		if val!=value{
+			p[key]=val
+		}
+	}
+
 	return p
 }
 func (t *BaseRequestHandler) GetDataStr() string {

@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/dgraph-io/ristretto"
 )
@@ -12,6 +13,7 @@ type Test struct {
 }
 
 func TestCache(t *testing.T) {
+	fmt.Println(time.Now().Unix())
 	cache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).

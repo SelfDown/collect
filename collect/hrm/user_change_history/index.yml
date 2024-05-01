@@ -2,6 +2,7 @@ service:
   - key: user_change_list
     module: sql
     http: true
+
     params:
       search:
         template: "{{ if .search }}%{{.search}}%{{ end }}"

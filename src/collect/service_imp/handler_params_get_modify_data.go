@@ -265,6 +265,9 @@ func transferValue(original string, transDict map[string]string) string {
 func (uf *GetModifyData) HandlerData(template *config.Template, _ *config.HandlerParam, ts *TemplateService) *common.Result {
 	changData := make([]map[string]interface{}, 0)
 	params := template.GetParams()
+	if len(template.ModifyConfigData.Fields) <= 0 {
+		template.LogErr("fields 不存在，请检查配置")
+	}
 	for _, field := range template.ModifyConfigData.Fields {
 		rule := field.Rule
 		if field.EnableTpl != nil { // 判断是否启用

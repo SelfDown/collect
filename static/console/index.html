@@ -533,7 +533,11 @@
                              :key="item.collect_doc_id"
                              v-for="(item,index) in tab_list"
                              :name="item.collect_doc_id">
-                    <el-row v-if="item.type=='console'" class="console-container" >
+                    <el-row v-if="item.type=='doc_graph'">
+
+                        服务
+                    </el-row>
+                    <el-row v-else-if="item.type=='console'" class="console-container" >
                         <div :style="{ 'height':boxCodeHeight+'px'}">
                             <textarea v-model="params" class="code-area" ></textarea>
                         </div>
@@ -1319,7 +1323,12 @@
                         "collect_doc_id":"console",
                         "title":"控制台",
                         "type":"console"
-                    }
+                    },
+                    {
+                        "collect_doc_id":"doc_graph",
+                        "title":"服务描述",
+                        "type":"doc_graph"
+                    },
                 ],
                 groupListAll: [],
                 groupSelection: [],
@@ -1386,7 +1395,7 @@
                 },
 
                 ],
-                contentActiveName: "console",
+                contentActiveName: "doc_graph",
                 docSearch: "",
                 activeName: "second",
                 activeNames: ['1'],

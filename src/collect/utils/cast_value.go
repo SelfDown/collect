@@ -70,6 +70,14 @@ func CastValue(value interface{}, dataType string) interface{} {
 			return &valueNew
 		}
 		return valueNew
+	case "[]byte":
+		return []byte(gocast.ToString(value))
+	case "[]uint8":
+		valueNew :=[]byte(gocast.ToString(value))
+		if isPtr{
+			return &valueNew
+		}
+		return valueNew
 	default:
 		valueNew := gocast.ToString(value)
 		if isPtr {

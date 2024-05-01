@@ -73,7 +73,7 @@ func (s *BulkService) Result(template *config.Template, ts *TemplateService) *co
 	//resultChanList := make([]chan *common.Result, len(foreach))
 	l := len(foreach)
 	resultList := make([]map[string]interface{}, 0)
-	size := 50
+	size := 30
 	times := gocast.ToInt(math.Ceil(float64(len(foreach)) / float64(size)))
 
 	for i := 0; i < times; i++ {

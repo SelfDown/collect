@@ -53,8 +53,11 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 		template.LogData("更新字段")
 		template.LogData(fieldNames)
 	}
+	fieldNames2 := make([]string, 0)
+	fieldNames2 = append(fieldNames2, "doc_important_id")
 	dbx := gormDB.Model(modelData).Clauses(clause.OnConflict{
-		DoUpdates: clause.AssignmentColumns(fieldNames),
+		//UpdateAll: true,
+		DoUpdates: clause.AssignmentColumns(fieldNames2),
 	}).Create(modelList)
 	affected := dbx.RowsAffected
 	err := dbx.Error

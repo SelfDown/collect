@@ -58,6 +58,17 @@ func ReadFileContent(filePath string) (string, bool) {
 	}
 	return Strval(content), true
 }
+func WriteFileContent(filePath string, content string) (string, bool) {
+	err := os.MkdirAll(ParentDirName(filePath), os.ModePerm)
+	if err != nil {
+		return err.Error(), false
+	}
+	err = os.WriteFile(filePath, []byte(content), 0666)
+	if err != nil {
+		return err.Error(), false
+	}
+	return "", true
+}
 
 /**
 * 读取文件内容
@@ -87,7 +98,7 @@ func DateTimeUnix(dateStr string) int64 {
 	// 创建布局模板
 	layout := "2006-01-02 15:04:05"
 	// 解析字符串为时间对象
-	t, err := time.ParseInLocation(layout, dateStr,time.Local)
+	t, err := time.ParseInLocation(layout, dateStr, time.Local)
 	if err != nil {
 		panic("无法解析日期")
 	}
@@ -120,12 +131,12 @@ func DateFormatDay(t time.Time) string {
 }
 
 /*
-* @param exec 是计算，是否执行运算结果
-* 比如计算分页
-      start:
-        template: " ({{.page}}-1) * {{.size}}"
-        exec: true
-        type: int
+  - @param exec 是计算，是否执行运算结果
+  - 比如计算分页
+    start:
+    template: " ({{.page}}-1) * {{.size}}"
+    exec: true
+    type: int
 */
 func RenderTplExec(Tpl *text_template.Template, params map[string]interface{}, exec bool) interface{} {
 	s := RenderTplData(Tpl, params)
@@ -167,7 +178,7 @@ func IsRenderVar(name string) bool {
 	return false
 }
 
-//取参数变量、或者取值
+// 取参数变量、或者取值
 func RenderVarOrValue(name interface{}, params map[string]interface{}) interface{} {
 	pKey, ok := name.(string)
 	if ok && IsRenderVar(pKey) {
@@ -262,6 +273,15 @@ func GetFieldValueList(fields []string, params map[string]interface{}) []string 
 func GetSplitConst() string {
 	return "[^☉★\x01∨★^]"
 }
+func removeElement(slice []interface{}, element interface{}) []interface{} {
+	for i, v := range slice {
+		if v == element {
+			slice = append(slice[:i], slice[i+1:]...)
+			break
+		}
+	}
+	return slice
+}
 func RenderVar(name string, params map[string]interface{}) interface{} {
 
 	varName := GetRenderVarName(name)
@@ -282,7 +302,7 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		return v
 	}
 	second := tmpArr[1]
-	if len(tmpArr) == 2 { // 处理2级
+	if len(tmpArr) >= 2 { // 处理2级
 		// 如果是map[string]字符串类型转换成功
 		param2, ok := v.(map[string]string)
 		if ok {
@@ -293,7 +313,19 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		param3, ok := v.(map[string]interface{})
 		if ok {
 			v3, _ := param3[second]
-			return v3
+			if len(tmpArr) == 2 {
+				return v3
+			}
+			// 处理三级中是data
+			param5, ok := v3.(*common.Result)
+			if ok {
+				third := tmpArr[2]
+				if third == "data" {
+					return param5.GetData()
+				}
+			} else {
+				return v3
+			}
 		}
 		// 处理bulk_service 中的result.data
 		param4, ok := v.(*common.Result)
@@ -387,6 +419,12 @@ func CopyRecursive(src, dst reflect.Value) {
 	//	dst.Set(reflect.New(originalValue.Type()))
 	//	CopyRecursive(originalValue, dst.Elem(), withPtr)
 	//}
+	//case reflect.Ptr:
+	//	if !src.IsNil() {
+	//		originalValue := src.Elem()
+	//		dst.Set(reflect.New(originalValue.Type()))
+	//		CopyRecursive(originalValue, dst.Elem())
+	//	}
 
 	case reflect.Interface:
 		if src.IsNil() {
@@ -829,4 +867,14 @@ func CopyMap(src map[string]interface{}) map[string]interface{} {
 		m[k] = v
 	}
 	return m
+}
+func RemoveElementString(slice []string, target string) []string {
+	// 创建一个新的切片来存储结果
+	var result []string
+	for _, value := range slice {
+		if value != target {
+			result = append(result, value)
+		}
+	}
+	return result
 }

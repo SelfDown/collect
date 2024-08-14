@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"reflect"
@@ -19,7 +20,6 @@ import (
 	text_template "text/template"
 	"time"
 	"unicode/utf8"
-	"log"
 )
 
 type TemplateService struct {
@@ -68,9 +68,9 @@ func (s *TemplateService) GetWs() *websocket.Conn {
 func (s *TemplateService) GetWsOutput(params map[string]interface{}) WSoutput {
 
 	return WSoutput{
-		ws: s.ws,
+		ws:     s.ws,
 		params: params,
-		ts: s,
+		ts:     s,
 	}
 }
 
@@ -86,12 +86,12 @@ func (s *TemplateService) HasThirdData(key string) bool {
 	return has
 }
 
-//扩展模块获取
+// 扩展模块获取
 func (s *TemplateService) GetThirdData(key string) interface{} {
 	return s.thirdData[key]
 }
 
-//扩展模块获取
+// 扩展模块获取
 func (s *TemplateService) RemoveThirdData(key string) {
 	delete(s.thirdData, key)
 }
@@ -144,8 +144,8 @@ const batchSize = 100 // 每批次处理的消息数量
 var queue chan Msg
 
 type Msg struct {
-	DataType string
-	Data     interface{}
+	DataType   string
+	Data       interface{}
 	Params     map[string]interface{}
 	CreateTime int64
 }
@@ -178,6 +178,7 @@ func RunStartupService() []*collect.ServiceConfig {
 func updateTimer(timer *time.Timer) {
 	timer.Reset(time.Second * 10)
 }
+
 // consumer 函数从队列中接收并处理指定数量的消息
 func consumer(queue <-chan Msg, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -201,11 +202,11 @@ func consumer(queue <-chan Msg, wg *sync.WaitGroup) {
 				batch = batch[:0] // 清空批次切片以便接收下一批消息
 			}
 		case <-timer.C:
-			if len(batch)>0{
+			if len(batch) > 0 {
 				processBatch(batch)
-				batch = batch[:0] // 清空批次切片以便接收下一批消息	
+				batch = batch[:0] // 清空批次切片以便接收下一批消息
 			}
-			
+
 		default:
 			// 如果没有消息可接收，则休眠以减少CPU使用率
 			time.Sleep(time.Millisecond * 100)
@@ -215,24 +216,24 @@ func consumer(queue <-chan Msg, wg *sync.WaitGroup) {
 
 // processBatch 函数处理一个批次的消息
 func processBatch(batch []Msg) {
-	paramService:=make(map[string]interface{})
-	dataList:=make([]map[string]interface{},0)
+	paramService := make(map[string]interface{})
+	dataList := make([]map[string]interface{}, 0)
 	for _, msg := range batch {
-		item:=make(map[string]interface{},0)
-		item["data_type"]=msg.DataType
-		item["data"]=msg.Data
-		item["params"]=msg.Params
-		item["create_time"]=msg.CreateTime
+		item := make(map[string]interface{}, 0)
+		item["data_type"] = msg.DataType
+		item["data"] = msg.Data
+		item["params"] = msg.Params
+		item["create_time"] = msg.CreateTime
 		dataList = append(dataList, item)
 	}
 	ts := TemplateService{OpUser: "msg"}
-	paramService["service"]=utils.GetAppKey("msg_service")
-	paramService["data_list"]=dataList
-	r:=ts.ResultInner(paramService)
-	if !r.Success{
+	paramService["service"] = utils.GetAppKey("msg_service")
+	paramService["data_list"] = dataList
+	r := ts.ResultInner(paramService)
+	if !r.Success {
 		log.Println(r.GetMsg())
 	}
-	
+
 }
 
 var upgrader = websocket.Upgrader{
@@ -245,9 +246,9 @@ var upgrader = websocket.Upgrader{
 	},
 } // use default options
 type WSoutput struct {
-	ws *websocket.Conn
+	ws     *websocket.Conn
 	params map[string]interface{}
-	ts *TemplateService
+	ts     *TemplateService
 }
 
 // Write: implement Write interface to write bytes from ssh server into bytes.Buffer.
@@ -267,9 +268,9 @@ func (w *WSoutput) Write(p []byte) (int, error) {
 		p = []byte(string(buf))
 	}
 	err := w.ws.WriteMessage(websocket.TextMessage, p)
-	w.ts.AddMsg("term", string(p),w.params)
+	w.ts.AddMsg("term", string(p), w.params)
 	// 添加日志消息
-	
+
 	return len(p), err
 }
 
@@ -305,9 +306,7 @@ func HandlerWsRequest(context *gin.Context) {
 	}.Do()
 
 }
-func getTs(c *gin.Context) TemplateService {
-	s := sessions.Default(c)
-
+func sessioinUserId(s sessions.Session) string {
 	user_id_key := utils.GetAppKey("user_id_key")
 	// session 中设置用户ID
 	userId := s.Get(user_id_key)
@@ -317,6 +316,11 @@ func getTs(c *gin.Context) TemplateService {
 	} else {
 		opUser = ""
 	}
+	return opUser
+}
+func getTs(c *gin.Context) TemplateService {
+	s := sessions.Default(c)
+	opUser := sessioinUserId(s)
 	ts := TemplateService{OpUser: opUser}
 	ts.SetSession(&s)
 	ts.SetContext(c)
@@ -392,12 +396,11 @@ func (t *TemplateService) SetSession(session *sessions.Session) {
 	t.session = session
 }
 
-func (t *TemplateService) AddMsg(dataType string,data interface{},params map[string]interface{}) {
-	now :=time.Now().UnixNano()
-	msg:=Msg{DataType: dataType,Data: data,Params: params,CreateTime:now }
-	queue<-msg
+func (t *TemplateService) AddMsg(dataType string, data interface{}, params map[string]interface{}) {
+	now := time.Now().UnixNano()
+	msg := Msg{DataType: dataType, Data: data, Params: params, CreateTime: now}
+	queue <- msg
 }
-
 
 func (t *TemplateService) SetContext(context *gin.Context) {
 
@@ -454,36 +457,22 @@ func (t *TemplateService) before(params map[string]interface{}, isHttp bool) (*c
 	// todo: 这里只示例了一个用户ID
 	// 设置操作用户,需要将模块的变量，赋值给temp,比如session,event_id，http 的请求对象，http 的请求头
 	// 内部的服务调用，也是如此，比如template 生成了一个事件ID,后面服务沿用这个事件ID,直到服务就结束
-	temp.OpUser = t.OpUser
+	temp.OpUser = sessioinUserId(*t.GetSession())
 	if temp.Log {
 		msg := "【" + temp.OpUser + "】访问:" + serviceName
 		temp.LogData(msg)
 		temp.LogData(params)
-	}
-	// 如果是http 请求，并且配置必须登录，如果没有用户ID,则提示必须登录
-	mustLoginConfig := utils.GetAppKeyWithDefault("must_login", "true")
-	mustLogin := true
-	// 总开关
-	if mustLoginConfig != "true" {
-		mustLogin = false
-	}
-	// 服务开关
-	if temp.MustLogin != nil && *temp.MustLogin == false {
-		mustLogin = false
 	}
 	// http 登录判断
 	if isHttp && !temp.Http {
 		errMsg := serviceName + "不支持http 访问"
 		return nil, common.NotOk(errMsg)
 	}
-	// 用户登录判断
-	if isHttp && mustLogin && utils.IsValueEmpty(t.OpUser) {
-		errMsg := "请登录！！！"
-		return nil, common.NotOk(errMsg)
-	}
+
 	var loader BeforeLoader
 	for _, plugin := range temp.GetBeforePlugins() {
 		//插件是否启用
+		plugin.IsHttp = isHttp
 		if !IsPluginEnable(plugin.EnableTpl, plugin) {
 			continue
 		}

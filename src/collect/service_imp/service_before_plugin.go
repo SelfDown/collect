@@ -1,16 +1,19 @@
 package collect
 
 import (
+	"encoding/base64"
 	common "github.com/SelfDown/collect/src/collect/common"
 	"github.com/SelfDown/collect/src/collect/config"
 	cacheHandler "github.com/SelfDown/collect/src/collect/service_imp/cache_handler"
 	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
+	"reflect"
+	"strings"
 )
 
-/**
+/*
+*
 * 请求前处理参数
-
  */
 type BeforeLoader struct {
 }
@@ -117,6 +120,74 @@ func (t *BeforeLoader) HandlerParams(config collect.Plugin, template *collect.Te
 	return handlerParams(template, template.HandlerParams, ts)
 }
 
+/**
+* 处理参数
+ */
+func (t *BeforeLoader) HandlerLoginCheck(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	// 如果是http 请求，并且配置必须登录，如果没有用户ID,则提示必须登录
+	mustLoginConfig := utils.GetAppKeyWithDefault("must_login", "true")
+	mustLogin := true
+	// 总开关
+	if mustLoginConfig != "true" {
+		mustLogin = false
+	}
+	// 服务开关
+	if template.MustLogin != nil && *template.MustLogin == false {
+		mustLogin = false
+	}
+	opUser := sessioinUserId(*ts.GetSession())
+	// 用户登录判断
+	if config.IsHttp && mustLogin && utils.IsValueEmpty(opUser) {
+		errMsg := "请登录！！！"
+		return common.NotOk(errMsg)
+	}
+	return common.Ok(nil, "检查成功")
+}
+
+/*
+*
+处理Basic Auth 认证
+*/
+func (t *BeforeLoader) HandlerBasicAuth(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	c := ts.context
+	auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+	if utils.IsValueEmpty(auth) || utils.IsValueEmpty(auth[0]) {
+		return common.Ok(nil, "无需Basic auth 认证处理")
+	}
+	if len(auth) != 2 || auth[0] != "Basic" {
+
+		return common.NotOk("无Basic 字段")
+	}
+
+	payload, _ := base64.StdEncoding.DecodeString(auth[1])
+	pair := strings.SplitN(string(payload), ":", 2)
+
+	if len(pair) != 2 {
+		return common.NotOk("Basic realm=Authorization Required")
+	}
+	username := pair[0]
+	password := pair[1]
+	var ret *common.Result
+	params := make(map[string]interface{})
+	service := utils.GetAppKey("basic_auth_service")
+	params["service"] = service
+	params["username"] = username
+	params["password"] = password
+	utils.Block{
+		Try: func() {
+			ret = ts.Result(params, false)
+		},
+		Catch: func(e utils.Exception) {
+			dv := reflect.ValueOf(e)
+			ret = common.NotOk(dv.String())
+		},
+	}.Do()
+	if !ret.Success {
+		return ret
+	}
+	return common.Ok(ret.Data, ret.Msg)
+}
+
 func (t *BeforeLoader) HandlerCache(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
 	handlerParam := template.Cache
 	if handlerParam.EnableTpl == nil {
@@ -125,7 +196,7 @@ func (t *BeforeLoader) HandlerCache(config collect.Plugin, template *collect.Tem
 	// 获取缓存
 	handlerParam.Method = cacheHandler.CacheGetName
 	ret := HandlerOneParams(&handlerParam, template, ts)
-	if ret.Success {
+	if ret.Success && ret.Data != nil {
 		ret.SetFinish(true)
 	}
 

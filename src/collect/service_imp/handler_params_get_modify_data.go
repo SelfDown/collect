@@ -353,6 +353,18 @@ func string2Arr(value interface{}) []string {
 	if utils.IsValueEmpty(value) {
 		return make([]string, 0)
 	}
+	if utils.IsArray(value) {
+		stringList, ok := value.([]string)
+		if ok {
+			return stringList
+		} else {
+			dList := make([]string, 0)
+			for _, item := range value.([]interface{}) {
+				dList = append(dList, item.(string))
+			}
+			return dList
+		}
+	}
 	arr := strings.Split(value.(string), ",")
 	return arr
 }

@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type HttpService struct {
@@ -79,13 +80,14 @@ type RequestHandler interface {
 }
 type BaseRequestHandler struct {
 	RequestHandler
-	config *config.HttpConfig
-	params map[string]interface{}
-	url    string
-	body   io.Reader
-	data   interface{}
-	req    *http.Request
-	resp   *http.Response
+	config  *config.HttpConfig
+	params  map[string]interface{}
+	url     string
+	body    io.Reader
+	data    interface{}
+	timeout int64
+	req     *http.Request
+	resp    *http.Response
 }
 
 func (t *BaseRequestHandler) SetConfig(config *config.HttpConfig) {
@@ -131,18 +133,18 @@ func (t *BaseRequestHandler) GetData() interface{} {
 	if utils.IsValueEmpty(p) && !utils.IsValueEmpty(data) { // 处理字符串
 		return data
 	}
-	params:=t.GetParams()
-	for key,value:=range p{
-		tpl,ok:=value.(string)
-		if !ok{
+	params := t.GetParams()
+	for key, value := range p {
+		tpl, ok := value.(string)
+		if !ok {
 			continue
 		}
-		if !utils.IsRenderVar(tpl){
+		if !utils.IsRenderVar(tpl) {
 			continue
 		}
-		val :=utils.RenderVarOrValue(value,params)
-		if val!=value{
-			p[key]=val
+		val := utils.RenderVarOrValue(value, params)
+		if val != value {
+			p[key] = val
 		}
 	}
 
@@ -189,6 +191,7 @@ func GetHandler(config *config.HttpConfig, params map[string]interface{}) Reques
 	handler.SetData(handler.GetData())
 	// 设置body
 	handler.SetBody(handler.GetBody())
+	// 设置超时
 
 	return handler
 }
@@ -203,8 +206,16 @@ func (t *BaseRequestHandler) GetUrl() string {
 }
 func (t *BaseRequestHandler) GetResult() *common.Result {
 	req := t.req
+	timeout := 30
+	if t.config.Timeout != 0 {
+		timeout = t.config.Timeout
+	}
 
-	resp, err := http.DefaultClient.Do(req)
+	client := &http.Client{
+		Timeout: time.Duration(timeout) * time.Second,
+	}
+	resp, err := client.Do(req)
+
 	if err != nil {
 		return common.NotOk(err.Error())
 	}
@@ -223,12 +234,42 @@ func (t *BaseRequestHandler) GetResult() *common.Result {
 
 // CreateRequest 处理请求
 func (t *BaseRequestHandler) CreateRequest() *common.Result {
-	req, err := http.NewRequest(t.GetMethod(), t.url, t.body)
+	var req *http.Request
+	var err error
+	req, err = http.NewRequest(t.GetMethod(), t.url, t.body)
 	// 设置header
 	if !utils.IsValueEmpty(t.config.Header) {
 		for k, tpl := range t.config.HeaderTpl {
 			req.Header.Set(k, utils.RenderTpl(tpl, t.params))
 		}
+	}
+	if err != nil {
+		return common.NotOk(err.Error())
+	}
+	//  处理拼接所有参数
+	if t.config.AppendParam{
+		jsonData,err := ioutil.ReadAll(t.body)
+		if err != nil {
+			return  common.NotOk(err.Error())
+		}
+		tmp:=make(map[string]interface{})
+		 err = json.Unmarshal(jsonData,&tmp)
+		if err!= nil {
+            return common.NotOk(err.Error())
+        }
+		// 循环params 添加变量
+		for k,v :=range t.params{
+			if _,ok := tmp[k];!ok{
+				tmp[k]=v
+			}
+		}
+		// 重新转json
+		jsonData, err = json.Marshal(tmp)
+		if err!= nil {
+            return common.NotOk(err.Error())
+        }
+		req.Body = ioutil.NopCloser(bytes.NewBuffer(jsonData))
+		req.ContentLength = int64(len(jsonData))
 	}
 	// 设置basic auth 登录
 	usernameTpl := t.config.BasicAuth.UsernameTpl
@@ -238,9 +279,8 @@ func (t *BaseRequestHandler) CreateRequest() *common.Result {
 		password := utils.RenderTpl(passwordTpl, t.params)
 		req.SetBasicAuth(username, password)
 	}
-	if err != nil {
-		return common.NotOk(err.Error())
-	}
+
+
 	// 设置请求
 	t.req = req
 	return common.Ok(req, "参数构造成功")
@@ -256,6 +296,11 @@ func (t *GetRequestHandler) HandlerRequest() *common.Result {
 	// 处理url get请求
 	query := req.URL.Query()
 	data := t.data
+	if t.config.AppendParam{
+		for k, v := range t.params {
+            query.Set(k, utils.Strval(v))
+        }
+	}
 	for k, v := range data.(map[string]interface{}) {
 		query.Set(k, utils.Strval(v))
 	}

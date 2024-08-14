@@ -155,6 +155,7 @@ type Plugin struct {
 	Fields    []SubField              // 字段信息
 	Enable    string                  // 是否启用
 	EnableTpl *text_template.Template //启用模板
+	IsHttp    bool                    //是否http
 }
 
 /*
@@ -319,7 +320,7 @@ type HandlerParam struct {
 	Rule                string
 	Right               string
 	Left                string
-	Operation           string 
+	Operation           string
 	TargetTransferKey   string   `yaml:"target_transfer_key"json:"target_transfer_key"`     // 失败流转
 	TargetTransferValue string   `yaml:"target_transfer_value"json:"target_transfer_value"` // 失败流转
 	ValueListField      string   `yaml:"value_list_field"json:"value_list_field"`           // 失败流转
@@ -332,6 +333,7 @@ type HandlerParam struct {
 	Children            string //children
 	Pid                 string //parent_id
 	Id                  string //id
+	Prefix              string //flow的运行结果前缀
 }
 type ExcelConfig struct {
 	Name   string   // 名称
@@ -357,6 +359,7 @@ type HttpConfig struct {
 	HeaderTpl   map[string]*text_template.Template
 	BasicAuth   BasicAuth `json:"basic_auth"`
 	Data        interface{}
+	Timeout     int
 	DataTpl     *text_template.Template
 }
 type BasicAuth struct {

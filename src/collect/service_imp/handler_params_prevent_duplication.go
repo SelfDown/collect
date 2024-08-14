@@ -7,7 +7,7 @@ import (
 	"github.com/demdxx/gocast"
 )
 
-//处理缓存
+// 处理缓存
 type PreventDuplication struct {
 	BaseHandler
 }
@@ -16,7 +16,7 @@ func (hc *PreventDuplication) HandlerData(template *config.Template, handlerPara
 
 	params := template.GetParams()
 	handler := cacheHandler.CacheHandler{}
-	fieldList := hc.GetFieldNames(handlerParam)
+	fieldList := hc.GetFieldNames(handlerParam, params)
 	dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
 	data, ok := handler.Get(dataKey)
 	if ok { //如果获取到了直接返回

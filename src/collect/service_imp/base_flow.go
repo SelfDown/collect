@@ -113,9 +113,15 @@ func getNextNode(nodeStart *config.HandlerParam,
 * 服务流程化
  */
 func BaseHandlerNode(param *config.HandlerParam, template *config.Template, ts *TemplateService) *common.Result {
-	// 必须拷贝处理一份，data_json 是指针
+	// 必须拷贝处理一份，data_json 是指针，不太记得是哪个场景导致上次的变量没有清除，模板渲染取了上次的值，所以复制的一份
+	// 好像是存在template 里面去了
 	tmp := utils.CopyWithPtr(param).(*config.HandlerParam)
 	// 处理当个handler node
+	// 处理模板拷贝部分数据丢失,尝试copystructure和"github.com/mohae/deepcopy"均无法解决，
+	// 在TemplateTpl 感觉部分数据已经丢失，没有name，然后运行{{must .file_info}}报错，感觉是must过滤器没有挂载
+	tmp.TemplateTpl = param.TemplateTpl
+	tmp.ErrMsgTpl = param.ErrMsgTpl
+	tmp.ValueTpl = param.ValueTpl
 	return HandlerOneParams(tmp, template, ts)
 }
 
@@ -215,6 +221,14 @@ func (s *BaseFlow) Flow(template *config.Template, ts *TemplateService, handlerN
 	// 处理finish
 	finish := template.DataJsonConfig.Finish
 	if !utils.IsValueEmpty(finish.Key) {
+		prefix := "flow_"
+		if !utils.IsValueEmpty(finish.Prefix) {
+			prefix = finish.Prefix + "_"
+		}
+		params := template.GetParams()
+		// 为了处理流程，加个流程字段结果
+		params[prefix+"success"] = result.Success
+		params[prefix+"msg"] = result.Msg
 		finishResult := HandlerOneParams(&finish, template, ts)
 		if template.Log {
 			template.LogData("finish运行结果")

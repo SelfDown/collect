@@ -17,7 +17,7 @@ func (uf *GroupBy) HandlerData(template *config.Template, handlerParam *config.H
 	childName := handlerParam.Children
 	arrDict := make(map[string]map[string]interface{})
 	target := make([]map[string]interface{}, 0)
-	fields := uf.GetFieldNames(handlerParam)
+	fields := uf.GetFieldNames(handlerParam, params)
 	for _, item := range arr {
 		valueList := utils.GetFieldValueList(fields, item)
 		key := strings.Join(valueList, "_$[#]$_")

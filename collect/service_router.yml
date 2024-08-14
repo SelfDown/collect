@@ -420,6 +420,10 @@ file_content_plugin:
     reg: require[(](.*?)[)]
 
 before_plugin:
+  # 登录检查
+  - key: handler_login_check
+    method: HandlerLoginCheck
+    enable: "{{.IsHttp}}"
   # 处理请求参数
   - key: handler_req_param
     method: HandlerReqParam

@@ -13,6 +13,7 @@ import (
 	"log"
 	"reflect"
 	"runtime"
+	"sort"
 	"strings"
 	"time"
 )
@@ -301,10 +302,22 @@ func (s *BaseHandler) CheckFilter(template *config.Template, model interface{}) 
 	return common.Ok(nil, "检查成功")
 }
 
-func (s *BaseHandler) GetFieldNames(handlerParam *config.HandlerParam) []string {
+func (s *BaseHandler) GetFieldNames(handlerParam *config.HandlerParam, params map[string]interface{}) []string {
 	fieldList := make([]string, 0)
 	for _, field := range handlerParam.Fields {
-		fieldList = append(fieldList, field.Field)
+		if field.Field == "[*]" {
+			keys := make([]string, 0, len(params))
+			for k := range params {
+				keys = append(keys, "["+k+"]")
+			}
+
+			// 对键进行排序
+			sort.Strings(keys)
+			fieldList = append(fieldList, keys...)
+		} else {
+			fieldList = append(fieldList, field.Field)
+		}
+
 	}
 	return fieldList
 }

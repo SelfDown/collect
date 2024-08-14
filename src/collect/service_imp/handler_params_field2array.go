@@ -13,8 +13,36 @@ type Field2Array struct {
 
 func (uf *Field2Array) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
-	field := utils.RenderVar(handlerParam.Field, params).(string)
-	arr := strings.Split(field, ",")
-	r := common.Ok(arr, "处理参数成功")
-	return r
+	if !utils.IsValueEmpty(handlerParam.Foreach) {
+		// 直接渲染变量
+		dataList, errMsg := utils.RenderVarToArrMap(handlerParam.Foreach, params)
+		if !utils.IsValueEmpty(errMsg) {
+			return common.NotOk(errMsg)
+		}
+
+		for _, field := range handlerParam.Fields {
+
+			for _, item := range dataList {
+				forEachField := utils.RenderVar(field.Field, item)
+				if !utils.IsValueEmpty(forEachField) {
+					arr := strings.Split(forEachField.(string), ",")
+					item[field.SaveField] = arr
+				} else {
+					item[field.SaveField] = make([]string, 0)
+				}
+
+			}
+		}
+		r := common.Ok(nil, "处理参数成功")
+		return r
+	} else {
+		field := utils.RenderVar(handlerParam.Field, params)
+		arr := make([]string, 0)
+		if !utils.IsValueEmpty(field) {
+			arr = strings.Split(field.(string), ",")
+		}
+		r := common.Ok(arr, "处理参数成功")
+		return r
+	}
+
 }

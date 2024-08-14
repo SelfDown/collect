@@ -7,7 +7,7 @@ import (
 	utils "github.com/SelfDown/collect/src/collect/utils"
 )
 
-//处理缓存
+// 处理缓存
 type HandlerCache struct {
 	BaseHandler
 }
@@ -17,7 +17,7 @@ func (hc *HandlerCache) HandlerData(template *config.Template, handlerParam *con
 	params := template.GetParams()
 	method := handlerParam.Method
 	handler := cacheHandler.CacheHandler{}
-	fieldList := hc.GetFieldNames(handlerParam)
+	fieldList := hc.GetFieldNames(handlerParam, params)
 
 	if method == cacheHandler.CacheGetName { // 获取缓存，并且结束
 		dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
@@ -27,6 +27,11 @@ func (hc *HandlerCache) HandlerData(template *config.Template, handlerParam *con
 			//result.SetFinish(true)
 			return &result
 		}
+		//else
+		//{
+		//	return common.NotOk("未获取到缓存变量")
+		//}
+
 	} else if method == cacheHandler.CacheSetName { // 单个设置缓存
 		dataKey := handler.GetCacheKey(handlerParam.Room, fieldList, params)
 		result := template.GetResult()

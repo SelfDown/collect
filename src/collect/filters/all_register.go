@@ -18,8 +18,8 @@ func GetFilters() map[string]any {
 		"index":               Index,
 		"unix_time":           UnixTime,
 		"unix_time2datetime":  UnixTime2Datetime,
-		"contains":  Contains,
-
+		"contains":            Contains,
+		"to_json":             ToJSON,
 	}
 
 }

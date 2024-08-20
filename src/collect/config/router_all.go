@@ -314,6 +314,7 @@ type HandlerParam struct {
 	NodeNextTpl         *text_template.Template //
 	NodeKey             string                  `yaml:"node_key"json:"node_key"` // 保存字段
 	IgnoreError         bool                    `yaml:"ignore_error"json:"ignore_error"`
+	Type                string
 	NodeType            string                  `yaml:"node_type"json:"node_type"` // 保存字段
 	NodeFail            string                  `yaml:"node_fail"json:"node_fail"` // 失败流转
 	NodeFailTpl         *text_template.Template //

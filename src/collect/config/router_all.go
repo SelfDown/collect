@@ -192,6 +192,7 @@ type ServiceConfig struct {
 	Schedule            Schedule                // 定时任务
 	Cache               HandlerParam            // 缓存设置
 	PreventDuplication  HandlerParam            `yaml:"prevent_duplication"` // 重复请求处理
+	Proxy               HandlerParam            `yaml:"proxy"`
 	Module              string                  // 模块
 	Table               string                  // 表名
 	Http                bool                    //  是否支持http 访问

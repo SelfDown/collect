@@ -7,6 +7,7 @@ import (
 	cacheHandler "github.com/SelfDown/collect/src/collect/service_imp/cache_handler"
 	utils "github.com/SelfDown/collect/src/collect/utils"
 	"github.com/demdxx/gocast"
+	"net"
 	"reflect"
 	"strings"
 )
@@ -212,6 +213,63 @@ func (t *AfterLoader) HandlerCache(config collect.Plugin, template *collect.Temp
 	handlerParam.Method = cacheHandler.CacheSetName
 	ret := HandlerOneParams(&handlerParam, template, ts)
 	return ret
+}
+
+// GetLocalIPs 返回本机的所有 IPv4 地址（字符串数组）
+func GetLocalIPs() ([]string, error) {
+	var ips []string
+
+	// 获取所有网络接口
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, iface := range interfaces {
+		// 获取接口的所有地址
+		addrs, err := iface.Addrs()
+		if err != nil {
+			continue
+		}
+
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+
+			// 跳过非 IPv4 和回环地址
+			if ip == nil || ip.IsLoopback() || ip.To4() == nil {
+				continue
+			}
+
+			ips = append(ips, ip.String())
+		}
+	}
+
+	return ips, nil
+}
+
+// 处理代理
+func (t *BeforeLoader) HandlerProxy(config collect.Plugin, template *collect.Template, routerAll *collect.RouterAll, ts *TemplateService) *common.Result {
+	handlerParam := template.Proxy
+	if handlerParam.EnableTpl == nil {
+		return common.Ok(nil, "无代理，无需处理")
+	}
+	ips := GetLocalIPs
+	params := template.GetParams()
+	// 获取IP
+	params["local_machine_ips"] = ips
+	// 设置代理
+	params["proxy_service"] = params["service"]
+	ret := HandlerOneParams(&handlerParam, template, ts)
+	if ret.Success {
+		ret.SetFinish(true)
+	}
+	return common.Ok(nil, "处理完成")
 }
 
 // 防止重复请求

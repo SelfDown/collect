@@ -268,6 +268,9 @@ load_startup_plugin:
   - key: load_prevent_duplication_config
     method: LoadPreventDuplicationConfig
     name: 加载prevent_duplication
+  - key: load_proxy_config
+    method: LoadProxyConfig
+    name: 加载proxy
   - key: load_router_all_enable
     method: LoadRouterAllEnable
     name: 加载模板能用,处理handler_req_param 是否能用
@@ -432,6 +435,10 @@ before_plugin:
   # 处理重复请求
   - key: prevent_duplication
     method: PreventDuplication
+    enable: "true"
+  # 处理处理代理
+  - key: proxy
+    method: HandlerProxy
     enable: "true"
   # 处理缓存
   - key: handler_cache

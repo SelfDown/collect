@@ -216,8 +216,8 @@ func (t *AfterLoader) HandlerCache(config collect.Plugin, template *collect.Temp
 }
 
 // GetLocalIPs 返回本机的所有 IPv4 地址（字符串数组）
-func GetLocalIPs() ([]string, error) {
-	var ips []string
+func GetLocalIPs() ([]interface{}, error) {
+	var ips []interface{}
 
 	// 获取所有网络接口
 	interfaces, err := net.Interfaces()
@@ -259,7 +259,7 @@ func (t *BeforeLoader) HandlerProxy(config collect.Plugin, template *collect.Tem
 	if handlerParam.EnableTpl == nil {
 		return common.Ok(nil, "无代理，无需处理")
 	}
-	ips := GetLocalIPs
+	ips, _ := GetLocalIPs()
 	params := template.GetParams()
 	// 获取IP
 	params["local_machine_ips"] = ips
@@ -268,8 +268,9 @@ func (t *BeforeLoader) HandlerProxy(config collect.Plugin, template *collect.Tem
 	ret := HandlerOneParams(&handlerParam, template, ts)
 	if ret.Success {
 		ret.SetFinish(true)
+
 	}
-	return common.Ok(nil, "处理完成")
+	return ret
 }
 
 // 防止重复请求

@@ -266,7 +266,7 @@ func (t *BeforeLoader) HandlerProxy(config collect.Plugin, template *collect.Tem
 	// 设置代理
 	params["proxy_service"] = params["service"]
 	ret := HandlerOneParams(&handlerParam, template, ts)
-	if ret.Success {
+	if ret.Success && ret.Data != nil {
 		ret.SetFinish(true)
 
 	}

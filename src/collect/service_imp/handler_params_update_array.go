@@ -23,12 +23,13 @@ func (uf *UpdateArray) HandlerData(template *config.Template, handlerParam *conf
 	}
 	for _, field := range handlerParam.Fields {
 
-		for _, item := range dataList {
+		for index, item := range dataList {
 			if !utils.IsValueEmpty(handlerParam.Item) { // 如果配置了item，设置item
 				paramsCopy[utils.ItemName] = item
 			} else { // 没有配置item取整个item
 				paramsCopy = item
 			}
+			paramsCopy["loop_index"] = index
 			//渲染值
 			value := utils.RenderTplDataWithType(field.TemplateTpl, paramsCopy, field.Type)
 			item[field.Field] = value

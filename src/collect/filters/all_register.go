@@ -20,6 +20,14 @@ func GetFilters() map[string]any {
 		"unix_time2datetime":  UnixTime2Datetime,
 		"contains":            Contains,
 		"to_json":             ToJSON,
+		"cast":                Cast,
+		"multiply":            Multiply,
+		"divide":              Divide,
+		"sub_arr":             SubArr,
+		"range_number":        RangeNumber,
+		"sub_arr_attr":        SubArrAttr,
+		"str_contains":        StrContains,
+		"random_int":          RandomInt,
 	}
 
 }

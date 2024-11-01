@@ -39,6 +39,7 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &UpdateOrder{})
 	l = append(l, &ToList{})
 	l = append(l, &OrderBy{})
+	l = append(l, &Agg{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

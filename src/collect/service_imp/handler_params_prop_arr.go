@@ -18,8 +18,21 @@ func (uf *PropArr) HandlerData(template *config.Template, handlerParam *config.H
 	arr, _ := utils.RenderVarToArrMap(handlerParam.Foreach, params)
 	li := make([]interface{}, 0)
 	for _, item := range arr {
-		value := utils.RenderVar(handlerParam.Value, item)
-		li = append(li, value)
+
+		// 为了处理二级数组
+		if handlerParam.AppendItem{
+			sub_arr, errMsg := utils.RenderVarToArrMap(handlerParam.Value, item)
+			if !utils.IsValueEmpty(errMsg) {
+                continue
+            }
+			for _, v := range sub_arr {
+                li = append(li, v)
+            }
+		}else{
+			value := utils.RenderVar(handlerParam.Value, item)
+			li = append(li, value)
+		}
+
 	}
 	return common.Ok(li, "处理成功")
 }

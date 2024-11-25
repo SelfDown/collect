@@ -290,6 +290,7 @@ type HandlerParam struct {
 	AppendParam         bool                    `yaml:"append_param"json:"append_param"`           // 是否添加参数
 	NoneFillRight       bool                    `yaml:"none_fill_right"json:"none_fill_right"`     // 是否添加右边参数
 	AppendItemParam     bool                    `yaml:"append_item_param"json:"append_item_param"` // 是否添加参数
+	AppendItem          bool                    `yaml:"append_item"json:"append_item_param"`       // 是否添加参数
 	SaveOriginal        bool                    `yaml:"save_original"json:"save_original"`         // 是否添加参数
 	Foreach             string                  //循环数组
 	Item                string                  // for 循环里面的item

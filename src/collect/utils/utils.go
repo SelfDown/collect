@@ -607,6 +607,14 @@ func GetJSONData(value interface{}) string {
 	newValue, _ := json.Marshal(value)
 	return string(newValue)
 }
+func IsNumber(v interface{}) bool {
+	switch v.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
+		return true
+	default:
+		return false
+	}
+}
 
 /**
 * 根据字符串，获取结构体里面字段值

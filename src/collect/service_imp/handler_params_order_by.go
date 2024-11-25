@@ -4,6 +4,7 @@ import (
 	common "github.com/SelfDown/collect/src/collect/common"
 	config "github.com/SelfDown/collect/src/collect/config"
 	utils "github.com/SelfDown/collect/src/collect/utils"
+	"github.com/demdxx/gocast"
 	"sort"
 )
 
@@ -26,7 +27,12 @@ func (uf *OrderBy) HandlerData(template *config.Template, handlerParam *config.H
 			if xValue == yValue {
 				continue
 			}
-			less = utils.Strval(xValue) < utils.Strval(yValue)
+			if utils.IsNumber(xValue) && utils.IsNumber(yValue) { // 如果都是数字类型
+				less = gocast.ToFloat(xValue) < gocast.ToFloat(yValue)
+			} else {
+				less = utils.Strval(xValue) < utils.Strval(yValue)
+			}
+
 			rule := field.Rule
 			if rule == "desc" {
 				less = !less

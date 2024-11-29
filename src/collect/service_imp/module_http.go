@@ -131,7 +131,7 @@ func (t *BaseRequestHandler) GetData() interface{} {
 	p := make(map[string]interface{})
 	json.Unmarshal([]byte(data), &p)
 	if utils.IsValueEmpty(p) && !utils.IsValueEmpty(data) { // 处理字符串
-		return data
+		return p
 	}
 	params := t.GetParams()
 	for key, value := range p {
@@ -151,6 +151,9 @@ func (t *BaseRequestHandler) GetData() interface{} {
 	return p
 }
 func (t *BaseRequestHandler) GetDataStr() string {
+	if t.config.DataTpl == nil {
+		return "{}"
+	}
 	data := utils.RenderTpl(t.config.DataTpl, t.params)
 	return data
 }
@@ -247,27 +250,28 @@ func (t *BaseRequestHandler) CreateRequest() *common.Result {
 		return common.NotOk(err.Error())
 	}
 	//  处理拼接所有参数
-	if t.config.AppendParam{
-		jsonData,err := ioutil.ReadAll(t.body)
+	if t.config.AppendParam && !utils.IsValueEmpty(t.body) {
+
+		jsonData, err := ioutil.ReadAll(t.body)
 		if err != nil {
-			return  common.NotOk(err.Error())
+			return common.NotOk(err.Error())
 		}
-		tmp:=make(map[string]interface{})
-		 err = json.Unmarshal(jsonData,&tmp)
-		if err!= nil {
-            return common.NotOk(err.Error())
-        }
+		tmp := make(map[string]interface{})
+		err = json.Unmarshal(jsonData, &tmp)
+		if err != nil {
+			return common.NotOk(err.Error())
+		}
 		// 循环params 添加变量
-		for k,v :=range t.params{
-			if _,ok := tmp[k];!ok{
-				tmp[k]=v
+		for k, v := range t.params {
+			if _, ok := tmp[k]; !ok {
+				tmp[k] = v
 			}
 		}
 		// 重新转json
 		jsonData, err = json.Marshal(tmp)
-		if err!= nil {
-            return common.NotOk(err.Error())
-        }
+		if err != nil {
+			return common.NotOk(err.Error())
+		}
 		req.Body = ioutil.NopCloser(bytes.NewBuffer(jsonData))
 		req.ContentLength = int64(len(jsonData))
 	}
@@ -279,7 +283,6 @@ func (t *BaseRequestHandler) CreateRequest() *common.Result {
 		password := utils.RenderTpl(passwordTpl, t.params)
 		req.SetBasicAuth(username, password)
 	}
-
 
 	// 设置请求
 	t.req = req
@@ -296,10 +299,10 @@ func (t *GetRequestHandler) HandlerRequest() *common.Result {
 	// 处理url get请求
 	query := req.URL.Query()
 	data := t.data
-	if t.config.AppendParam{
+	if t.config.AppendParam {
 		for k, v := range t.params {
-            query.Set(k, utils.Strval(v))
-        }
+			query.Set(k, utils.Strval(v))
+		}
 	}
 	for k, v := range data.(map[string]interface{}) {
 		query.Set(k, utils.Strval(v))
